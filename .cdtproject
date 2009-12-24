@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<?eclipse-cdt version="2.0"?>
+<cdtproject id="org.eclipse.cdt.managedbuilder.core.managedMake">
+  <extension point="org.eclipse.cdt.core.BinaryParser" id="org.eclipse.cdt.core.ELF"/>
+  <extension point="org.eclipse.cdt.core.ScannerInfoProvider" id="org.eclipse.cdt.managedbuilder.core.ManagedBuildManager"/>
+  <data>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <item id="org.eclipse.cdt.core.pathentry">
+      <pathentry kind="src" path="Tests"/>
+      <pathentry kind="out" path=""/>
+      <pathentry kind="con" path="org.eclipse.cdt.managedbuilder.MANAGED_CONTAINER"/>
+      <pathentry kind="src" path="Topo"/>
+      <pathentry kind="src" path="Geom"/>
+      <pathentry kind="src" path="Headers"/>
+      <pathentry kind="src" path="Tess"/>
+    </item>
+    
+    
+    
+    
+    
+  
+  
+  
+  
+  
+  </data>
+</cdtproject>

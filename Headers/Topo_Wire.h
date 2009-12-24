@@ -1,0 +1,28 @@
+//Copyright (C) 2009 The FreeREP Foundation
+//See License.txt for terms and conditions
+//Topo_Wire.h - Author Jon Pry 
+
+#ifndef TOPO_WIRE_H
+#define TOPO_WIRE_H
+
+#include "Geom_Vec3.h"
+#include "ICanCopy.h"
+#include "ICanAssociate.h"
+
+class Topo_Wire;
+
+class Topo_Wire: public ICanCopyWithTranslation, public ICanAssociate
+{
+public:
+    Topo_Wire();
+
+    virtual void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt, double u)) const = 0;
+    virtual Geom_Vec3 GetStart() const = 0;
+    virtual Geom_Vec3 GetEnd() const = 0;
+    virtual bool HasNorm() const = 0;
+    virtual Geom_Vec3 Norm() const = 0;
+
+};
+
+#endif
+
