@@ -5,13 +5,14 @@
 #ifndef TOPO_WIRE_H
 #define TOPO_WIRE_H
 
+#include "Topo_Shape.h"
 #include "Geom_Vec3.h"
 #include "ICanCopy.h"
 #include "ICanAssociate.h"
 
 class Topo_Wire;
 
-class Topo_Wire: public ICanCopyWithTranslation, public ICanAssociate
+class Topo_Wire: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate
 {
 public:
     Topo_Wire();

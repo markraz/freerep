@@ -65,3 +65,9 @@ void Topo_Face_Conic::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec
         pRet(p4);
     }
 }
+
+void *Topo_Face_Conic::MakeTranslatedCopy(Geom_Vec3 dir) const
+{
+	//TODO: implement me with the rest of this class
+	return 0;	
+}

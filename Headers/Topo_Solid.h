@@ -5,9 +5,10 @@
 #ifndef TOPO_SOLID_H
 #define TOPO_SOLID_H
 
+#include "Topo_Shape.h"
 #include "Topo_Face.h"
 
-class Topo_Solid
+class Topo_Solid: public Topo_Shape
 {
     std::list<Topo_Face*> m_faces;
     std::list<Topo_Face*>::iterator m_faces_it;

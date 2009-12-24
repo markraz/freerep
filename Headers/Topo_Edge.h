@@ -5,6 +5,7 @@
 #ifndef TOPO_EDGE_H
 #define TOPO_EDGE_H
 
+#include "Topo_Shape.h"
 #include "Topo_Wire.h"
 #include "Geom_Vec3.h"
 #include "Geom_Plane.h"
@@ -28,7 +29,7 @@ public:
     PlacedWire(Topo_Wire *wire, EnumWireOrder order){m_wire = wire; m_order = order;}
 };
 
-class Topo_Edge: public ICanCopyWithTranslation, ICanAssociate
+class Topo_Edge: public Topo_Shape, public ICanCopyWithTranslation, ICanAssociate
 {
     std::list<PlacedWire*> m_wires;
     std::list<PlacedWire*>::iterator m_wires_it;

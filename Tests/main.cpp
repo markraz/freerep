@@ -26,7 +26,7 @@
 #include "Topo_Line.h"
 #include "Topo_Arc.h"
 #include "Topo_Edge.h"
-#include "Topo_Face.h"
+#include "Topo_Face_Planar.h"
 #include "Topo_Solid.h"
 #include "BREP_Algo_Extrude.h"
 #include "FreeREP.h"
@@ -128,7 +128,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     glEnd();
 
 
-    Topo_Face *face = new Topo_Face();
+    Topo_Face *face = new Topo_Face_Planar();
     face->Add(e1);
     face->Add(e2);
 

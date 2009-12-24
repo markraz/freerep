@@ -6,6 +6,7 @@
 #include "Topo_Line.h"
 #include "Topo_Arc.h"
 #include "Topo_Face_Conic.h"
+#include "Topo_Face_Planar.h"
 
 Topo_Face *CreateExtrudedFace(Topo_Wire* wire, EnumWireOrder direction, Topo_Wire* wire_2,Geom_Vec3 &avertex,Geom_Vec3 &a_2vertex,Geom_Vec3 &bvertex,Geom_Vec3 &b_2vertex);
 
@@ -74,7 +75,7 @@ Topo_Face *CreateExtrudedFace(Topo_Wire* wire, EnumWireOrder direction, Topo_Wir
         nedge->Add(wire_2);
         nedge->Add(new Topo_Line(avertex,a_2vertex));
         
-        Topo_Face* aface = new Topo_Face();
+        Topo_Face* aface = new Topo_Face_Planar();
         aface->Add(nedge);
 
         return aface;
