@@ -1,3 +1,7 @@
+//Copyright (C) 2009 The FreeREP Foundation
+//See License.txt for terms and conditions
+//BREP_Algo_Extrude.cpp - Author Jon Pry 
+
 #include "BREP_Algo_Extrude.h"
 #include "Topo_Line.h"
 #include "Topo_Arc.h"
@@ -69,7 +73,7 @@ Topo_Face *CreateExtrudedFace(Topo_Wire* wire, EnumWireOrder direction, Topo_Wir
         nedge->Add(new Topo_Line(bvertex,b_2vertex));
         nedge->Add(wire_2);
         nedge->Add(new Topo_Line(avertex,a_2vertex));
-
+        
         Topo_Face* aface = new Topo_Face();
         aface->Add(nedge);
 

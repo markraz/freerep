@@ -232,4 +232,6 @@ Geom_Plane Topo_Edge::GetPlane()
         }
         GetNextWire(&wire,&order);
     }
+    
+    //TODO: throw some kind of exception or make null or default plane
 }

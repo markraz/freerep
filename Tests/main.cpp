@@ -1,3 +1,9 @@
+//This code is an adaptations of Davyd Madeley GtkGLExt example 
+//It is licensed under the BSD license. 
+//Any modifications from the original work are
+//Copyright (C) 2009 The FreeREP Foundation
+//See License.txt for terms and conditions
+
 /*
  * An example of using GtkGLExt in C
  *

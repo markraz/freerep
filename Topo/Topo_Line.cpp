@@ -34,8 +34,8 @@ void* Topo_Line::MakeTranslatedCopy(Geom_Vec3 dir) const
 {
     Topo_Line *nline = new Topo_Line(*this);
 
-    nline->m_A.m_x+=dir.m_x; nline->m_A.m_y+=dir.m_y; nline->m_A.m_z+=dir.m_z;
-    nline->m_B.m_x+=dir.m_x; nline->m_B.m_y+=dir.m_y; nline->m_B.m_z+=dir.m_z;
+    nline->m_A = nline->m_A + dir;
+    nline->m_B = nline->m_B + dir;
 
     nline->m_parent = this;
 

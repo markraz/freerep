@@ -23,5 +23,9 @@ C++_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Topo \
 Tests \
+Tess/Planar \
+Geom \
+BREP_Algo \
 

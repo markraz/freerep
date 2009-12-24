@@ -1,3 +1,10 @@
+//This code is an adaptations of Atul Narkhede's implementation
+//of the Seidel algorithm for fast polygon tesselation. 
+//It is believed to be in the public domain.
+//Any modifications from the original work are
+//Copyright (C) 2009 The FreeREP Foundation
+//See License.txt for terms and conditions
+
 #include "triangulate.h"
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>

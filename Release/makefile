@@ -9,7 +9,11 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir.mk
+-include Topo/subdir.mk
 -include Tests/subdir.mk
+-include Tess/Planar/subdir.mk
+-include Geom/subdir.mk
+-include BREP_Algo/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -44,7 +48,7 @@ all: FreeREP
 FreeREP: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o"FreeREP" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ `pkg-config --cflags --libs gtk+-2.0 gtkglext-1.0 gtkglext-x11-1.0` -o"FreeREP" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
