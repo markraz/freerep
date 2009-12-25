@@ -20,6 +20,7 @@ public:
    	bool operator==(Geom_Vec3) const;
    	Geom_Vec3 operator*(double) const;
    	double operator*(Geom_Vec3) const;
+   	Geom_Vec3 operator/(double) const;
    	Geom_Vec3 operator^(Geom_Vec3) const; 
 
     bool IsEqual(Geom_Vec3 pnt) const;
@@ -28,6 +29,7 @@ public:
     Geom_Vec3 Added(Geom_Vec3 pnt) const;
     Geom_Vec3 Subtracted(Geom_Vec3 pnt) const;
     Geom_Vec3 Multiplied(double v) const;
+    Geom_Vec3 Divided(double v) const;
     void Multiply(double v);
     
     double Norm() const;

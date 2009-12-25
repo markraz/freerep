@@ -27,6 +27,7 @@
 #include "Topo_Arc.h"
 #include "Topo_Edge.h"
 #include "Topo_Face_Planar.h"
+#include "Topo_Face_Spheric.h"
 #include "Topo_Solid.h"
 #include "BREP_Algo_Extrude.h"
 #include "FreeREP.h"
@@ -119,14 +120,14 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     e2->Add(l5);
     e2->Add(l6);
 
-
+/*
     glBegin(GL_LINE_STRIP);
     e1->GetVertices(.01,vCall);
     glEnd();
 
     glBegin(GL_LINE_STRIP);
     e2->GetVertices(.01,vCall);
-    glEnd();
+    glEnd(); */
 
 
     Topo_Face *face = new Topo_Face_Planar();
@@ -137,6 +138,11 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
 
     glBegin(GL_TRIANGLES);
  //   face->Triangulate(.01,vCall);
+    glEnd();
+    
+    Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Vec3(0,0,0),.5);
+    glBegin(GL_TRIANGLES);
+    sphere->Triangulate(.01,vCall);
     glEnd();
 
     Topo_Solid *solid = BrepAlgoExtrude(face,Geom_Vec3(0,0,.5));

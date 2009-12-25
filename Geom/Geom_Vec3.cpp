@@ -54,6 +54,11 @@ void Geom_Vec3::Multiply(double v)
 	m_x *= v; m_y *= v; m_z *= v;
 }
 
+Geom_Vec3 Geom_Vec3::Divided(double v) const
+{
+	return Multiplied(1 / v);
+}
+
 double Geom_Vec3::Dot(Geom_Vec3 dir) const
 {
 	return m_x * dir.m_x + m_y * dir.m_y + m_z * dir.m_z;
@@ -67,6 +72,11 @@ Geom_Vec3 Geom_Vec3::Crossed(Geom_Vec3 dir) const
 void Geom_Vec3::Normalize()
 {
 	Multiply(1/Norm());
+}
+
+Geom_Vec3 Geom_Vec3::Normalized() const
+{
+	return Multiplied(1/Norm());
 }
 
 double Geom_Vec3::Norm() const
@@ -89,6 +99,10 @@ Geom_Vec3 Geom_Vec3::operator-(Geom_Vec3 pnt) const{
 
 Geom_Vec3 Geom_Vec3::operator*(double v) const{
 	return Multiplied(v);
+}
+
+Geom_Vec3 Geom_Vec3::operator/(double v) const{
+	return Divided(v);
 }
 
 double Geom_Vec3::operator*(Geom_Vec3 pnt) const{
