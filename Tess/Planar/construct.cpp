@@ -1,4 +1,4 @@
-//This code is an adaptations of Atul Narkhede's implementation
+//This code is an adaptation of Atul Narkhede's implementation
 //of the Seidel algorithm for fast polygon tesselation. 
 //It is believed to be in the public domain.
 //Any modifications from the original work are

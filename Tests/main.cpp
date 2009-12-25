@@ -1,4 +1,4 @@
-//This code is an adaptations of Davyd Madeley GtkGLExt example 
+//This code is an adaptation of Davyd Madeley GtkGLExt example 
 //It is licensed under the BSD license. 
 //Any modifications from the original work are
 //Copyright (C) 2009 The FreeREP Foundation
@@ -9,7 +9,7 @@
  *
  * Written by Davyd Madeley <davyd@madeley.id.au> and made available under a
  * BSD license.
- *
+ * 
  * This is purely an example, it may eat your cat and you can keep both pieces.
  *
  * Compile with:
