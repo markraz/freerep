@@ -30,6 +30,7 @@
 #include "Topo_Solid.h"
 #include "BREP_Algo_Extrude.h"
 #include "FreeREP.h"
+#include "Util_Test.h"
 
 #define ALPHA 0.5
 
@@ -221,6 +222,8 @@ rotate (gpointer user_data)
 int
 main (int argc, char **argv)
 {
+	RunAllTests();
+	
 	GtkWidget *window;
 	GtkWidget *da;
 	GdkGLConfig *glconfig;

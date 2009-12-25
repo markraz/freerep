@@ -9,9 +9,11 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir.mk
+-include Util/subdir.mk
 -include Topo/subdir.mk
 -include Tests/subdir.mk
 -include Tess/Planar/subdir.mk
+-include Geom/Tests/subdir.mk
 -include Geom/subdir.mk
 -include BREP_Algo/subdir.mk
 -include objects.mk

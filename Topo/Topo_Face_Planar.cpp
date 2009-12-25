@@ -115,3 +115,8 @@ void *Topo_Face_Planar::MakeTranslatedCopy(Geom_Vec3 dir) const
 
     return nface;
 }
+
+double Topo_Face_Planar::Area()
+{
+	//TODO: implement me	
+}

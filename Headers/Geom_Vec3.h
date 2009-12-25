@@ -5,6 +5,8 @@
 #ifndef GEOM_PNT_H
 #define GEOM_PNT_H
 
+bool Geom_Vec3_Test();
+
 class Geom_Vec3
 {
 public:

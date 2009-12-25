@@ -34,6 +34,7 @@ public:
     void Add(Topo_Edge *edge);
     virtual void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt));
 
+	virtual double Area();
 
     void GetFirstWire(Topo_Wire **wire, EnumWireOrder *order);
     void GetNextWire(Topo_Wire **wire, EnumWireOrder *order);

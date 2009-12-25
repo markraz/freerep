@@ -16,6 +16,12 @@ Topo_Face::Topo_Face(const ICanAssociate* associate):ICanAssociate(associate)
 	
 }
 
+double Topo_Face::Area()
+{
+	//TODO: throw not implemented
+	return 0;	
+}
+
 void Topo_Face::Add(Topo_Edge *edge)
 {
     m_edges.push_back(edge);
