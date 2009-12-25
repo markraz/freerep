@@ -13,9 +13,17 @@ Topo_Arc::Topo_Arc(const Geom_Ax2 &A, double radius, double start, double end)
 void Topo_Arc::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt, double u)) const
 {
     //TODO: calculate number of segments based on deviation parameter
-    for(int i=0; i < 21; i++)
+    int nsegs = 5;
+    if(dDeviation < m_radius)
     {
-        double u = 1.0 / 20 * i;
+    	int segs = floor(M_PI / acos((m_radius - dDeviation)/m_radius)+.5);
+    	if(segs > nsegs)
+    		nsegs = segs;	
+    }
+    
+    for(int i=0; i <= nsegs; i++)
+    {
+        double u = 1.0 / nsegs * i;
         Geom_Vec3 pnt = GetPntAtU(u);
         pRet(pnt,u);
     }

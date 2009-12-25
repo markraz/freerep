@@ -145,7 +145,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     solid->Triangulate(.01,vCall);
     glEnd();
 
-    Topo_Face *tface = solid->GetFirstFace();
+/*    Topo_Face *tface = solid->GetFirstFace();
     while(tface)
     {
         Topo_Edge *tedge = tface->GetFirstEdge();
@@ -159,7 +159,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
         }
 
         tface = solid->GetNextFace();
-    }
+    }*/
 
 
 	glPopMatrix ();
