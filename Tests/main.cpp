@@ -35,10 +35,15 @@
 
 #define ALPHA 0.5
 
-void vCall(const Geom_Vec3 &pt)
+void vCall(const Geom_Vec3 &pt,const Geom_Vec3 &n)
 {
+	Geom_Vec3 norm = n * -1;
+	
+	glNormal3d(norm.m_x,norm.m_y,norm.m_z);
     glVertex3d(pt.m_x,pt.m_y,pt.m_z);
 }
+
+ GLfloat material_diffuse[] = {.25,.25,.25, 1 };
 
 double ang = 0;
 static gboolean
@@ -56,6 +61,13 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
 
 	/* draw in here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	//glDepthFunc(GL_GREATER);  // The Type Of Depth Testing (Less Or Equal)
+    glEnable(GL_DEPTH_TEST);  
+    
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material_diffuse);
+    
+         
 	glPushMatrix();
 
 	glRotatef (ang, 1, 0, 1);
@@ -134,11 +146,14 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     face->Add(e1);
     face->Add(e2);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glEnable(GL_AUTO_NORMAL);
 
     glBegin(GL_TRIANGLES);
  //   face->Triangulate(.01,vCall);
     glEnd();
+    
+    //glFrontFace(GL_CCW);
     
     Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Vec3(0,0,0),.5);
     glBegin(GL_TRIANGLES);

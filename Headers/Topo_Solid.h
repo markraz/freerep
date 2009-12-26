@@ -16,7 +16,7 @@ class Topo_Solid: public Topo_Shape
 public:
     void Add(Topo_Face *face);
 
-    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt));
+    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm));
     Topo_Face *GetFirstFace();
     Topo_Face *GetNextFace();
 };

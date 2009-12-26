@@ -18,15 +18,15 @@ public:
     Topo_Face_Spheric(const ICanAssociate *);
     Topo_Face_Spheric(Geom_Vec3 pnt, double d);
 
-    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt));
+    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm));
     
  //Override from ICanCopyAndTranslate
 	void *MakeTranslatedCopy(Geom_Vec3 dir) const;
     
 private:
-	void SplitFace(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, int ndivisions, void (*)(const Geom_Vec3&pnt));
-	void OutputTri(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, void (*)(const Geom_Vec3&pnt));
-	void ProjectPoint(Geom_Vec3 &pnt, void (*)(const Geom_Vec3&pnt)); 
+	void SplitFace(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, int ndivisions, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm));
+	void OutputTri(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm));
+	void ProjectPoint(Geom_Vec3 &pnt, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)); 
 };
 
 #endif

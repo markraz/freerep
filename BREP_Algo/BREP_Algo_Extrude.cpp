@@ -69,6 +69,11 @@ Topo_Face *CreateExtrudedFace(Topo_Wire* wire, EnumWireOrder direction, Topo_Wir
     {
 
         Topo_Edge *nedge = new Topo_Edge();
+        
+        if(direction == AFirst)
+        	direction = BFirst;
+        else
+        	direction = AFirst;
 
         nedge->Add(wire,direction);
         nedge->Add(new Topo_Line(bvertex,b_2vertex));

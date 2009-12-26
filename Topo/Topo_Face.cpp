@@ -27,7 +27,7 @@ void Topo_Face::Add(Topo_Edge *edge)
     m_edges.push_back(edge);
 }
 
-void Topo_Face::Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt))
+void Topo_Face::Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm))
 {
 	
 }

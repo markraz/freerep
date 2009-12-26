@@ -41,3 +41,8 @@ Geom_Vec3 Geom_Plane::MapPoint(Geom_Vec3 pnt)
                     pnt * ydir,
                     pnt * xdir);
 }
+
+Geom_Vec3 Geom_Plane::GetNorm()
+{
+	return m_norm;	
+}

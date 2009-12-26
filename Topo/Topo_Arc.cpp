@@ -12,7 +12,7 @@ Topo_Arc::Topo_Arc(const Geom_Ax2 &A, double radius, double start, double end)
 
 void Topo_Arc::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt, double u)) const
 {
-    //TODO: calculate number of segments based on deviation parameter
+    //TODO: adjust number of segments based on length of arc in deg/rads
     int nsegs = 5;
     if(dDeviation < m_radius)
     {

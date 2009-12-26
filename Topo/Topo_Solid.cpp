@@ -9,7 +9,7 @@ void Topo_Solid::Add(Topo_Face *face)
     m_faces.push_back(face);
 }
 
-void Topo_Solid::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3 &pnt))
+void Topo_Solid::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3 &pnt, const Geom_Vec3 &norm))
 {
     std::list<Topo_Face*>::iterator it;
     for(it = m_faces.begin(); it != m_faces.end(); it++)

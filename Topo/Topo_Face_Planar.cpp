@@ -27,7 +27,7 @@ void topo_face_vertex_absorber(const Geom_Vec3 &pnt)
     topo_face_vertices[topo_face_current_edge].push_back(pnt);
 }
 
-void Topo_Face_Planar::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt))
+void Topo_Face_Planar::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm))
 {
     Geom_Plane plane = (*m_edges.begin())->GetPlane();
 
@@ -93,9 +93,9 @@ void Topo_Face_Planar::Triangulate(double dDeviation, void (*pRet)(const Geom_Ve
 
     for(int i=0; i < ntris; i++)
     {
-        pRet(Geom_Vec3(uvertices[triangles[i][0]][0],uvertices[triangles[i][0]][1],uvertices[triangles[i][0]][2]));
-        pRet(Geom_Vec3(uvertices[triangles[i][1]][0],uvertices[triangles[i][1]][1],uvertices[triangles[i][1]][2]));
-        pRet(Geom_Vec3(uvertices[triangles[i][2]][0],uvertices[triangles[i][2]][1],uvertices[triangles[i][2]][2]));
+        pRet(Geom_Vec3(uvertices[triangles[i][0]][0],uvertices[triangles[i][0]][1],uvertices[triangles[i][0]][2]),plane.GetNorm());
+        pRet(Geom_Vec3(uvertices[triangles[i][1]][0],uvertices[triangles[i][1]][1],uvertices[triangles[i][1]][2]),plane.GetNorm());
+        pRet(Geom_Vec3(uvertices[triangles[i][2]][0],uvertices[triangles[i][2]][1],uvertices[triangles[i][2]][2]),plane.GetNorm());
     }
 
     delete sizes;
