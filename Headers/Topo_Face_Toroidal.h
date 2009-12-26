@@ -23,6 +23,9 @@ public:
     
  //Override from ICanCopyAndTranslate
 	void *MakeTranslatedCopy(Geom_Vec3 dir) const;
+	
+private:
+	void TriangulateMinr(double dDeviation, double start, double end,void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm));
 };
 
 #endif
