@@ -156,9 +156,9 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     
     //glFrontFace(GL_CCW);
     
-    Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Vec3(0,0,0),.5);
+    Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Vec3(0,0,0),.25);
     glBegin(GL_TRIANGLES);
-    //sphere->Triangulate(.01,vCall);
+    sphere->Triangulate(.01,vCall);
     glEnd();
     
     Topo_Face_Toroidal *toroid = new Topo_Face_Toroidal(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),.5,.125);

@@ -51,6 +51,8 @@ void Topo_Face_Spheric::OutputTri(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &p
 
 void Topo_Face_Spheric::SplitFace(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, int ndivisions, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm))
 {
+	//TODO: this is just an implementation of loop subdivision. Should be moved
+	//another s somewhere as a utillity. 
 	if(ndivisions == 1)
 	{
 		OutputTri(pnt1,pnt2,pnt3,pRet);

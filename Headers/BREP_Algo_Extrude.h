@@ -1,6 +1,6 @@
 //Copyright (C) 2009 The FreeREP Foundation
 //See License.txt for terms and conditions
-//BREP_Algo_Extrude.cpp - Author Jon Pry 
+//BREP_Algo_Extrude.h - Author Jon Pry 
 
 
 #ifndef BREP_ALGO_EXTRUDE_H

@@ -7,18 +7,13 @@
 
 #include "Topo_Shape.h"
 #include "Topo_Wire.h"
+#include "EnumWireOrder.h"
 #include "Geom_Vec3.h"
 #include "Geom_Plane.h"
 #include "ICanCopy.h"
 #include "ICanAssociate.h"
 
 #include <list>
-
-enum EnumWireOrder
-{
-  AFirst,
-  BFirst
-};
 
 class PlacedWire
 {

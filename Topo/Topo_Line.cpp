@@ -51,3 +51,20 @@ Geom_Vec3 Topo_Line::Norm() const
 {
     return Geom_Vec3(0,0,1);
 }
+
+double Topo_Line::GetArea(EnumWireOrder order,Geom_Plane plane) const
+{
+	Geom_Vec3 a;
+	Geom_Vec3 b;
+	if(order == AFirst)
+	{
+		a = plane.MapPoint(m_A);	
+		b = plane.MapPoint(m_B);
+	}
+	else
+	{
+		b = plane.MapPoint(m_A);	
+		a = plane.MapPoint(m_B);
+	}
+	return (a.m_x * b.m_y - a.m_y * b.m_x)/2;
+}

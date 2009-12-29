@@ -6,11 +6,11 @@
 #define TOPO_WIRE_H
 
 #include "Topo_Shape.h"
+#include "EnumWireOrder.h"
 #include "Geom_Vec3.h"
+#include "Geom_Plane.h"
 #include "ICanCopy.h"
 #include "ICanAssociate.h"
-
-class Topo_Wire;
 
 class Topo_Wire: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate
 {
@@ -22,6 +22,7 @@ public:
     virtual Geom_Vec3 GetEnd() const = 0;
     virtual bool HasNorm() const = 0;
     virtual Geom_Vec3 Norm() const = 0;
+    virtual double GetArea(EnumWireOrder order,Geom_Plane plane) const {return 0;}
 
 };
 

@@ -21,6 +21,7 @@ public:
     Geom_Vec3 GetEnd() const;
     bool HasNorm() const;
     Geom_Vec3 Norm() const;
+    double GetArea(EnumWireOrder order,Geom_Plane plane) const;
 
 
 //Overrides from ICanCopyWithTranslation
