@@ -15,6 +15,7 @@ RM := rm -rf
 -include Tess/Planar/subdir.mk
 -include Geom/Tests/subdir.mk
 -include Geom/subdir.mk
+-include Formats/FREP/subdir.mk
 -include BREP_Algo/subdir.mk
 -include objects.mk
 

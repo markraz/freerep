@@ -100,3 +100,35 @@ void *Topo_Face_Spheric::MakeTranslatedCopy(Geom_Vec3 dir) const
 	nface->m_C = nface->m_C + dir;
     return nface;
 }
+
+void Topo_Face_Spheric::Vertex_Absorber(Geom_Vec3 pnt)
+{
+	//TODO: add -= operator to Geom_Vec3
+	pnt = pnt - m_C;
+	
+	//TODO: pnt it probably not of magnitude m_radius, that
+	//is really what we are trying to fudge here. We really
+	//need to save its mangitude to make sure our vertices work out
+	pnt.Normalize();
+	
+	//We use a stereographic projection now
+	m_edge_vertices.push_back(Geom_Vec3(pnt.m_x / (1 - pnt.m_z),pnt.m_y / (1 - pnt.m_z),0));
+}
+
+Topo_Face_Spheric *csphere;
+
+void Topo_Face_Sphere_Vertex_Absorber(const Geom_Vec3 &pnt)
+{
+	csphere->Vertex_Absorber(pnt);
+}
+
+void Topo_Face_Spheric::MapEdges(double dDeviation)
+{
+	csphere = this;
+	Topo_Edge *edge = GetFirstEdge();
+	while(edge)
+	{
+		edge->GetVertices(dDeviation, Topo_Face_Sphere_Vertex_Absorber);
+		edge = GetNextEdge();	
+	}
+}

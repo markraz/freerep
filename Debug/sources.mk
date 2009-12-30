@@ -29,5 +29,6 @@ Tests \
 Tess/Planar \
 Geom/Tests \
 Geom \
+Formats/FREP \
 BREP_Algo \
 

@@ -6,6 +6,9 @@
 #ifndef FREEREP_H
 #define FREEREP_H
 
+//TODO: what is a good value for this?
+#define REALLY_BIG 10e20
+
 class FreeREP
 {
 public:
