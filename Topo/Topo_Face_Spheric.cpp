@@ -91,13 +91,7 @@ void Topo_Face_Spheric::SplitFace(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &p
 
 void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
-	//TODO: figure out number of divisions from dDeviation
-	
-	int ndivisions = 7;
-	for(int i=0; i < 20; i++)
-	{
-		SplitFace(icosahedron_verts[icosahedron_faces[i][0]],icosahedron_verts[icosahedron_faces[i][1]],icosahedron_verts[icosahedron_faces[i][2]],ndivisions,pRet);	
-	}
+	Topo_Face::Triangulate(dDeviation,pRet);
 }
 
 void *Topo_Face_Spheric::MakeTranslatedCopy(Geom_Vec3 dir) const

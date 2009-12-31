@@ -14,7 +14,6 @@ public:
     Topo_Face_Planar(const ICanAssociate *);
 
 //Overrides from Topo_Face
-	void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
 	double Area();
 	
 //Override from ICanCopyAndTranslate
