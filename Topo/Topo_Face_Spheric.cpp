@@ -37,19 +37,19 @@ Topo_Face_Spheric::Topo_Face_Spheric(const ICanAssociate *associate):Topo_Face(a
 	
 }
 
-void Topo_Face_Spheric::ProjectPoint(Geom_Vec3 &pnt, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm))
+void Topo_Face_Spheric::ProjectPoint(Geom_Vec3 &pnt, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	pRet(pnt.Normalized() * m_radius + m_C,pnt.Normalized());
 }
 
-void Topo_Face_Spheric::OutputTri(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm))
+void Topo_Face_Spheric::OutputTri(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	ProjectPoint(pnt1,pRet);
 	ProjectPoint(pnt2,pRet);
 	ProjectPoint(pnt3,pRet);
 }
 
-void Topo_Face_Spheric::SplitFace(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, int ndivisions, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm))
+void Topo_Face_Spheric::SplitFace(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, int ndivisions, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	//TODO: this is just an implementation of loop subdivision. Should be moved
 	//another s somewhere as a utillity. 
@@ -82,7 +82,7 @@ void Topo_Face_Spheric::SplitFace(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &p
 	SplitFace(pnt1,npnt2,npnt3, ndivisions - 1, pRet);
 }
 
-void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm))
+void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	//TODO: figure out number of divisions from dDeviation
 	

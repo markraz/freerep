@@ -19,13 +19,13 @@ public:
     Topo_Face_Toroidal(const ICanAssociate *);
     Topo_Face_Toroidal(Geom_Ax2 A, double majr, double minr);
 
-    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm));
+    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
     
  //Override from ICanCopyAndTranslate
 	void *MakeTranslatedCopy(Geom_Vec3 dir) const;
 	
 private:
-	void TriangulateMinr(double dDeviation, double start, double end,void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm));
+	void TriangulateMinr(double dDeviation, double start, double end,void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
 };
 
 #endif

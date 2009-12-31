@@ -26,7 +26,7 @@ void TopoFaceConicVertexAbsorber2(const Geom_Vec3& pnt, double u)
 }
 
 
-void Topo_Face_Conic::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm))
+void Topo_Face_Conic::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 //TODO: this is an unglorious hack
     vertex1.clear();

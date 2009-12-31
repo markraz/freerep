@@ -16,7 +16,7 @@ Topo_Face::Topo_Face(const ICanAssociate* associate):ICanAssociate(associate)
 	
 }
 
-Geom_Plane Topo_Face::GetPlane()
+Geom_Plane Topo_Face::GetPlane() const
 {
 	return m_plane;
 }
@@ -33,7 +33,7 @@ void Topo_Face::Add(Topo_Edge *edge)
     edge->AddParent(this);
 }
 
-void Topo_Face::Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm))
+void Topo_Face::Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	
 }

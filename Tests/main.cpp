@@ -34,6 +34,7 @@
 #include "FreeREP.h"
 #include "Util_Test.h"
 #include "Format_FREP.h"
+#include "ICanTriangulate.h"
 
 #define ALPHA 0.5
 
@@ -152,27 +153,36 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     //glEnable(GL_AUTO_NORMAL);
 
     glBegin(GL_TRIANGLES);
-    face->Triangulate(.01,vCall);
+    //face->Triangulate(.01,vCall);
     glEnd();
     
     Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Vec3(0,0,0),.25);
     glBegin(GL_TRIANGLES);
-    sphere->Triangulate(.01,vCall);
+    //sphere->Triangulate(.01,vCall);
     glEnd();
     
     Topo_Face_Toroidal *toroid = new Topo_Face_Toroidal(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),.5,.125);
     glBegin(GL_TRIANGLES);
-    toroid->Triangulate(.01,vCall);
+    //toroid->Triangulate(.01,vCall);
     glEnd();
 
-    Topo_Solid *solid = BrepAlgoExtrude(face,Geom_Vec3(0,0,.5));
+    //Topo_Solid *solid = BrepAlgoExtrude(face,Geom_Vec3(0,0,.5));
 
     glBegin(GL_TRIANGLES);
-    solid->Triangulate(.001,vCall);
+    //solid->Triangulate(.001,vCall);
     glEnd();
     
+    glBegin(GL_TRIANGLES);
     std::vector<Topo_Shape*> shapes = ReadFREP("Tests/SimpleFaces.FREP");
-
+    for(int i=0; i < shapes.size(); i++)
+    {
+    	ICanTriangulate *obj = dynamic_cast<ICanTriangulate*>(shapes[i]);
+    	if(obj)
+    	{
+    		obj->Triangulate(.001,vCall);	
+    	}
+    }
+    glEnd();
 /*    Topo_Face *tface = solid->GetFirstFace();
     while(tface)
     {

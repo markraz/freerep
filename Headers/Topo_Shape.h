@@ -9,6 +9,7 @@ class Topo_Shape
 {
 public:
 	Topo_Shape(){}
+	virtual void IsAShape(){}
 };
 
 #endif

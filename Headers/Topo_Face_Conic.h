@@ -14,7 +14,7 @@ class Topo_Face_Conic: public Topo_Face
 
 public:
     Topo_Face_Conic(Topo_Arc *arc1, Topo_Arc *arc2);
-    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm));
+    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
     
  //Override from ICanCopyAndTranslate
 	void *MakeTranslatedCopy(Geom_Vec3 dir) const;

@@ -57,7 +57,7 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 			
 			int id=0;
 			int cidx = 1;
-			double vars[12];
+			double vars[256];
 			int ivars[256];
 			if(type == "LINE")
 			{
@@ -72,6 +72,7 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 			
 			if(type == "EDGE" || type == "SOLID" || type == "FACE")
 			{
+				sscanf(cstr,"%d)%lf",&id,&vars[0]);
 				sscanf(cstr,"%d)%d",&id,&ivars[0]);
 				//read the CSV data
 				int idx = restofline.find(',');
@@ -79,6 +80,7 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 				{
 					restofline = restofline.substr(idx+1);
 					cstr = restofline.c_str();
+					sscanf(cstr,"%lf",&vars[cidx]);
 					sscanf(cstr,"%d",&ivars[cidx++]);
 					idx = restofline.find(',');
 				}
@@ -90,20 +92,20 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 				for(int i=0; i < cidx; i++)
 				{
 					edge->Add((Topo_Wire*)wires[ivars[i]]);
-					edges.push_back(edge);
 				}		
+				edges.push_back(edge);
 			}
 			
 			if(type == "FACE")
 			{
 				//TODO: should be able to allocate different types
 				//TODO: read the plane from the file
-				Topo_Face *face = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1)));
-				for(int i=0; i < cidx; i++)
+				Topo_Face *face = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(vars[0],vars[1],vars[2])));
+				for(int i=3; i < cidx; i++)
 				{
 					face->Add((Topo_Edge*)edges[ivars[i]]);	
-					faces.push_back(face);
 				}	
+				faces.push_back(face);
 			}
 			
 			if(type == "SOLID")
@@ -112,8 +114,8 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 				for(int i=0; i < cidx; i++)
 				{
 					solid->Add((Topo_Face*)faces[ivars[i]]);
-					solids.push_back(solid);
 				}
+				solids.push_back(solid);
 			}
 		}
 		file.close();	

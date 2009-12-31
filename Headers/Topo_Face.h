@@ -11,6 +11,7 @@
 #include "Geom_Plane.h"
 #include "ICanCopy.h"
 #include "ICanAssociate.h"
+#include "ICanTriangulate.h"
 
 #include <list>
 
@@ -22,7 +23,7 @@ enum Topo_Face_Type
 
 class Topo_Face;
 
-class Topo_Face: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate
+class Topo_Face: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate, public ICanTriangulate
 {
 protected:
     Topo_Face_Type m_type;
@@ -35,11 +36,11 @@ public:
     Topo_Face(const ICanAssociate *);
 
     void Add(Topo_Edge *edge);
-    virtual void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm));
+    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
 
 	virtual double Area();
 	
-	Geom_Plane GetPlane();
+	Geom_Plane GetPlane() const;
 	
 
     void GetFirstWire(Topo_Wire **wire, EnumWireOrder *order);

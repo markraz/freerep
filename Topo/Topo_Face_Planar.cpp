@@ -27,7 +27,7 @@ void topo_face_vertex_absorber(const Geom_Vec3 &pnt)
     topo_face_vertices[topo_face_current_edge].push_back(pnt);
 }
 
-void Topo_Face_Planar::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm))
+void Topo_Face_Planar::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const
 {
     Geom_Plane plane = GetPlane();
 
@@ -35,7 +35,7 @@ void Topo_Face_Planar::Triangulate(double dDeviation, void (*pRet)(const Geom_Ve
     topo_face_vertices.resize(m_edges.size());
 
     topo_face_current_edge = 0;
-    std::list<Topo_Edge*>::iterator it;
+    std::list<Topo_Edge*>::const_iterator it;
     for(it = m_edges.begin(); it != m_edges.end(); it++)
     {
         Topo_Edge *edge = *it;

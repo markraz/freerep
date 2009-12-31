@@ -7,8 +7,9 @@
 
 #include "Topo_Shape.h"
 #include "Topo_Face.h"
+#include "ICanTriangulate.h"
 
-class Topo_Solid: public Topo_Shape
+class Topo_Solid: public Topo_Shape, public ICanTriangulate
 {
     std::list<Topo_Face*> m_faces;
     std::list<Topo_Face*>::iterator m_faces_it;
@@ -16,7 +17,7 @@ class Topo_Solid: public Topo_Shape
 public:
     void Add(Topo_Face *face);
 
-    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm));
+    void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
     Topo_Face *GetFirstFace();
     Topo_Face *GetNextFace();
 };

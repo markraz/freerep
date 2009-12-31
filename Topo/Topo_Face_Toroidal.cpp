@@ -21,7 +21,7 @@ Topo_Face_Toroidal::Topo_Face_Toroidal(const ICanAssociate *associate):Topo_Face
 	
 }
 
-void Topo_Face_Toroidal::TriangulateMinr(double dDeviation, double start, double end, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm))
+void Topo_Face_Toroidal::TriangulateMinr(double dDeviation, double start, double end, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	//TODO: figure out number of divisions from dDeviation
 	
@@ -56,7 +56,7 @@ void Topo_Face_Toroidal::TriangulateMinr(double dDeviation, double start, double
 	}
 }
 
-void Topo_Face_Toroidal::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm))
+void Topo_Face_Toroidal::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	//TODO: figure out number of divisions from dDeviation
 	
