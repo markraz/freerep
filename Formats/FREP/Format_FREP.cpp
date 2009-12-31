@@ -64,13 +64,12 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 				sscanf(cstr,"%d)%lf,%lf,%lf,%lf,%lf,%lf",&id,&vars[0],&vars[1],&vars[2],&vars[3],&vars[4],&vars[5]);
 				wires.push_back(new Topo_Line(Geom_Vec3(vars[0],vars[1],vars[2]),Geom_Vec3(vars[3],vars[4],vars[5])));
 			}
-			if(type == "ARC")
+			else if(type == "ARC")
 			{
 				sscanf(cstr,"%d)%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf",&id,&vars[0],&vars[1],&vars[2],&vars[3],&vars[4],&vars[5],&vars[6],&vars[7],&vars[8],&vars[9],&vars[10],&vars[11]);
 				wires.push_back(new Topo_Arc(Geom_Ax2(Geom_Vec3(vars[0],vars[1],vars[2]),Geom_Vec3(vars[3],vars[4],vars[5]),Geom_Vec3(vars[6],vars[7],vars[8])),vars[9],vars[10],vars[11]));
 			}
-			
-			if(type == "EDGE" || type == "SOLID" || type == "FACE")
+			else if(type == "EDGE" || type == "SOLID" || type == "FACE")
 			{
 				sscanf(cstr,"%d)%lf",&id,&vars[0]);
 				sscanf(cstr,"%d)%d",&id,&ivars[0]);
@@ -84,38 +83,38 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 					sscanf(cstr,"%d",&ivars[cidx++]);
 					idx = restofline.find(',');
 				}
-			}
+		
 			
-			if(type == "EDGE")
-			{
-				Topo_Edge *edge = new Topo_Edge();
-				for(int i=0; i < cidx; i++)
+				if(type == "EDGE")
 				{
-					edge->Add((Topo_Wire*)wires[ivars[i]]);
-				}		
-				edges.push_back(edge);
-			}
-			
-			if(type == "FACE")
-			{
-				//TODO: should be able to allocate different types
-				//TODO: read the plane from the file
-				Topo_Face *face = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(vars[0],vars[1],vars[2])));
-				for(int i=3; i < cidx; i++)
-				{
-					face->Add((Topo_Edge*)edges[ivars[i]]);	
-				}	
-				faces.push_back(face);
-			}
-			
-			if(type == "SOLID")
-			{
-				Topo_Solid *solid = new Topo_Solid();
-				for(int i=0; i < cidx; i++)
-				{
-					solid->Add((Topo_Face*)faces[ivars[i]]);
+					Topo_Edge *edge = new Topo_Edge();
+					for(int i=0; i < cidx; i++)
+					{
+						edge->Add((Topo_Wire*)wires[ivars[i]]);
+					}		
+					edges.push_back(edge);
 				}
-				solids.push_back(solid);
+			
+				if(type == "FACE")
+				{
+					//TODO: should be able to allocate different types
+					Topo_Face *face = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(vars[0],vars[1],vars[2])));
+					for(int i=3; i < cidx; i++)
+					{
+						face->Add((Topo_Edge*)edges[ivars[i]]);	
+					}	
+					faces.push_back(face);
+				}
+			
+				if(type == "SOLID")
+				{
+					Topo_Solid *solid = new Topo_Solid();
+					for(int i=0; i < cidx; i++)
+					{
+						solid->Add((Topo_Face*)faces[ivars[i]]);
+					}
+					solids.push_back(solid);
+				}
 			}
 		}
 		file.close();	

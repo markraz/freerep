@@ -122,7 +122,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     Topo_Line *l5 = new Topo_Line(pt6,pt7);
     Topo_Line *l6 = new Topo_Line(pt7,pt5);
 
-
+/*
     Topo_Edge *e1 = new Topo_Edge();
     e1->Add(l1);
     e1->Add(l2);
@@ -134,7 +134,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     e2->Add(l4);
     e2->Add(l5);
     e2->Add(l6);
-
+*/
 /*
     glBegin(GL_LINE_STRIP);
     e1->GetVertices(.01,vCall);
@@ -144,12 +144,12 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     e2->GetVertices(.01,vCall);
     glEnd(); */
 
-
+/*
     Topo_Face *face = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(0,0,-1)));
     face->Add(e1);
-    face->Add(e2);
+    face->Add(e2);*/
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glEnable(GL_AUTO_NORMAL);
 
     glBegin(GL_TRIANGLES);
@@ -179,7 +179,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     	ICanTriangulate *obj = dynamic_cast<ICanTriangulate*>(shapes[i]);
     	if(obj)
     	{
-    		obj->Triangulate(.001,vCall);	
+    		obj->Triangulate(.01,vCall);	
     	}
     }
     glEnd();

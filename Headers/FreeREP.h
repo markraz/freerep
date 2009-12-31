@@ -14,8 +14,8 @@ class FreeREP
 public:
     static void Init(){}
 
-    static const double CONFUSION = 10e-9;
-    static const double CONFUSION2 = 10e-9 * 10e-9;
+    static const double CONFUSION = 10e-5;
+    static const double CONFUSION2 = 10e-5 * 10e-5;
 };
 
 #endif

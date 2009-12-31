@@ -42,15 +42,13 @@ Geom_Vec3 Topo_Arc::GetEnd() const
 Geom_Vec3 Topo_Arc::GetPntAtU(double u) const
 {
     double da = m_end - m_start;
-    if(da<0)da += 2 * M_PI;
+    //if(da<0)da += 2 * M_PI;
     double ang = m_start + da * u;
 
 	//TODO: add vector rotation stuff to vec3d
-    return Geom_Vec3(m_A.Location().m_x + m_radius * sin(ang) * m_A.XDir().Dot(Geom_Vec3(1,0,0)) +
-                                         m_radius * cos(ang) * m_A.XDir().Dot(Geom_Vec3(0,1,0)),
-                    m_A.Location().m_y + m_radius * cos(ang) * m_A.YDir().Dot(Geom_Vec3(0,1,0)) +
-                    m_A.Location().m_y + m_radius * sin(ang) * m_A.YDir().Dot(Geom_Vec3(1,0,0)),
-                    m_A.Location().m_z);
+    Geom_Vec3 pnt = m_A.Location() + m_A.XDir() * (m_radius * cos(ang)) +  m_A.YDir() * (m_radius * sin(ang));
+                   
+    return pnt;
 }
 
 void* Topo_Arc::MakeTranslatedCopy(Geom_Vec3 dir) const
