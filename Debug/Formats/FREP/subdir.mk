@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../Formats/FREP/FREP.cpp 
+../Formats/FREP/Format_FREP.cpp 
 
 CPP_DEPS += \
-./Formats/FREP/FREP.d 
+./Formats/FREP/Format_FREP.d 
 
 OBJS += \
-./Formats/FREP/FREP.o 
+./Formats/FREP/Format_FREP.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

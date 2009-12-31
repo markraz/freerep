@@ -1,0 +1,7 @@
+#these are a couple of simple faces
+#1 triangle
+LINE(0)0,0,0,0,1,0
+LINE(1)0,1,0,1,1,0
+LINE(2)1,1,0,0,0,0
+EDGE(0)0,1,2
+FACE(0)0

@@ -33,6 +33,7 @@
 #include "BREP_Algo_Extrude.h"
 #include "FreeREP.h"
 #include "Util_Test.h"
+#include "Format_FREP.h"
 
 #define ALPHA 0.5
 
@@ -154,23 +155,23 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
  //   face->Triangulate(.01,vCall);
     glEnd();
     
-    //glFrontFace(GL_CCW);
-    
     Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Vec3(0,0,0),.25);
     glBegin(GL_TRIANGLES);
-    sphere->Triangulate(.01,vCall);
+    //sphere->Triangulate(.01,vCall);
     glEnd();
     
     Topo_Face_Toroidal *toroid = new Topo_Face_Toroidal(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),.5,.125);
     glBegin(GL_TRIANGLES);
-    toroid->Triangulate(.01,vCall);
+    //toroid->Triangulate(.01,vCall);
     glEnd();
 
     Topo_Solid *solid = BrepAlgoExtrude(face,Geom_Vec3(0,0,.5));
 
     glBegin(GL_TRIANGLES);
-    solid->Triangulate(.001,vCall);
+    //solid->Triangulate(.001,vCall);
     glEnd();
+    
+    std::vector<Topo_Shape*> shapes = ReadFREP("Tests/SimpleFaces.FREP");
 
 /*    Topo_Face *tface = solid->GetFirstFace();
     while(tface)
