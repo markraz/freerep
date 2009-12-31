@@ -14,6 +14,7 @@
 #include "Topo_Line.h"
 #include "Topo_Edge.h"
 #include "Topo_Face_Planar.h"
+#include "Topo_Face_Spheric.h"
 #include "Topo_Solid.h"
 
 #include <vector>
@@ -98,8 +99,19 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 				if(type == "FACE")
 				{
 					//TODO: should be able to allocate different types
-					Topo_Face *face = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(vars[0],vars[1],vars[2])));
-					for(int i=3; i < cidx; i++)
+					Topo_Face *face = 0;
+					switch(ivars[0])
+					{
+						case 0:
+							face = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(vars[1],vars[2],vars[3])));
+							break;
+						case 1:
+							face = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(vars[1],vars[2],vars[3])));
+							break;
+						default:
+							break;
+					}
+					for(int i=4; i < cidx; i++)
 					{
 						face->Add((Topo_Edge*)edges[ivars[i]]);	
 					}	

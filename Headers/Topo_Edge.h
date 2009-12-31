@@ -26,7 +26,7 @@ public:
 
 class Topo_Face;
 
-class Topo_Edge: public Topo_Shape, public ICanCopyWithTranslation, ICanAssociate
+class Topo_Edge: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate
 {
 	std::list<Topo_Face*> m_parents;
 	std::list<Topo_Face*>::iterator m_parents_it;

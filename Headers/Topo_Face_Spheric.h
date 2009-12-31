@@ -20,6 +20,7 @@ class Topo_Face_Spheric: public Topo_Face
 public:
 	Topo_Face_Spheric();
     Topo_Face_Spheric(const ICanAssociate *);
+    Topo_Face_Spheric(Geom_Plane plane);
     Topo_Face_Spheric(Geom_Vec3 pnt, double d);
 
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;

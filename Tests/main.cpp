@@ -38,6 +38,11 @@
 
 #define ALPHA 0.5
 
+void nvCall(const Geom_Vec3 &pt)
+{
+    glVertex3d(pt.m_x,pt.m_y,pt.m_z);
+}
+
 void vCall(const Geom_Vec3 &pt,const Geom_Vec3 &n)
 {
 	Geom_Vec3 norm = n * -1;
@@ -149,7 +154,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     face->Add(e1);
     face->Add(e2);*/
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glEnable(GL_AUTO_NORMAL);
 
     glBegin(GL_TRIANGLES);
@@ -172,17 +177,28 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     //solid->Triangulate(.001,vCall);
     glEnd();
     
-    glBegin(GL_TRIANGLES);
     std::vector<Topo_Shape*> shapes = ReadFREP("Tests/SimpleFaces.FREP");
     for(int i=0; i < shapes.size(); i++)
     {
     	ICanTriangulate *obj = dynamic_cast<ICanTriangulate*>(shapes[i]);
     	if(obj)
     	{
-    		obj->Triangulate(.01,vCall);	
+    		glBegin(GL_TRIANGLES);
+    		obj->Triangulate(.01,vCall);
+    		glEnd();	
+    	}
+    	else
+    	{
+    		Topo_Edge *edge = dynamic_cast<Topo_Edge*>(shapes[i]);
+    		if(edge)
+    		{
+    			glBegin(GL_LINE_STRIP);
+    			edge->GetVertices(.01,nvCall);
+    			glEnd();	
+    		}	
     	}
     }
-    glEnd();
+    
 /*    Topo_Face *tface = solid->GetFirstFace();
     while(tface)
     {

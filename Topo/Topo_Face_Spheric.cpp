@@ -37,6 +37,13 @@ Topo_Face_Spheric::Topo_Face_Spheric(const ICanAssociate *associate):Topo_Face(a
 	
 }
 
+Topo_Face_Spheric::Topo_Face_Spheric(Geom_Plane plane)
+{
+	m_plane = plane;
+	//TODO: get the radius from somewhere
+	m_radius = 1;	
+}
+
 void Topo_Face_Spheric::ProjectPoint(Geom_Vec3 &pnt, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	pRet(pnt.Normalized() * m_radius + m_C,pnt.Normalized());
