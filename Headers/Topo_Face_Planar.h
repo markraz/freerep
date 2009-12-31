@@ -10,7 +10,7 @@
 class Topo_Face_Planar: public Topo_Face
 {
 public:
-	Topo_Face_Planar();
+	Topo_Face_Planar(Geom_Plane plane);
     Topo_Face_Planar(const ICanAssociate *);
 
 //Overrides from Topo_Face

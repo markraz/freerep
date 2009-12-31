@@ -206,6 +206,25 @@ void Topo_Edge::GetNextWire(Topo_Wire **ppwire, EnumWireOrder *porder)
         *ppwire = 0;
 }
 
+Topo_Face* Topo_Edge::GetFirstParent()
+{
+	m_parents_it = m_parents.begin();
+	return GetNextParent();
+}
+
+Topo_Face* Topo_Edge::GetNextParent()
+{	
+	if(m_parents_it != m_parents.end())
+		return *m_parents_it++;
+	return 0;
+}
+
+void Topo_Edge::AddParent(Topo_Face* parent)
+{
+	m_parents.push_back(parent);	
+}
+
+/*
 Geom_Plane Topo_Edge::GetPlane()
 {
     Geom_Vec3 pnts[3];
@@ -234,4 +253,4 @@ Geom_Plane Topo_Edge::GetPlane()
     }
     
     //TODO: throw some kind of exception or make null or default plane
-}
+}*/

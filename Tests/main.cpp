@@ -144,7 +144,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     glEnd(); */
 
 
-    Topo_Face *face = new Topo_Face_Planar();
+    Topo_Face *face = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(0,0,-1)));
     face->Add(e1);
     face->Add(e2);
 
@@ -152,23 +152,23 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     //glEnable(GL_AUTO_NORMAL);
 
     glBegin(GL_TRIANGLES);
- //   face->Triangulate(.01,vCall);
+    face->Triangulate(.01,vCall);
     glEnd();
     
     Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Vec3(0,0,0),.25);
     glBegin(GL_TRIANGLES);
-    //sphere->Triangulate(.01,vCall);
+    sphere->Triangulate(.01,vCall);
     glEnd();
     
     Topo_Face_Toroidal *toroid = new Topo_Face_Toroidal(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),.5,.125);
     glBegin(GL_TRIANGLES);
-    //toroid->Triangulate(.01,vCall);
+    toroid->Triangulate(.01,vCall);
     glEnd();
 
     Topo_Solid *solid = BrepAlgoExtrude(face,Geom_Vec3(0,0,.5));
 
     glBegin(GL_TRIANGLES);
-    //solid->Triangulate(.001,vCall);
+    solid->Triangulate(.001,vCall);
     glEnd();
     
     std::vector<Topo_Shape*> shapes = ReadFREP("Tests/SimpleFaces.FREP");

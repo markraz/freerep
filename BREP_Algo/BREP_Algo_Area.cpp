@@ -18,7 +18,7 @@ double BrepAlgoArea(Topo_Edge *edge)
 	EnumWireOrder firstorder;
 	Topo_Wire *first=0;
 	
-	Geom_Plane plane = edge->GetPlane();
+	Geom_Plane plane = edge->GetFirstParent()->GetPlane();
 	edge->GetFirstWire(&wire,&order);
 	while(edge)
 	{

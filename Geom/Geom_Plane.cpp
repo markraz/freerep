@@ -5,6 +5,12 @@
 #include "Geom_Plane.h"
 #include "FreeREP.h"
 
+Geom_Plane::Geom_Plane()
+{
+	m_pnt = Geom_Vec3(0,0,0);
+	m_norm = Geom_Vec3(0,0,1);
+}
+
 Geom_Plane::Geom_Plane(Geom_Vec3 pnt1, Geom_Vec3 pnt2, Geom_Vec3 pnt3)
 {
     Geom_Vec3 dir1 = pnt2 - pnt1;

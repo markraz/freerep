@@ -97,7 +97,8 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 			if(type == "FACE")
 			{
 				//TODO: should be able to allocate different types
-				Topo_Face *face = new Topo_Face_Planar();
+				//TODO: read the plane from the file
+				Topo_Face *face = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1)));
 				for(int i=0; i < cidx; i++)
 				{
 					face->Add((Topo_Edge*)edges[ivars[i]]);	

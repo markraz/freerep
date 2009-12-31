@@ -9,14 +9,14 @@
 
 #include <vector>
 
-Topo_Face_Planar::Topo_Face_Planar()
+Topo_Face_Planar::Topo_Face_Planar(Geom_Plane plane)
 {
-	
+	m_plane = plane;	
 }
 
 Topo_Face_Planar::Topo_Face_Planar(const ICanAssociate *associate):Topo_Face(associate)
 {
-	
+	m_plane = ((Topo_Face_Planar*)associate)->m_plane;
 }
 
 std::vector<std::vector<Geom_Vec3> > topo_face_vertices;
@@ -29,7 +29,7 @@ void topo_face_vertex_absorber(const Geom_Vec3 &pnt)
 
 void Topo_Face_Planar::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm))
 {
-    Geom_Plane plane = (*m_edges.begin())->GetPlane();
+    Geom_Plane plane = GetPlane();
 
     topo_face_vertices.clear();
     topo_face_vertices.resize(m_edges.size());
