@@ -27,6 +27,7 @@ Util \
 Topo \
 Tests \
 Tess/Planar \
+Subdivision \
 Geom/Tests \
 Geom \
 Formats/FREP \
