@@ -24,7 +24,7 @@ public:
     Topo_Face_Spheric(Geom_Vec3 pnt, double d);
 
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
-    
+    void ProjectPoint(const Geom_Vec3 &pnt, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
     void Vertex_Absorber(Geom_Vec3 pnt);
     
  //Override from ICanCopyAndTranslate
@@ -33,7 +33,6 @@ public:
 private:
 	void SplitFace(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, int ndivisions, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
 	void OutputTri(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
-	void ProjectPoint(Geom_Vec3 &pnt, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
 	
 	void MapEdges(double dDeviation); 
 };

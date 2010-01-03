@@ -45,7 +45,7 @@ void nvCall(const Geom_Vec3 &pt)
 
 void vCall(const Geom_Vec3 &pt,const Geom_Vec3 &n)
 {
-	Geom_Vec3 norm = n;// * -1;
+	Geom_Vec3 norm = n * -1;
 	
 	glNormal3d(norm.m_x,norm.m_y,norm.m_z);
     glVertex3d(pt.m_x,pt.m_y,pt.m_z);

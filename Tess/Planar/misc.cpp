@@ -46,7 +46,9 @@ int generate_random_ordering(
 #ifdef _MSC_VER
 	m = rand() % ( n + 1 - i ) + 1;
 #else
-	m = lrand48() % ( n + 1 - i ) + 1;
+	m = 100 % ( n + 1 - i ) + 1; //used to be lrand48 instead of 100
+	//makes the tesselations random, and over time seems to just find one that
+	// takes a long time. 	
 #endif
       permute[i] = p[m];
       if (m != 1)

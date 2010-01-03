@@ -4,13 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../Subdivision/MaximumEdgeLength.cpp 
+../Subdivision/MaximumEdgeLength.cpp \
+../Subdivision/Sub_MaxEdgeLength.cpp 
 
 CPP_DEPS += \
-./Subdivision/MaximumEdgeLength.d 
+./Subdivision/MaximumEdgeLength.d \
+./Subdivision/Sub_MaxEdgeLength.d 
 
 OBJS += \
-./Subdivision/MaximumEdgeLength.o 
+./Subdivision/MaximumEdgeLength.o \
+./Subdivision/Sub_MaxEdgeLength.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

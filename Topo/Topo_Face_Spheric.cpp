@@ -4,6 +4,7 @@
 
 #include "Topo_Face_Spheric.h"
 #include "Geom_Vec3.h"
+#include "Sub_MaxEdgeLength.h"
 
 #define tao 1.61803399
 
@@ -41,12 +42,14 @@ Topo_Face_Spheric::Topo_Face_Spheric(Geom_Plane plane)
 {
 	m_plane = plane;
 	//TODO: get the radius from somewhere
-	m_radius = 1;	
+	m_radius = 1;
+	m_C = Geom_Vec3(0,0,0);	
 }
 
-void Topo_Face_Spheric::ProjectPoint(Geom_Vec3 &pnt, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
+void Topo_Face_Spheric::ProjectPoint(const Geom_Vec3 &pnt, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
-	pRet(pnt.Normalized() * m_radius + m_C,pnt.Normalized());
+	Geom_Vec3 norm = (pnt - m_C).Normalized();
+	pRet((norm * m_radius) + m_C, norm);
 }
 
 void Topo_Face_Spheric::OutputTri(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
@@ -89,9 +92,20 @@ void Topo_Face_Spheric::SplitFace(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &p
 	SplitFace(pnt1,npnt2,npnt3, ndivisions - 1, pRet);
 }
 
+const Topo_Face_Spheric *sphere;
+void (*pTopoFaceSphericRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm);
+
+void TopoFaceSphericVertexAbsorber(const Geom_Vec3&pnt,const Geom_Vec3&argh)
+{
+	sphere->ProjectPoint(pnt,pTopoFaceSphericRet);
+}
+
 void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
-	Topo_Face::Triangulate(dDeviation,pRet);
+	sphere = this;
+	pTopoFaceSphericRet = pRet;
+	SetupMaxEdgeLength(1,TopoFaceSphericVertexAbsorber);
+	Topo_Face::Triangulate(dDeviation,MaxEdgeLengthVertexAbsorber);
 }
 
 void *Topo_Face_Spheric::MakeTranslatedCopy(Geom_Vec3 dir) const
