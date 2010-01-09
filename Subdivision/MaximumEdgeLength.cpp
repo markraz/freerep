@@ -321,4 +321,4 @@ void MaximumEdgeLength(double tol, const std::vector<Geom_Vec3> &pnts, const std
 				possibles.erase(it);
 		}	
 	}
-}
+ }

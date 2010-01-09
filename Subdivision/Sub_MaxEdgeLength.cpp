@@ -12,7 +12,22 @@ int nMaxEdgeLengthV=0;
 void CheckTriangle(Geom_Vec3 verts[3])
 {
 	Geom_Vec3 mvec[3];
-	if((verts[1] - verts[0]).Norm() > dMaxEdgeLength)
+	double norm0 = (verts[1] - verts[0]).Norm();
+	double norm1 = (verts[2] - verts[1]).Norm();
+	double norm2 = (verts[0] - verts[2]).Norm();
+	bool doedge0 = false;
+	bool doedge1 = false;
+	bool doedge2 = false;
+	
+	if(norm0 > dMaxEdgeLength && norm0 >= norm1 && norm0 >= norm2)
+		doedge0=true;
+	else if(norm1 > dMaxEdgeLength && norm1 >= norm0 && norm1 >= norm2)
+		doedge1=true;	
+	else if(norm2 > dMaxEdgeLength && norm2 >= norm0 && norm2 >= norm1)
+		doedge2=true;
+	
+		
+	if(doedge0)
 	{
 		Geom_Vec3 mpt = ((verts[1] - verts[0]) / 2) + verts[0];
 		mvec[0] = verts[2];
@@ -24,7 +39,7 @@ void CheckTriangle(Geom_Vec3 verts[3])
 		mvec[2] = verts[1];
 		CheckTriangle(mvec);
 	}
-	else if((verts[2] - verts[1]).Norm() > dMaxEdgeLength)
+	else if(doedge1)
 	{
 		Geom_Vec3 mpt = ((verts[2] - verts[1]) / 2) + verts[1];
 		mvec[0] = verts[0];
@@ -36,7 +51,7 @@ void CheckTriangle(Geom_Vec3 verts[3])
 		mvec[2] = verts[2];
 		CheckTriangle(mvec);
 	}
-	else if((verts[0] - verts[2]).Norm() > dMaxEdgeLength)
+	else if(doedge2)
 	{
 		Geom_Vec3 mpt = ((verts[0] - verts[2]) / 2) + verts[2];
 		mvec[0] = verts[1];

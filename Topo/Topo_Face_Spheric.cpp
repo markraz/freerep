@@ -104,7 +104,7 @@ void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_V
 {
 	sphere = this;
 	pTopoFaceSphericRet = pRet;
-	SetupMaxEdgeLength(1,TopoFaceSphericVertexAbsorber);
+	SetupMaxEdgeLength(.15,TopoFaceSphericVertexAbsorber);
 	Topo_Face::Triangulate(dDeviation,MaxEdgeLengthVertexAbsorber);
 }
 
