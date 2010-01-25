@@ -31,6 +31,7 @@
 #include "Topo_Face_Toroidal.h"
 #include "Topo_Solid.h"
 #include "BREP_Algo_Extrude.h"
+#include "BREP_Algo_Make_Sphere.h"
 #include "FreeREP.h"
 #include "Util_Test.h"
 #include "Format_FREP.h"
@@ -177,7 +178,8 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     //solid->Triangulate(.001,vCall);
     glEnd();
     
-    std::vector<Topo_Shape*> shapes = ReadFREP("Tests/SimpleFaces.FREP");
+    std::vector<Topo_Shape*> shapes;// = ReadFREP("Tests/SimpleFaces.FREP");
+    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.0));
     for(int i=0; i < shapes.size(); i++)
     {
     	ICanTriangulate *obj = dynamic_cast<ICanTriangulate*>(shapes[i]);
