@@ -6,6 +6,8 @@
 #include "Geom_Vec3.h"
 #include "Sub_MaxEdgeLength.h"
 
+#include <math.h>
+
 #define tao 1.61803399
 
 Geom_Vec3 icosahedron_verts[] = {
@@ -94,18 +96,53 @@ void Topo_Face_Spheric::SplitFace(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &p
 
 const Topo_Face_Spheric *sphere;
 void (*pTopoFaceSphericRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm);
+Geom_Plane plane;
 
 void TopoFaceSphericVertexAbsorber(const Geom_Vec3&pnt,const Geom_Vec3&argh)
 {
-	sphere->ProjectPoint(pnt,pTopoFaceSphericRet);
+	Geom_Vec3 p = plane.UnmapPoint(pnt);
+	sphere->ProjectPoint(p,pTopoFaceSphericRet);
+}
+
+double TopoFaceSphericMetric(const Geom_Vec3 &a, const Geom_Vec3 &b)
+{
+	//TODO: get radius from the sphere
+	double radius=1;
+	
+	Geom_Vec3 start = a;
+	Geom_Vec3 end = b;
+	start.m_z = sqrt(radius * radius - start.m_x * start.m_x - start.m_y * start.m_y);
+	end.m_z = sqrt(radius * radius - end.m_x * end.m_x - end.m_y * end.m_y);
+	
+	if(start.m_z != start.m_z)
+	{
+		int x=0;
+		x++;	
+	}
+	
+	double ang = fabs(acos(start * end));
+	
+	return ang * radius;
+}
+
+Geom_Vec3 TopoFaceSphericSubdivide(const Geom_Vec3 &a, const Geom_Vec3 &b)
+{
+	return (a+b).Normalized();
+}
+
+void TopoFaceSphericVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
+{
+	Geom_Vec3 p = plane.MapPoint(pnt);
+	MaxEdgeLengthVertexAbsorber(p,argh);
 }
 
 void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	sphere = this;
+	plane = GetPlane();
 	pTopoFaceSphericRet = pRet;
-	SetupMaxEdgeLength(.15,TopoFaceSphericVertexAbsorber);
-	Topo_Face::Triangulate(dDeviation,MaxEdgeLengthVertexAbsorber);
+	SetupMaxEdgeLength(.15,TopoFaceSphericVertexAbsorber,TopoFaceSphericMetric,TopoFaceSphericSubdivide);
+	Topo_Face::Triangulate(dDeviation,TopoFaceSphericVertexMapper);
 }
 
 void *Topo_Face_Spheric::MakeTranslatedCopy(Geom_Vec3 dir) const
@@ -116,34 +153,3 @@ void *Topo_Face_Spheric::MakeTranslatedCopy(Geom_Vec3 dir) const
     return nface;
 }
 
-void Topo_Face_Spheric::Vertex_Absorber(Geom_Vec3 pnt)
-{
-	//TODO: add -= operator to Geom_Vec3
-	pnt = pnt - m_C;
-	
-	//TODO: pnt it probably not of magnitude m_radius, that
-	//is really what we are trying to fudge here. We really
-	//need to save its mangitude to make sure our vertices work out
-	pnt.Normalize();
-	
-	//We use a stereographic projection now
-	m_edge_vertices.push_back(Geom_Vec3(pnt.m_x / (1 - pnt.m_z),pnt.m_y / (1 - pnt.m_z),0));
-}
-
-Topo_Face_Spheric *csphere;
-
-void Topo_Face_Sphere_Vertex_Absorber(const Geom_Vec3 &pnt)
-{
-	csphere->Vertex_Absorber(pnt);
-}
-
-void Topo_Face_Spheric::MapEdges(double dDeviation)
-{
-	csphere = this;
-	Topo_Edge *edge = GetFirstEdge();
-	while(edge)
-	{
-		edge->GetVertices(dDeviation, Topo_Face_Sphere_Vertex_Absorber);
-		edge = GetNextEdge();	
-	}
-}
