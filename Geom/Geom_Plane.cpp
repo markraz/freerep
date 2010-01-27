@@ -43,9 +43,22 @@ Geom_Vec3 Geom_Plane::MapPoint(Geom_Vec3 pnt)
     xdir = xdir * -1;
 
     //TODO: do this with matrix multiplication
-    return Geom_Vec3(pnt * xdir,
+    Geom_Vec3 ret(pnt * xdir,
                     pnt * ydir,
-                    pnt * xdir);
+                    pnt * m_norm);
+    if(ret.m_x * ret.m_x + ret.m_y * ret.m_y > 1)
+    {
+    	int x=0;
+    	x++;	
+    }     
+    return ret;
+}
+
+Geom_Vec3 Geom_Plane::UnmapPoint(Geom_Vec3 pnt)
+{
+	//TODO: need a way to invert the transformation of mappoint
+	//this doesn't do it
+	return pnt;
 }
 
 Geom_Vec3 Geom_Plane::GetNorm()
