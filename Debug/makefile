@@ -16,6 +16,7 @@ RM := rm -rf
 -include Subdivision/subdir.mk
 -include Geom/Tests/subdir.mk
 -include Geom/subdir.mk
+-include Formats/IGES/subdir.mk
 -include Formats/FREP/subdir.mk
 -include BREP_Algo/subdir.mk
 -include objects.mk

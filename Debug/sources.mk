@@ -30,6 +30,7 @@ Tess/Planar \
 Subdivision \
 Geom/Tests \
 Geom \
+Formats/IGES \
 Formats/FREP \
 BREP_Algo \
 
