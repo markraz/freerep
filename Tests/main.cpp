@@ -35,6 +35,7 @@
 #include "FreeREP.h"
 #include "Util_Test.h"
 #include "Format_FREP.h"
+#include "Format_IGES.h"
 #include "ICanTriangulate.h"
 
 #define ALPHA 0.5
@@ -179,6 +180,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     glEnd();
     
     std::vector<Topo_Shape*> shapes;// = ReadFREP("Tests/SimpleFaces.FREP");
+//    ReadIGES("Tests/Sphere.iges");
     shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.0));
     for(int i=0; i < shapes.size(); i++)
     {
