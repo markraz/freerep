@@ -7,6 +7,8 @@
 
 #include "Geom_Vec3.h"
 
+bool Geom_Plane_Test();
+
 class Geom_Plane
 {
     Geom_Vec3 m_pnt;

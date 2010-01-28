@@ -114,15 +114,7 @@ double TopoFaceSphericMetric(const Geom_Vec3 &a, const Geom_Vec3 &b)
 	start.m_z = sqrt(radius * radius - start.m_x * start.m_x - start.m_y * start.m_y);
 	end.m_z = sqrt(radius * radius - end.m_x * end.m_x - end.m_y * end.m_y);
 	
-	if(start.m_z != start.m_z)
-	{
-		int x=0;
-		x++;	
-	}
-	
-	double ang = fabs(acos(start * end));
-	
-	return ang * radius;
+	return (start - end).Norm();
 }
 
 Geom_Vec3 TopoFaceSphericSubdivide(const Geom_Vec3 &a, const Geom_Vec3 &b)
@@ -138,10 +130,13 @@ void TopoFaceSphericVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
 
 void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
+	double n = M_PI / acos((m_radius - dDeviation) / m_radius);
+	double s = 2 * dDeviation / tan(M_PI * (n-2)/ (2 * n));
+	
 	sphere = this;
 	plane = GetPlane();
 	pTopoFaceSphericRet = pRet;
-	SetupMaxEdgeLength(.15,TopoFaceSphericVertexAbsorber,TopoFaceSphericMetric,TopoFaceSphericSubdivide);
+	SetupMaxEdgeLength(s,TopoFaceSphericVertexAbsorber,TopoFaceSphericMetric,TopoFaceSphericSubdivide);
 	Topo_Face::Triangulate(dDeviation,TopoFaceSphericVertexMapper);
 }
 

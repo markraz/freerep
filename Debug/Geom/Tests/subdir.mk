@@ -4,14 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../Geom/Tests/Geom_Plane_Test.cpp \
 ../Geom/Tests/Geom_Test.cpp \
 ../Geom/Tests/Geom_Vec3_Test.cpp 
 
 CPP_DEPS += \
+./Geom/Tests/Geom_Plane_Test.d \
 ./Geom/Tests/Geom_Test.d \
 ./Geom/Tests/Geom_Vec3_Test.d 
 
 OBJS += \
+./Geom/Tests/Geom_Plane_Test.o \
 ./Geom/Tests/Geom_Test.o \
 ./Geom/Tests/Geom_Vec3_Test.o 
 

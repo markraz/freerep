@@ -3,9 +3,11 @@
 //Geom_Test.cpp - Author Jon Pry 
 
 #include "Geom_Vec3.h"
+#include "Geom_Plane.h"
 #include "Util_Test.h"
 
 bool Geom_Test()
 {
-	return Util_Test_Run(Geom_Vec3_Test,"Geom_Vec3");
+	return Util_Test_Run(Geom_Vec3_Test,"Geom_Vec3") &&
+	 	Util_Test_Run(Geom_Plane_Test,"Geom_Plane");
 }

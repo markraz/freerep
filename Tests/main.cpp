@@ -186,7 +186,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     	if(obj)
     	{
     		glBegin(GL_TRIANGLES);
-    		obj->Triangulate(.01,vCall);
+    		obj->Triangulate(.15,vCall);
     		glEnd();	
     	}
     	else

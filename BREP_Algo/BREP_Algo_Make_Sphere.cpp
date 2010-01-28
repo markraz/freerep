@@ -42,7 +42,8 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge1->Add(a5);
 	edge1->Add(a9);
 	
-	Topo_Face *face1 = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(0.577350269,-0.577350269,-0.577350269)));
+	Geom_Vec3 vec1(0.577350269,-0.577350269,-0.577350269);
+	Topo_Face *face1 = new Topo_Face_Spheric(Geom_Plane(vec1,vec1));
 	face1->Add(edge1);
 
 /*
@@ -79,7 +80,8 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge2->Add(a8);
 	edge2->Add(a9);
 	
-	Topo_Face *face2 = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(-0.577350269,-0.577350269,-0.577350269)));
+	Geom_Vec3 vec2(-0.577350269,-0.577350269,-0.577350269);
+	Topo_Face *face2 = new Topo_Face_Spheric(Geom_Plane(vec2,vec2));
 	face2->Add(edge2);
 	
 	Topo_Edge *edge3 = new Topo_Edge();
@@ -87,7 +89,8 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge3->Add(a8);
 	edge3->Add(a12);
 	
-	Topo_Face *face3 = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(-0.577350269,0.577350269,-0.577350269)));
+	Geom_Vec3 vec3(-0.577350269,0.577350269,-0.577350269);
+	Topo_Face *face3 = new Topo_Face_Spheric(Geom_Plane(vec3,vec3));
 	face3->Add(edge3);
 	
 	Topo_Edge *edge4 = new Topo_Edge();
@@ -95,7 +98,8 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge4->Add(a5);
 	edge4->Add(a12);
 	
-	Topo_Face *face4 = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(0.577350269,0.577350269,-0.577350269)));
+	Geom_Vec3 vec4(0.577350269,0.577350269,-0.577350269);
+	Topo_Face *face4 = new Topo_Face_Spheric(Geom_Plane(vec4,vec4));
 	face4->Add(edge4);
 
 	Topo_Edge *edge5 = new Topo_Edge();
@@ -103,7 +107,8 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge5->Add(a1);
 	edge5->Add(a10);
 	
-	Topo_Face *face5 = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(0.577350269,-0.577350269,0.577350269)));
+	Geom_Vec3 vec5(0.577350269,-0.577350269,0.577350269);
+	Topo_Face *face5 = new Topo_Face_Spheric(Geom_Plane(vec5,vec5));
 	face5->Add(edge5);
 	
 	Topo_Edge *edge6 = new Topo_Edge();
@@ -111,7 +116,8 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge6->Add(a2);
 	edge6->Add(a10);
 	
-	Topo_Face *face6 = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(-0.577350269,-0.577350269,0.577350269)));
+	Geom_Vec3 vec6(-0.577350269,-0.577350269,0.577350269);
+	Topo_Face *face6 = new Topo_Face_Spheric(Geom_Plane(vec6,vec6));
 	face6->Add(edge6);
 	
 	Topo_Edge *edge7 = new Topo_Edge();
@@ -119,7 +125,8 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge7->Add(a7);
 	edge7->Add(a3);
 	
-	Topo_Face *face7 = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(-0.577350269,0.577350269,0.577350269)));
+	Geom_Vec3 vec7(-0.577350269,0.577350269,0.577350269);
+	Topo_Face *face7 = new Topo_Face_Spheric(Geom_Plane(vec7,vec7));
 	face7->Add(edge7);
 	
 	Topo_Edge *edge8 = new Topo_Edge();
@@ -127,7 +134,8 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge8->Add(a4);
 	edge8->Add(a6);
 	
-	Topo_Face *face8 = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(0.577350269,0.577350269,0.577350269)));
+	Geom_Vec3 vec8(0.577350269,0.577350269,0.577350269);
+	Topo_Face *face8 = new Topo_Face_Spheric(Geom_Plane(vec8,vec8));
 	face8->Add(edge8);
 
 	Topo_Solid* solid = new Topo_Solid();
