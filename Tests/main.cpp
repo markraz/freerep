@@ -45,6 +45,11 @@ void nvCall(const Geom_Vec3 &pt)
     glVertex3d(pt.m_x,pt.m_y,pt.m_z);
 }
 
+void dvCall(const Geom_Vec3 &pt, double d)
+{
+    glVertex3d(pt.m_x,pt.m_y,pt.m_z);
+}
+
 void vCall(const Geom_Vec3 &pt,const Geom_Vec3 &n)
 {
 	Geom_Vec3 norm = n * -1;
@@ -156,7 +161,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     face->Add(e1);
     face->Add(e2);*/
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glEnable(GL_AUTO_NORMAL);
 
     glBegin(GL_TRIANGLES);
@@ -177,11 +182,11 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
 
     glBegin(GL_TRIANGLES);
     //solid->Triangulate(.001,vCall);
-    glEnd();
+    glEnd(); 
     
-    std::vector<Topo_Shape*> shapes;// = ReadFREP("Tests/SimpleFaces.FREP");
-//    ReadIGES("Tests/Sphere.iges");
-    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.0));
+    std::vector<Topo_Shape*> shapes = ReadIGES("Tests/Polygon.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
+    
+    //shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.0));
     for(int i=0; i < shapes.size(); i++)
     {
     	ICanTriangulate *obj = dynamic_cast<ICanTriangulate*>(shapes[i]);
@@ -199,7 +204,16 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     			glBegin(GL_LINE_STRIP);
     			edge->GetVertices(.01,nvCall);
     			glEnd();	
+    		}
+    		
+    		Topo_Wire *wire = dynamic_cast<Topo_Wire*>(shapes[i]);
+    		if(wire)
+    		{
+    			glBegin(GL_LINE_STRIP);
+    			wire->GetVertices(.01,dvCall);
+    			glEnd();	
     		}	
+    			
     	}
     }
     
