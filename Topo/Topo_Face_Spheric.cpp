@@ -13,35 +13,21 @@ Topo_Face_Spheric::Topo_Face_Spheric()
 	
 }
 
-Topo_Face_Spheric::Topo_Face_Spheric(Geom_Vec3 c, double radius)
-{
-	m_C = c; m_radius = radius;	
-}
-
 Topo_Face_Spheric::Topo_Face_Spheric(const ICanAssociate *associate):Topo_Face(associate)
 {
 	
 }
 
-Topo_Face_Spheric::Topo_Face_Spheric(Geom_Plane plane)
+Topo_Face_Spheric::Topo_Face_Spheric(Geom_Plane plane, double r)
 {
 	m_plane = plane;
-	//TODO: get the radius from somewhere
-	m_radius = 1;
-	m_C = Geom_Vec3(0,0,0);	
+	m_radius = r;
 }
 
 void Topo_Face_Spheric::ProjectPoint(const Geom_Vec3 &pnt, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
-	Geom_Vec3 norm = (pnt - m_C).Normalized();
-	pRet((norm * m_radius) + m_C, norm);
-}
-
-void Topo_Face_Spheric::OutputTri(Geom_Vec3 &pnt1, Geom_Vec3 &pnt2, Geom_Vec3 &pnt3, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
-{
-	ProjectPoint(pnt1,pRet);
-	ProjectPoint(pnt2,pRet);
-	ProjectPoint(pnt3,pRet);
+	Geom_Vec3 norm = (pnt - m_plane.GetLocation()).Normalized();
+	pRet((norm * m_radius) + m_plane.GetLocation(), norm);
 }
 
 const Topo_Face_Spheric *sphere;
@@ -54,11 +40,15 @@ void TopoFaceSphericVertexAbsorber(const Geom_Vec3&pnt,const Geom_Vec3&argh)
 	sphere->ProjectPoint(p,pTopoFaceSphericRet);
 }
 
+double Topo_Face_Spheric::GetRadius() const
+{
+	return m_radius;	
+}
+
 double TopoFaceSphericMetric(const Geom_Vec3 &a, const Geom_Vec3 &b)
 {
-	//TODO: get radius from the sphere
-	double radius=1;
-	
+	double radius=sphere->GetRadius();
+		
 	Geom_Vec3 start = a;
 	Geom_Vec3 end = b;
 	start.m_z = sqrt(radius * radius - start.m_x * start.m_x - start.m_y * start.m_y);
@@ -69,7 +59,8 @@ double TopoFaceSphericMetric(const Geom_Vec3 &a, const Geom_Vec3 &b)
 
 Geom_Vec3 TopoFaceSphericSubdivide(const Geom_Vec3 &a, const Geom_Vec3 &b)
 {
-	return (a+b).Normalized();
+	double radius=sphere->GetRadius();
+	return (a+b).Normalized() * radius;
 }
 
 void TopoFaceSphericVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
@@ -94,7 +85,7 @@ void *Topo_Face_Spheric::MakeTranslatedCopy(Geom_Vec3 dir) const
 {
     Topo_Face_Spheric *nface = new Topo_Face_Spheric(this);
 
-	nface->m_C = nface->m_C + dir;
+	nface->m_plane.SetLocation(nface->m_plane.GetLocation() + dir);  
     return nface;
 }
 

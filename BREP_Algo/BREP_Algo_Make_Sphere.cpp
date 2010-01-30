@@ -43,7 +43,7 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge1->Add(a9);
 	
 	Geom_Vec3 vec1(0.577350269,-0.577350269,-0.577350269);
-	Topo_Face *face1 = new Topo_Face_Spheric(Geom_Plane(vec1,vec1));
+	Topo_Face *face1 = new Topo_Face_Spheric(Geom_Plane(loc.Location(),vec1),r);
 	face1->Add(edge1);
 
 /*
@@ -81,7 +81,7 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge2->Add(a9);
 	
 	Geom_Vec3 vec2(-0.577350269,-0.577350269,-0.577350269);
-	Topo_Face *face2 = new Topo_Face_Spheric(Geom_Plane(vec2,vec2));
+	Topo_Face *face2 = new Topo_Face_Spheric(Geom_Plane(loc.Location(),vec2),r);
 	face2->Add(edge2);
 	
 	Topo_Edge *edge3 = new Topo_Edge();
@@ -90,7 +90,7 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge3->Add(a12);
 	
 	Geom_Vec3 vec3(-0.577350269,0.577350269,-0.577350269);
-	Topo_Face *face3 = new Topo_Face_Spheric(Geom_Plane(vec3,vec3));
+	Topo_Face *face3 = new Topo_Face_Spheric(Geom_Plane(loc.Location(),vec3),r);
 	face3->Add(edge3);
 	
 	Topo_Edge *edge4 = new Topo_Edge();
@@ -99,7 +99,7 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge4->Add(a12);
 	
 	Geom_Vec3 vec4(0.577350269,0.577350269,-0.577350269);
-	Topo_Face *face4 = new Topo_Face_Spheric(Geom_Plane(vec4,vec4));
+	Topo_Face *face4 = new Topo_Face_Spheric(Geom_Plane(loc.Location(),vec4),r);
 	face4->Add(edge4);
 
 	Topo_Edge *edge5 = new Topo_Edge();
@@ -108,7 +108,7 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge5->Add(a10);
 	
 	Geom_Vec3 vec5(0.577350269,-0.577350269,0.577350269);
-	Topo_Face *face5 = new Topo_Face_Spheric(Geom_Plane(vec5,vec5));
+	Topo_Face *face5 = new Topo_Face_Spheric(Geom_Plane(loc.Location(),vec5),r);
 	face5->Add(edge5);
 	
 	Topo_Edge *edge6 = new Topo_Edge();
@@ -117,7 +117,7 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge6->Add(a10);
 	
 	Geom_Vec3 vec6(-0.577350269,-0.577350269,0.577350269);
-	Topo_Face *face6 = new Topo_Face_Spheric(Geom_Plane(vec6,vec6));
+	Topo_Face *face6 = new Topo_Face_Spheric(Geom_Plane(loc.Location(),vec6),r);
 	face6->Add(edge6);
 	
 	Topo_Edge *edge7 = new Topo_Edge();
@@ -126,7 +126,7 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge7->Add(a3);
 	
 	Geom_Vec3 vec7(-0.577350269,0.577350269,0.577350269);
-	Topo_Face *face7 = new Topo_Face_Spheric(Geom_Plane(vec7,vec7));
+	Topo_Face *face7 = new Topo_Face_Spheric(Geom_Plane(loc.Location(),vec7),r);
 	face7->Add(edge7);
 	
 	Topo_Edge *edge8 = new Topo_Edge();
@@ -135,7 +135,7 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge8->Add(a6);
 	
 	Geom_Vec3 vec8(0.577350269,0.577350269,0.577350269);
-	Topo_Face *face8 = new Topo_Face_Spheric(Geom_Plane(vec8,vec8));
+	Topo_Face *face8 = new Topo_Face_Spheric(Geom_Plane(loc.Location(),vec8),r);
 	face8->Add(edge8);
 
 	Topo_Solid* solid = new Topo_Solid();

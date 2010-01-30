@@ -86,7 +86,17 @@ Geom_Vec3 Geom_Plane::UnmapPoint(Geom_Vec3 pnt)
     return ret;
  }
 
-Geom_Vec3 Geom_Plane::GetNorm()
+Geom_Vec3 Geom_Plane::GetNorm() const
 {
 	return m_norm;	
+}
+
+Geom_Vec3 Geom_Plane::GetLocation() const
+{
+	return m_pnt;	
+}
+
+void Geom_Plane::SetLocation(Geom_Vec3 pnt)
+{
+	m_pnt = pnt;	
 }

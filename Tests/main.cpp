@@ -161,14 +161,14 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     face->Add(e1);
     face->Add(e2);*/
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glEnable(GL_AUTO_NORMAL);
 
     glBegin(GL_TRIANGLES);
     //face->Triangulate(.01,vCall);
     glEnd();
     
-    Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Vec3(0,0,0),.25);
+    Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1)),1);
     glBegin(GL_TRIANGLES);
     //sphere->Triangulate(.01,vCall);
     glEnd();
@@ -184,9 +184,9 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     //solid->Triangulate(.001,vCall);
     glEnd(); 
     
-    std::vector<Topo_Shape*> shapes = ReadIGES("Tests/Polygon.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
+    std::vector<Topo_Shape*> shapes;// = ReadIGES("Tests/Polygon.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
     
-    //shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.0));
+    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),2));
     for(int i=0; i < shapes.size(); i++)
     {
     	ICanTriangulate *obj = dynamic_cast<ICanTriangulate*>(shapes[i]);
