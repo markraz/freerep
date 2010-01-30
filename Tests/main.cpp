@@ -186,7 +186,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     
     std::vector<Topo_Shape*> shapes;// = ReadIGES("Tests/Polygon.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
     
-    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),2));
+    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,1.5),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.5));
     for(int i=0; i < shapes.size(); i++)
     {
     	ICanTriangulate *obj = dynamic_cast<ICanTriangulate*>(shapes[i]);

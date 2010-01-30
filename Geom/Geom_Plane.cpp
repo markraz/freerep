@@ -31,6 +31,7 @@ Geom_Plane::Geom_Plane(Geom_Vec3 pnt, Geom_Vec3 norm)
 
 Geom_Vec3 Geom_Plane::MapPoint(Geom_Vec3 pnt)
 {
+	pnt = pnt - m_pnt;
     double dot = m_norm.Dot(Geom_Vec3(0,0,1));
     //TODO: get confusion from settings class
     double confusion = 10e-9;
@@ -83,7 +84,7 @@ Geom_Vec3 Geom_Plane::UnmapPoint(Geom_Vec3 pnt)
     	int x=0;
     	x++;	
     }     
-    return ret;
+    return ret + m_pnt;
  }
 
 Geom_Vec3 Geom_Plane::GetNorm() const
