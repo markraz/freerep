@@ -4,79 +4,104 @@
 
 #include "Topo_Face_Conic.h"
 #include "Geom_Vec3.h"
+#include "Sub_MaxEdgeLength.h"
 
-#include <vector>
+#include <math.h>
 
-Topo_Face_Conic::Topo_Face_Conic(Topo_Arc *arc1, Topo_Arc *arc2)
+Topo_Face_Conic::Topo_Face_Conic()
 {
-    m_arc1 = arc1; m_arc2 = arc2;
+	
 }
 
-std::vector<Geom_Vec3> vertex1;
-std::vector<Geom_Vec3> vertex2;
-
-void TopoFaceConicVertexAbsorber1(const Geom_Vec3& pnt, double u)
+Topo_Face_Conic::Topo_Face_Conic(const ICanAssociate *associate):Topo_Face(associate)
 {
-    vertex1.push_back(pnt);
+	
 }
 
-void TopoFaceConicVertexAbsorber2(const Geom_Vec3& pnt, double u)
+Topo_Face_Conic::Topo_Face_Conic(Geom_Plane plane, double r1, double r2, double length)
 {
-    vertex2.push_back(pnt);
+	m_plane = plane;
+	m_radius_1 = r1;
+	m_radius_2 = r2;
+	m_length = length;
 }
 
+void Topo_Face_Conic::ProjectPoint(const Geom_Vec3 &pnt, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
+{
+	//TODO: figure out projection for conics
+	Geom_Vec3 norm = (pnt - m_plane.GetLocation()).Normalized();
+	pRet((norm * m_radius_1) + m_plane.GetLocation(), norm);
+}
+
+const Topo_Face_Conic *cone;
+void (*pTopoFaceConicRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm);
+
+void TopoFaceConicVertexAbsorber(const Geom_Vec3&pnt,const Geom_Vec3&argh)
+{
+	Geom_Vec3 p = cone->GetPlane().UnmapPoint(pnt);
+	cone->ProjectPoint(p,pTopoFaceConicRet);
+}
+
+double Topo_Face_Conic::GetRadius1() const
+{
+	return m_radius_1;	
+}
+
+double Topo_Face_Conic::GetRadius2() const
+{
+	return m_radius_2;	
+}
+
+double Topo_Face_Conic::GetLength() const
+{
+	return m_length;	
+}
+
+
+double TopoFaceConicMetric(const Geom_Vec3 &a, const Geom_Vec3 &b)
+{
+	//TODO: figure out metric for conics
+	double radius=1;//sphere->GetRadius();
+		
+	Geom_Vec3 start = a;
+	Geom_Vec3 end = b;
+	start.m_z = sqrt(radius * radius - start.m_x * start.m_x - start.m_y * start.m_y);
+	end.m_z = sqrt(radius * radius - end.m_x * end.m_x - end.m_y * end.m_y);
+	
+	return (start - end).Norm();
+}
+
+Geom_Vec3 TopoFaceConicSubdivide(const Geom_Vec3 &a, const Geom_Vec3 &b)
+{
+	//double radius=sphere->GetRadius();
+	//TODO: figure out subdivision point for conics
+	return (a+b).Normalized();
+}
+
+void TopoFaceConicVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
+{
+	Geom_Vec3 p = cone->GetPlane().MapPoint(pnt);
+	MaxEdgeLengthVertexAbsorber(p,argh);
+}
 
 void Topo_Face_Conic::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
-//TODO: this is an unglorious hack
-    vertex1.clear();
-    vertex2.clear();
-
-    m_arc1->GetVertices(dDeviation,TopoFaceConicVertexAbsorber1);
-    m_arc2->GetVertices(dDeviation,TopoFaceConicVertexAbsorber2);
-
-    if(vertex1.size() != vertex2.size() || !vertex1.size())
-        return;
-
-    bool reverse;
-    if(vertex2.back().Distance(vertex1[0]) < vertex2[0].Distance(vertex1[0]))
-        reverse = true;
-
-    for(size_t i=1; i < vertex1.size(); i++)
-    {
-        Geom_Vec3 p1 = vertex1[i-1];
-        Geom_Vec3 p2 = vertex1[i];
-
-        Geom_Vec3 p3 = vertex2[i];
-        Geom_Vec3 p4 = vertex2[i-1];
-
-        if(reverse)
-        {
-            p3 = vertex2[vertex1.size() - i];
-            p4 = vertex2[vertex1.size() - i-1];
-        }
-        
-        //TODO: these normals are not good enough for per vertex 
-        //normals
-
-		Geom_Vec3 v1 = p1 - p2;
-		Geom_Vec3 v2 = p1 - p3;
-		
-		Geom_Vec3 norm = v2 ^ v1;
-		norm.Normalize();
-
-        pRet(p1,norm);
-        pRet(p2,norm);
-        pRet(p3,norm);
-
-        pRet(p1,norm);
-        pRet(p3,norm);
-        pRet(p4,norm); 
-    }
+	//double n = M_PI / acos((m_radius - dDeviation) / m_radius);
+	//double s = 2 * dDeviation / tan(M_PI * (n-2)/ (2 * n));
+	//TODO: figure out metric parameter for conics
+	double s=1; 
+	
+	cone = this;
+	pTopoFaceConicRet = pRet;
+	SetupMaxEdgeLength(s,TopoFaceConicVertexAbsorber,TopoFaceConicMetric,TopoFaceConicSubdivide);
+	Topo_Face::Triangulate(dDeviation,TopoFaceConicVertexMapper);
 }
 
 void *Topo_Face_Conic::MakeTranslatedCopy(Geom_Vec3 dir) const
 {
-	//TODO: implement me with the rest of this class
-	return 0;	
+    Topo_Face_Conic *nface = new Topo_Face_Conic(this);
+
+	nface->m_plane.SetLocation(nface->m_plane.GetLocation() + dir);  
+    return nface;
 }
+
