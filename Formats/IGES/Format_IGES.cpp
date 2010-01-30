@@ -200,6 +200,8 @@ void ParseDE(std::string line1, std::string line2)
 
 void ParseLine(std::string &line, int index, DirectoryEntry* de)
 {
+//	printf("%s\n",line.c_str());
+	
 	double x1,y1,z1,x2,y2,z2;
 	index = ReadReal(x1,line,index,parm_delimiter);	
 	index = ReadReal(y1,line,index,parm_delimiter);
@@ -217,7 +219,9 @@ void ParseComposite(std::string &line, int index, DirectoryEntry* de)
 //	printf("%s\n",line.c_str());
 	
 	std::vector<int> elements;
-	int element=-1;	
+	int element=-1;
+	int nelements;	
+	index = ReadInt(nelements,line,index,parm_delimiter);
 	index = ReadInt(element,line,index,parm_delimiter);
 	while(element > 0)
 	{
@@ -323,7 +327,7 @@ std::vector<Topo_Shape*> ReadIGES(const char* filename)
 					}
 					
 					parmline = parmline + line.substr(0,64);
-					if(line.find(';') >= 0)
+					if(line.find(';') != std::string::npos)
 					{
 						ParseParm(parmline,ReadInt(line,65,71));
 						parmline = "";	
