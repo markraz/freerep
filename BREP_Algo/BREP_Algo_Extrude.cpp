@@ -88,6 +88,8 @@ Topo_Face *CreateExtrudedFace(Topo_Wire* wire, EnumWireOrder direction, Topo_Wir
     }
     else
     {
-        return new Topo_Face_Conic((Topo_Arc*)wire,(Topo_Arc*)wire_2);
+    	//TODO: create a conic for the arc
+//        return new Topo_Face_Conic((Topo_Arc*)wire,(Topo_Arc*)wire_2);
+		return NULL;
     }
 }

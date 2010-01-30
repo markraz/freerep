@@ -32,11 +32,10 @@ void Topo_Face_Spheric::ProjectPoint(const Geom_Vec3 &pnt, void (*pRet)(const Ge
 
 const Topo_Face_Spheric *sphere;
 void (*pTopoFaceSphericRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm);
-Geom_Plane plane;
 
 void TopoFaceSphericVertexAbsorber(const Geom_Vec3&pnt,const Geom_Vec3&argh)
 {
-	Geom_Vec3 p = plane.UnmapPoint(pnt);
+	Geom_Vec3 p = sphere->GetPlane().UnmapPoint(pnt);
 	sphere->ProjectPoint(p,pTopoFaceSphericRet);
 }
 
@@ -65,7 +64,7 @@ Geom_Vec3 TopoFaceSphericSubdivide(const Geom_Vec3 &a, const Geom_Vec3 &b)
 
 void TopoFaceSphericVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
 {
-	Geom_Vec3 p = plane.MapPoint(pnt);
+	Geom_Vec3 p = sphere->GetPlane().MapPoint(pnt);
 	MaxEdgeLengthVertexAbsorber(p,argh);
 }
 
@@ -75,7 +74,6 @@ void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_V
 	double s = 2 * dDeviation / tan(M_PI * (n-2)/ (2 * n));
 	
 	sphere = this;
-	plane = GetPlane();
 	pTopoFaceSphericRet = pRet;
 	SetupMaxEdgeLength(s,TopoFaceSphericVertexAbsorber,TopoFaceSphericMetric,TopoFaceSphericSubdivide);
 	Topo_Face::Triangulate(dDeviation,TopoFaceSphericVertexMapper);
