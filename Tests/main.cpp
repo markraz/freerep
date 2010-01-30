@@ -184,9 +184,9 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     //solid->Triangulate(.001,vCall);
     glEnd(); 
     
-    std::vector<Topo_Shape*> shapes;// = ReadIGES("Tests/Polygon.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
+    std::vector<Topo_Shape*> shapes = ReadIGES("Tests/PolyWithArc.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
     
-    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,1.5),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.5));
+    //shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,1.5),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.5));
     for(int i=0; i < shapes.size(); i++)
     {
     	ICanTriangulate *obj = dynamic_cast<ICanTriangulate*>(shapes[i]);

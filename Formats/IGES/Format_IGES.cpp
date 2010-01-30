@@ -4,10 +4,12 @@
 
 #include "Topo_Shape.h"
 #include "Topo_Line.h"
+#include "Topo_Arc.h"
 #include "Topo_Face.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <vector>
 #include <string>
@@ -198,6 +200,53 @@ void ParseDE(std::string line1, std::string line2)
 	directory_entries.push_back(de);
 }
 
+void ParseMatrix(std::string &line, int index, DirectoryEntry* de)
+{
+	double R11,R12,R13,T1,R21,R22,R23,T2,R31,R32,R33,T3;
+	
+	index = ReadReal(R11,line,index,parm_delimiter);
+	index = ReadReal(R12,line,index,parm_delimiter);
+	index = ReadReal(R13,line,index,parm_delimiter);
+	
+	index = ReadReal(T1,line,index,parm_delimiter);
+	
+	index = ReadReal(R21,line,index,parm_delimiter);
+	index = ReadReal(R22,line,index,parm_delimiter);
+	index = ReadReal(R23,line,index,parm_delimiter);
+	
+	index = ReadReal(T2,line,index,parm_delimiter);
+	
+	index = ReadReal(R31,line,index,parm_delimiter);
+	index = ReadReal(R32,line,index,parm_delimiter);
+	index = ReadReal(R33,line,index,parm_delimiter);
+	
+	index = ReadReal(T3,line,index,parm_delimiter);
+}
+
+void ParseArc(std::string &line, int index, DirectoryEntry* de)
+{
+	double z,cx,cy,sx,sy,ex,ey;
+	index = ReadReal(z,line,index,parm_delimiter);
+		
+	index = ReadReal(cx,line,index,parm_delimiter);
+	index = ReadReal(cy,line,index,parm_delimiter);
+	
+	index = ReadReal(sx,line,index,parm_delimiter);
+	index = ReadReal(sy,line,index,parm_delimiter);
+	
+	index = ReadReal(ex,line,index,parm_delimiter);
+	index = ReadReal(ey,line,index,parm_delimiter);
+	
+	double dx = sx - cx;
+	double dy = sy - cy;
+	double r = sqrt(dx*dx+dy*dy);
+	
+	double sa = atan2(sy-cy,sx-cx);
+	double ea = atan2(ey-cy,ex-cx);
+	
+	de->m_shape = new Topo_Arc(Geom_Ax2(Geom_Vec3(0,0,z),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),r,sa,ea);
+}
+
 void ParseLine(std::string &line, int index, DirectoryEntry* de)
 {
 //	printf("%s\n",line.c_str());
@@ -229,6 +278,8 @@ void ParseComposite(std::string &line, int index, DirectoryEntry* de)
 		index = ReadInt(element,line,index,parm_delimiter);			
 	}
 	
+	return; 
+		
 	de->m_shape = new Topo_Edge();
 	
 	for(size_t i=0; i < elements.size(); i++)
@@ -237,6 +288,7 @@ void ParseComposite(std::string &line, int index, DirectoryEntry* de)
 		((Topo_Edge*)de->m_shape)->Add((Topo_Wire*)directory_entries[entry].m_shape);	
 	}
 }
+
 void ParseParm(std::string &line, int de_pointer)
 {
 	//printf("%s\n",line.c_str());
@@ -250,11 +302,17 @@ void ParseParm(std::string &line, int de_pointer)
 	
 	switch(entity_type)
 	{
+		case 100:
+			ParseArc(line,index,de);
+			break;
 		case 102:
 			ParseComposite(line,index,de);
 			break;
 		case 110:
 			ParseLine(line,index,de);
+			break;
+		case 124:
+			ParseMatrix(line,index,de);
 			break;
 		default:
 			break;	
