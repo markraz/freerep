@@ -6,6 +6,7 @@
 #include "Topo_Line.h"
 #include "Topo_Arc.h"
 #include "Topo_Face.h"
+#include "Geom_Transform.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -172,6 +173,7 @@ public:
 	int m_subscript;
 	
 	Topo_Shape *m_shape;
+	Geom_Transform *m_trsf;
 };
 
 std::vector<DirectoryEntry> directory_entries;
@@ -200,8 +202,26 @@ void ParseDE(std::string line1, std::string line2)
 	directory_entries.push_back(de);
 }
 
-void ParseMatrix(std::string &line, int index, DirectoryEntry* de)
+Geom_Vec3 TransformPoint(Geom_Vec3 pnt, DirectoryEntry* de)
 {
+	if(de->m_transform == 0)
+		return pnt;
+	
+	DirectoryEntry *trsf = &directory_entries[(de->m_transform-1)/2];
+	return trsf->m_trsf->Transform(pnt);	
+}
+
+Geom_Vec3 RotatePoint(Geom_Vec3 pnt, DirectoryEntry* de)
+{
+	if(de->m_transform == 0)
+		return pnt;
+	
+	DirectoryEntry *trsf = &directory_entries[(de->m_transform-1)/2];
+	return trsf->m_trsf->Rotate(pnt);	
+}
+
+void ParseMatrix(std::string &line, int index, DirectoryEntry* de)
+{ 
 	double R11,R12,R13,T1,R21,R22,R23,T2,R31,R32,R33,T3;
 	
 	index = ReadReal(R11,line,index,parm_delimiter);
@@ -221,6 +241,18 @@ void ParseMatrix(std::string &line, int index, DirectoryEntry* de)
 	index = ReadReal(R33,line,index,parm_delimiter);
 	
 	index = ReadReal(T3,line,index,parm_delimiter);
+	
+	Geom_Matrix mat;
+	mat(0,0) = R11;
+	mat(0,1) = R12;
+	mat(0,2) = R13;
+	mat(1,0) = R21;
+	mat(1,1) = R22;
+	mat(1,2) = R23;
+	mat(2,0) = R31;
+	mat(2,1) = R32;
+	mat(2,2) = R33;
+	de->m_trsf = new Geom_Transform(mat,Geom_Vec3(T1,T2,T3));
 }
 
 void ParseArc(std::string &line, int index, DirectoryEntry* de)
@@ -244,7 +276,11 @@ void ParseArc(std::string &line, int index, DirectoryEntry* de)
 	double sa = atan2(sy-cy,sx-cx);
 	double ea = atan2(ey-cy,ex-cx);
 	
-	de->m_shape = new Topo_Arc(Geom_Ax2(Geom_Vec3(0,0,z),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),r,sa,ea);
+	Geom_Vec3 loc = TransformPoint(Geom_Vec3(0,0,z),de);
+	Geom_Vec3 zvec = RotatePoint(Geom_Vec3(0,0,1),de);
+	Geom_Vec3 xvec = RotatePoint(Geom_Vec3(1,0,0),de);
+	
+	de->m_shape = new Topo_Arc(Geom_Ax2(loc,zvec,xvec),r,sa,ea);
 }
 
 void ParseLine(std::string &line, int index, DirectoryEntry* de)
@@ -260,7 +296,9 @@ void ParseLine(std::string &line, int index, DirectoryEntry* de)
 	index = ReadReal(y2,line,index,parm_delimiter);
 	index = ReadReal(z2,line,index,parm_delimiter);
 	
-	de->m_shape = new Topo_Line(Geom_Vec3(x1,y1,z1),Geom_Vec3(x2,y2,z2));
+	Geom_Vec3 p1 = TransformPoint(Geom_Vec3(x1,y1,z1),de);
+	Geom_Vec3 p2 = TransformPoint(Geom_Vec3(x2,y2,z2),de);
+	de->m_shape = new Topo_Line(p1,p2);
 }
 
 void ParseComposite(std::string &line, int index, DirectoryEntry* de)
@@ -278,7 +316,7 @@ void ParseComposite(std::string &line, int index, DirectoryEntry* de)
 		index = ReadInt(element,line,index,parm_delimiter);			
 	}
 	
-	return; 
+	//return; 
 		
 	de->m_shape = new Topo_Edge();
 	

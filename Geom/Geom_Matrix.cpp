@@ -21,6 +21,7 @@ Geom_Matrix::~Geom_Matrix()
 {
 }
 
+
 inline
 double Geom_Matrix::GetElement(unsigned row, unsigned col)
 {
@@ -45,6 +46,23 @@ void Geom_Matrix::Randomize()
         {
                 m_data[i] = rand() / 100.0;
         }
+}
+
+Geom_Vec3 Geom_Matrix::Multiply(Geom_Vec3 pnt)
+{
+	double nvec[3],ovec[3];
+	ovec[0] = pnt.m_x; ovec[1] = pnt.m_y; ovec[2] = pnt.m_z;
+	
+    for(int i=0; i < 3; i++)
+    {
+     	nvec[i] = 0;
+        for(int k=0; k < 3; k++)
+        {
+      		nvec[i] += GetElement(i,k) * ovec[k];
+        }
+    }
+ 	
+ 	return Geom_Vec3(nvec[0],nvec[1],nvec[2]);
 }
 
 Geom_Matrix Geom_Matrix::Multiplied(Geom_Matrix* mat)

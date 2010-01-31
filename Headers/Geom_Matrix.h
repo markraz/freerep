@@ -8,6 +8,8 @@
 #ifndef GEOM_MATRIX_H
 #define GEOM_MATRIX_H
 
+#include "Geom_Vec3.h"
+
 #include <vector>
 
 class Geom_Matrix
@@ -22,6 +24,7 @@ public:
         double GetElement(unsigned row, unsigned col);
         Geom_Matrix Multiplied(Geom_Matrix* mat);
         void Multiply(Geom_Matrix* mat);
+        Geom_Vec3 Multiply(Geom_Vec3 vec);
         Geom_Matrix Multiplied(double s);
         void Multiply(double s);
         Geom_Matrix Added(double s);
