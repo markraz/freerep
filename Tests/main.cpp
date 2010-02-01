@@ -32,6 +32,7 @@
 #include "Topo_Solid.h"
 #include "BREP_Algo_Extrude.h"
 #include "BREP_Algo_Make_Sphere.h"
+#include "BREP_Algo_Make_Cone.h"
 #include "FreeREP.h"
 #include "Util_Test.h"
 #include "Format_FREP.h"
@@ -187,6 +188,8 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     std::vector<Topo_Shape*> shapes = ReadIGES("Tests/PolyWithArc.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
     
     //shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,1.5),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.5));
+    //shapes.push_back(MakeCone(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1,1,1));
+    
     for(int i=0; i < shapes.size(); i++)
     {
     	ICanTriangulate *obj = dynamic_cast<ICanTriangulate*>(shapes[i]);
@@ -338,7 +341,7 @@ main (int argc, char **argv)
 
 	gtk_widget_show_all (window);
 
-	g_timeout_add (1000 / 60, rotate, da);
+	g_timeout_add (1000 / 30, rotate, da);
 
 	gtk_main ();
 }

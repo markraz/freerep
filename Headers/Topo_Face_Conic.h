@@ -7,6 +7,7 @@
 
 #include "Topo_Face.h"
 #include "Geom_Vec3.h"
+#include "Geom_Ax2.h"
 
 #include <vector>
 
@@ -21,7 +22,7 @@ class Topo_Face_Conic: public Topo_Face
 public:
 	Topo_Face_Conic();
     Topo_Face_Conic(const ICanAssociate *);
-    Topo_Face_Conic(Geom_Plane plane,double r1, double r2, double length);
+    Topo_Face_Conic(Geom_Ax2 axis,double r1, double r2, double length);
 
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
     void ProjectPoint(const Geom_Vec3 &pnt, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
