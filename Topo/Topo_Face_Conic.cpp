@@ -18,9 +18,9 @@ Topo_Face_Conic::Topo_Face_Conic(const ICanAssociate *associate):Topo_Face(assoc
 	
 }
 
-Topo_Face_Conic::Topo_Face_Conic(Geom_Plane plane, double r1, double r2, double length)
+Topo_Face_Conic::Topo_Face_Conic(Geom_Ax2 axis, double r1, double r2, double length)
 {
-	m_plane = plane;
+	m_plane = Geom_Plane(axis);
 	m_radius_1 = r1;
 	m_radius_2 = r2;
 	m_length = length;
