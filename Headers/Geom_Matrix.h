@@ -20,9 +20,10 @@ public:
         ~Geom_Matrix();
         double& operator() (unsigned row, unsigned col);
         double  operator() (unsigned row, unsigned col) const;
+        Geom_Matrix operator*(Geom_Matrix m) const;
         //double Geom_Matrix::operator() (unsigned row, unsigned col);
-        double GetElement(unsigned row, unsigned col);
-        Geom_Matrix Multiplied(Geom_Matrix* mat);
+        double GetElement(unsigned row, unsigned col) const;
+        Geom_Matrix Multiplied(Geom_Matrix* mat) const;
         void Multiply(Geom_Matrix* mat);
         Geom_Vec3 Multiply(Geom_Vec3 vec);
         Geom_Matrix Multiplied(double s);
@@ -40,6 +41,13 @@ public:
         void Transpose();
         Geom_Matrix Transposed();
         void Randomize();
+        
+        static Geom_Matrix XRotation(double t);
+        static Geom_Matrix YRotation(double t);
+        static Geom_Matrix ZRotation(double t);
+        static Geom_Matrix XToXZ(Geom_Vec3 v);
+        static Geom_Matrix XZToZ(Geom_Vec3 v);
+        static Geom_Matrix RotateAround(Geom_Vec3 v, double t);
 };
 
 
