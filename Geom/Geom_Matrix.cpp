@@ -8,6 +8,7 @@
 #include "Geom_Matrix.h"
 
 #include <stdlib.h>
+#include <math.h>
 
 Geom_Matrix::Geom_Matrix(double init)
 {
@@ -23,7 +24,7 @@ Geom_Matrix::~Geom_Matrix()
 
 
 inline
-double Geom_Matrix::GetElement(unsigned row, unsigned col)
+double Geom_Matrix::GetElement(unsigned row, unsigned col) const
 {
         return m_data[3*row + col];
 }
@@ -38,6 +39,11 @@ inline
 double Geom_Matrix::operator() (unsigned row, unsigned col) const
 {
    return m_data[3*row + col];
+}
+
+Geom_Matrix Geom_Matrix::operator* (Geom_Matrix m) const
+{
+	return Multiplied(&m);	
 }
 
 void Geom_Matrix::Randomize()
@@ -65,7 +71,7 @@ Geom_Vec3 Geom_Matrix::Multiply(Geom_Vec3 pnt)
  	return Geom_Vec3(nvec[0],nvec[1],nvec[2]);
 }
 
-Geom_Matrix Geom_Matrix::Multiplied(Geom_Matrix* mat)
+Geom_Matrix Geom_Matrix::Multiplied(Geom_Matrix* mat) const
 {
         Geom_Matrix nmat;
 
@@ -229,3 +235,93 @@ Geom_Matrix Geom_Matrix::Divided(double s)
         return nmat;
 }
 
+Geom_Matrix Geom_Matrix::XRotation(double t)
+{
+	Geom_Matrix m;
+	m(0,0) = 1;
+	m(0,1) = 0;
+	m(0,2) = 0;
+	m(1,0) = 0;
+	m(1,1) = cos(t);
+	m(1,2) = -sin(t);
+	m(2,0) = 0;
+	m(2,1) = sin(t);
+	m(2,2) = cos(t);
+	
+	return m;
+}
+
+Geom_Matrix Geom_Matrix::YRotation(double t)
+{
+	Geom_Matrix m;
+	m(0,0) = cos(t);
+	m(0,1) = 0;
+	m(0,2) = sin(t);
+	m(1,0) = 0;
+	m(1,1) = 1;
+	m(1,2) = 0;
+	m(2,0) = -sin(t);
+	m(2,1) = 0;
+	m(2,2) = cos(t);
+	
+	return m;
+}
+
+Geom_Matrix Geom_Matrix::ZRotation(double t)
+{
+	Geom_Matrix m;
+	m(0,0) = cos(t);
+	m(0,1) = -sin(t);
+	m(0,2) = 0;
+	m(1,0) = sin(t);
+	m(1,1) = cos(t);
+	m(1,2) = 0;
+	m(2,0) = 0;
+	m(2,1) = 0;
+	m(2,2) = 1;
+	
+	return m;
+}
+
+Geom_Matrix Geom_Matrix::XToXZ(Geom_Vec3 v)
+{
+	Geom_Matrix m;
+	m(0,0) = v.m_x / sqrt(v.m_x * v.m_x + v.m_y * v.m_y);
+	m(0,1) = v.m_y / sqrt(v.m_x * v.m_x + v.m_y * v.m_y);
+	m(0,2) = 0;
+	m(1,0) = -v.m_y / sqrt(v.m_x * v.m_x + v.m_y * v.m_y);
+	m(1,1) = v.m_x / sqrt(v.m_x * v.m_x + v.m_y * v.m_y);
+	m(1,2) = 0;
+	m(2,0) = 0;
+	m(2,1) = 0;
+	m(2,2) = 1;
+	
+	return m;
+}
+
+Geom_Matrix Geom_Matrix::XZToZ(Geom_Vec3 v)
+{
+	Geom_Matrix m;
+	m(0,0) = v.m_z/v.Norm();
+	m(0,1) = 0;
+	m(0,2) = -sqrt(v.m_x * v.m_x + v.m_y * v.m_y)/v.Norm();
+	m(1,0) = 0;
+	m(1,1) = 1;
+	m(1,2) = 0;
+	m(2,0) = -m(0,2);
+	m(2,1) = 0;
+	m(2,2) = m(0,0);
+	
+	return m;
+}
+
+Geom_Matrix Geom_Matrix::RotateAround(Geom_Vec3 v, double t)
+{
+	Geom_Matrix Rxz = XToXZ(v);
+	Geom_Matrix RxzT = Rxz.Transposed();
+	Geom_Matrix Rxz2z = XZToZ(v);
+	Geom_Matrix Rxz2zT = Rxz2z.Transposed();
+	Geom_Matrix R = ZRotation(t);
+	
+	return RxzT * Rxz2zT * R * Rxz2z * Rxz;
+}

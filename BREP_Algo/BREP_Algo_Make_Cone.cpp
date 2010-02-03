@@ -7,10 +7,11 @@
 #include "Topo_Line.h"
 #include "Topo_Face.h"
 #include "Topo_Face_Conic.h"
+#include "Topo_Solid.h"
 
 #include <math.h>
 
-Topo_Face * CreateConeFace(Topo_Wire* s1, Topo_Wire* s2, Topo_Wire *s3, Topo_Wire *s4)
+Topo_Face * CreateConeFace(Topo_Wire* s1, Topo_Wire* s2, Topo_Wire *s3, Topo_Wire *s4, Geom_Ax2 ax, double r1, double r2, double length, double t1, double t2)
 {
 	Topo_Edge *e = new Topo_Edge();
 	e->Add(s1);
@@ -18,7 +19,7 @@ Topo_Face * CreateConeFace(Topo_Wire* s1, Topo_Wire* s2, Topo_Wire *s3, Topo_Wir
 	e->Add(s3);
 	e->Add(s4);
 	
-	Topo_Face *f = new Topo_Face_Conic();
+	Topo_Face *f = new Topo_Face_Conic(ax, r1, r2, length);
 	f->Add(e);
 	return f;
 }
@@ -92,11 +93,13 @@ Topo_Shape * MakeCone(Geom_Ax2 loc, double r1, double r2, double length)
 	Geom_Vec3 l8start = l8->GetStart();
 	Geom_Vec3 l8end = l8->GetEnd();
 	
-	CreateConeFace(a1,l1,a7,l2);
-	CreateConeFace(a2,l3,a8,l4);
-	CreateConeFace(a3,l5,a5,l6);
-	CreateConeFace(a4,l7,a6,l8);
+	Topo_Solid *solid = new Topo_Solid();
+
+	solid->Add(CreateConeFace(a1,l1,a7,l2,loc,r1,r2,length,0,M_PI/2));
+	//solid->Add(CreateConeFace(a2,l3,a8,l4,loc,r1,r2,length,M_PI/2,M_PI));
+	//solid->Add(CreateConeFace(a3,l5,a5,l6,loc,r1,r2,length,M_PI,3*M_PI/2));
+	//solid->Add(CreateConeFace(a4,l7,a6,l8,loc,r1,r2,length,3*M_PI/2,2*M_PI));
 	
-	return 0;
+	return solid;
 }
 
