@@ -315,6 +315,24 @@ Geom_Matrix Geom_Matrix::XZToZ(Geom_Vec3 v)
 	return m;
 }
 
+//The eclipse debugger sucks, so the only way we
+//can look at a matrix is to use this
+void MatrixIntrospect(Geom_Matrix m)
+{
+	double m00 = m(0,0);
+	double m01 = m(0,1);
+	double m02 = m(0,2);
+	double m10 = m(1,0);
+	double m11 = m(1,1);
+	double m12 = m(1,2);
+	double m20 = m(2,0);
+	double m21 = m(2,1);
+	double m22 = m(2,2);
+	
+	int x=0;
+	x++;
+}
+/*
 Geom_Matrix Geom_Matrix::RotateAround(Geom_Vec3 v, double t)
 {
 	Geom_Matrix Rxz = XToXZ(v);
@@ -323,5 +341,23 @@ Geom_Matrix Geom_Matrix::RotateAround(Geom_Vec3 v, double t)
 	Geom_Matrix Rxz2zT = Rxz2z.Transposed();
 	Geom_Matrix R = ZRotation(t);
 	
+	MatrixIntrospect(Rxz);
+	
 	return RxzT * Rxz2zT * R * Rxz2z * Rxz;
+}*/
+
+Geom_Matrix Geom_Matrix::RotateAround(Geom_Vec3 v, double t)
+{
+	Geom_Matrix m;
+	m(0,0) = v.m_x * v.m_x + (v.m_y * v.m_y + v.m_z *v.m_z) * cos(t);
+	m(0,1) = v.m_x * v.m_y * (1-cos(t)) - v.m_z * sin(t);
+	m(0,2) = v.m_x * v.m_z * (1-cos(t)) + v.m_y * sin(t);
+	m(1,0) = v.m_x * v.m_y * (1-cos(t)) + v.m_z * sin(t);
+	m(1,1) = v.m_y * v.m_y + (v.m_x * v.m_x + v.m_z * v.m_z) * cos(t);
+	m(1,2) = v.m_y * v.m_z * (1-cos(t)) - v.m_x * sin(t);
+	m(2,0) = v.m_x * v.m_z * (1-cos(t)) - v.m_y * sin(t);
+	m(2,1) = v.m_y * v.m_z * (1-cos(t)) + v.m_x * sin(t);
+	m(2,2) = v.m_z * v.m_z + (v.m_x * v.m_x + v.m_y * v.m_y) * cos(t);
+	
+	return m;
 }

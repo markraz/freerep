@@ -30,7 +30,7 @@ void Topo_Face_Conic::ProjectPoint(const Geom_Vec3 &pnt, void (*pRet)(const Geom
 {
 	//TODO: figure out projection for conics
 	Geom_Vec3 norm = (pnt - m_plane.GetLocation()).Normalized();
-	pRet((norm * m_radius_1) + m_plane.GetLocation(), norm);
+	pRet(pnt, norm);
 }
 
 const Topo_Face_Conic *cone;
