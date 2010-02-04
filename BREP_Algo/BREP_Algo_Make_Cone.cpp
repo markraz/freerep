@@ -8,18 +8,29 @@
 #include "Topo_Face.h"
 #include "Topo_Face_Conic.h"
 #include "Topo_Solid.h"
+#include "Geom_Matrix.h"
 
 #include <math.h>
 
 Topo_Face * CreateConeFace(Topo_Wire* s1, Topo_Wire* s2, Topo_Wire *s3, Topo_Wire *s4, Geom_Ax2 ax, double r1, double r2, double length, double t1, double t2)
 {
 	Topo_Edge *e = new Topo_Edge();
-	e->Add(s1);
+	e->Add(s1);//,BFirst);
 	e->Add(s2);
 	e->Add(s3);
 	e->Add(s4);
 	
-	Topo_Face *f = new Topo_Face_Conic(ax, r1, r2, length);
+	
+	Geom_Matrix m = Geom_Matrix::RotateAround(ax.ZDir(),(t1+t2)/2);
+	
+	Geom_Ax2 coneax(ax.Location(),m.Multiply(ax.YDir()),m.Multiply(ax.ZDir()));
+	
+	Geom_Vec3 x = coneax.XDir();
+	Geom_Vec3 y = coneax.YDir();
+	Geom_Vec3 z = coneax.ZDir();
+	
+	
+	Topo_Face *f = new Topo_Face_Conic(coneax, r1, r2, length);
 	f->Add(e);
 	return f;
 }
@@ -95,10 +106,10 @@ Topo_Shape * MakeCone(Geom_Ax2 loc, double r1, double r2, double length)
 	
 	Topo_Solid *solid = new Topo_Solid();
 
-	solid->Add(CreateConeFace(a1,l1,a7,l2,loc,r1,r2,length,0,M_PI/2));
-	//solid->Add(CreateConeFace(a2,l3,a8,l4,loc,r1,r2,length,M_PI/2,M_PI));
-	//solid->Add(CreateConeFace(a3,l5,a5,l6,loc,r1,r2,length,M_PI,3*M_PI/2));
-	//solid->Add(CreateConeFace(a4,l7,a6,l8,loc,r1,r2,length,3*M_PI/2,2*M_PI));
+	solid->Add(CreateConeFace(a7,l1,a1,l2,loc,r1,r2,length,0,M_PI/2));
+	solid->Add(CreateConeFace(a2,l3,a8,l4,loc,r1,r2,length,M_PI/2,M_PI));
+	solid->Add(CreateConeFace(a5,l5,a3,l6,loc,r1,r2,length,M_PI,3*M_PI/2));
+	solid->Add(CreateConeFace(a4,l7,a6,l8,loc,r1,r2,length,3*M_PI/2,2*M_PI));
 	
 	return solid;
 }
