@@ -60,8 +60,8 @@ double Topo_Face_Conic::GetLength() const
 
 double Topo_Face_Conic::MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const
 {
-	double x1 = a.m_x/m_length + .5;
-	double x2 = b.m_x/m_length + .5;
+	double x1 = -a.m_x/m_length + .5;
+	double x2 = -b.m_x/m_length + .5;
 	
 	double r1 = x1 * m_radius_2 + (1-x1) * m_radius_1;
 	double r2 = x2 * m_radius_2 + (1-x2) * m_radius_1;
@@ -83,12 +83,13 @@ Geom_Vec3 Topo_Face_Conic::Subdivide(Geom_Vec3 a, Geom_Vec3 b) const
 	double x = a.m_x/m_length + .5;
 	double r = x * m_radius_2 + (1-x) * m_radius_1;
 	
-	ret.m_z = sqrt(r*r - ret.m_y * ret.m_y);
+	//ret.m_z = sqrt(r*r - ret.m_y * ret.m_y);
 	
 	int y=0;
 	y++;
 	
 	return ret;
+	
 }
 
 void TopoFaceConicVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
