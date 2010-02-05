@@ -107,9 +107,9 @@ Topo_Shape * MakeCone(Geom_Ax2 loc, double r1, double r2, double length)
 	Topo_Solid *solid = new Topo_Solid();
 
 	solid->Add(CreateConeFace(a7,l1,a1,l2,loc,r1,r2,length,0,M_PI/2));
-	solid->Add(CreateConeFace(a2,l3,a8,l4,loc,r1,r2,length,M_PI/2,M_PI));
+	solid->Add(CreateConeFace(a8,l3,a2,l4,loc,r1,r2,length,3*M_PI/2,2*M_PI));
 	solid->Add(CreateConeFace(a5,l5,a3,l6,loc,r1,r2,length,M_PI,3*M_PI/2));
-	solid->Add(CreateConeFace(a4,l7,a6,l8,loc,r1,r2,length,3*M_PI/2,2*M_PI));
+	solid->Add(CreateConeFace(a6,l7,a4,l8,loc,r1,r2,length,M_PI/2,M_PI));
 	
 	return solid;
 }

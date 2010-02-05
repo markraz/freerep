@@ -60,22 +60,35 @@ double Topo_Face_Conic::GetLength() const
 
 double Topo_Face_Conic::MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const
 {
-	//TODO: figure out metric for conics
-	double radius=1;//sphere->GetRadius();
-		
-	Geom_Vec3 start = a;
-	Geom_Vec3 end = b;
-	start.m_z = sqrt(radius * radius - start.m_x * start.m_x - start.m_y * start.m_y);
-	end.m_z = sqrt(radius * radius - end.m_x * end.m_x - end.m_y * end.m_y);
+	double x1 = a.m_x/m_length + .5;
+	double x2 = b.m_x/m_length + .5;
 	
-	return (start - end).Norm();
+	double r1 = x1 * m_radius_2 + (1-x1) * m_radius_1;
+	double r2 = x2 * m_radius_2 + (1-x2) * m_radius_1;
+	
+	double r=r1;
+	if(r2 > r1)
+		r = r2;
+		
+	double n = M_PI / acos((r - m_deviation) / r);
+	double s = 2 * m_deviation / tan(M_PI * (n-2)/ (2 * n));
+	
+	return fabs(a.m_y - b.m_y) / s;
 }
 
 Geom_Vec3 Topo_Face_Conic::Subdivide(Geom_Vec3 a, Geom_Vec3 b) const
 {
-	//double radius=sphere->GetRadius();
-	//TODO: figure out subdivision point for conics
-	return (a+b).Normalized();
+	Geom_Vec3 ret = (a+b)/2;
+	
+	double x = a.m_x/m_length + .5;
+	double r = x * m_radius_2 + (1-x) * m_radius_1;
+	
+	ret.m_z = sqrt(r*r - ret.m_y * ret.m_y);
+	
+	int y=0;
+	y++;
+	
+	return ret;
 }
 
 void TopoFaceConicVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
@@ -86,10 +99,7 @@ void TopoFaceConicVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
 
 void Topo_Face_Conic::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
-	//double n = M_PI / acos((m_radius - dDeviation) / m_radius);
-	//double s = 2 * dDeviation / tan(M_PI * (n-2)/ (2 * n));
-	//TODO: figure out metric parameter for conics
-	double s=1; 
+	m_deviation = dDeviation;
 	
 	cone = this;
 	pTopoFaceConicRet = pRet;

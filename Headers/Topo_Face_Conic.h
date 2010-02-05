@@ -17,6 +17,7 @@ class Topo_Face_Conic: public Topo_Face, public ICanSubdivide
     double m_radius_1;
     double m_radius_2;
     double m_length;
+    mutable double m_deviation;
     
     std::vector<Geom_Vec3> m_edge_vertices;
 
