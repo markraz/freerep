@@ -58,7 +58,7 @@ double Topo_Face_Conic::GetLength() const
 }
 
 
-double TopoFaceConicMetric(const Geom_Vec3 &a, const Geom_Vec3 &b)
+double Topo_Face_Conic::MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const
 {
 	//TODO: figure out metric for conics
 	double radius=1;//sphere->GetRadius();
@@ -71,7 +71,7 @@ double TopoFaceConicMetric(const Geom_Vec3 &a, const Geom_Vec3 &b)
 	return (start - end).Norm();
 }
 
-Geom_Vec3 TopoFaceConicSubdivide(const Geom_Vec3 &a, const Geom_Vec3 &b)
+Geom_Vec3 Topo_Face_Conic::Subdivide(Geom_Vec3 a, Geom_Vec3 b) const
 {
 	//double radius=sphere->GetRadius();
 	//TODO: figure out subdivision point for conics
@@ -93,7 +93,7 @@ void Topo_Face_Conic::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec
 	
 	cone = this;
 	pTopoFaceConicRet = pRet;
-	SetupMaxEdgeLength(s,TopoFaceConicVertexAbsorber,TopoFaceConicMetric,TopoFaceConicSubdivide);
+	SetupMaxEdgeLength(TopoFaceConicVertexAbsorber,this);
 	Topo_Face::Triangulate(dDeviation,TopoFaceConicVertexMapper);
 }
 

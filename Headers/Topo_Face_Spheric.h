@@ -7,12 +7,14 @@
 
 #include "Topo_Face.h"
 #include "Geom_Vec3.h"
+#include "ICanSubdivide.h"
 
 #include <vector>
 
-class Topo_Face_Spheric: public Topo_Face
+class Topo_Face_Spheric: public Topo_Face, public ICanSubdivide
 {
     double m_radius;
+    mutable double m_metric;
     
     std::vector<Geom_Vec3> m_edge_vertices;
 
@@ -24,8 +26,12 @@ public:
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
     void ProjectPoint(const Geom_Vec3 &pnt, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
     
- //Override from ICanCopyAndTranslate
+//Override from ICanCopyAndTranslate
 	void *MakeTranslatedCopy(Geom_Vec3 dir) const;
+
+//Overrides from ICanSubdivide
+	double MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const;
+	Geom_Vec3 Subdivide(Geom_Vec3 a, Geom_Vec3 b) const;
 	
 	double GetRadius() const;
     

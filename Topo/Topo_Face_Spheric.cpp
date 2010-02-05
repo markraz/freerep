@@ -44,22 +44,19 @@ double Topo_Face_Spheric::GetRadius() const
 	return m_radius;	
 }
 
-double TopoFaceSphericMetric(const Geom_Vec3 &a, const Geom_Vec3 &b)
+double Topo_Face_Spheric::MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const
 {
-	double radius=sphere->GetRadius();
-		
 	Geom_Vec3 start = a;
 	Geom_Vec3 end = b;
-	start.m_z = sqrt(radius * radius - start.m_x * start.m_x - start.m_y * start.m_y);
-	end.m_z = sqrt(radius * radius - end.m_x * end.m_x - end.m_y * end.m_y);
+	start.m_z = sqrt(m_radius * m_radius - start.m_x * start.m_x - start.m_y * start.m_y);
+	end.m_z = sqrt(m_radius * m_radius - end.m_x * end.m_x - end.m_y * end.m_y);
 	
-	return (start - end).Norm();
+	return (start - end).Norm() * m_metric;
 }
 
-Geom_Vec3 TopoFaceSphericSubdivide(const Geom_Vec3 &a, const Geom_Vec3 &b)
+Geom_Vec3 Topo_Face_Spheric::Subdivide(Geom_Vec3 a, Geom_Vec3 b) const
 {
-	double radius=sphere->GetRadius();
-	return (a+b).Normalized() * radius;
+ 	return (a+b).Normalized() * m_radius;
 }
 
 void TopoFaceSphericVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
@@ -73,9 +70,12 @@ void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_V
 	double n = M_PI / acos((m_radius - dDeviation) / m_radius);
 	double s = 2 * dDeviation / tan(M_PI * (n-2)/ (2 * n));
 	
+	//save the metric normalizer
+	m_metric = 1/s;
+	
 	sphere = this;
 	pTopoFaceSphericRet = pRet;
-	SetupMaxEdgeLength(s,TopoFaceSphericVertexAbsorber,TopoFaceSphericMetric,TopoFaceSphericSubdivide);
+	SetupMaxEdgeLength(TopoFaceSphericVertexAbsorber,this);
 	Topo_Face::Triangulate(dDeviation,TopoFaceSphericVertexMapper);
 }
 

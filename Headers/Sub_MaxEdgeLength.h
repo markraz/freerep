@@ -5,7 +5,9 @@
 #ifndef SUB_MAXEDGELENGTH_H
 #define SUB_MAXEDGELENGTH_H
 
+#include "ICanSubdivide.h"
+
 void MaxEdgeLengthVertexAbsorber(const Geom_Vec3 &pnt, const Geom_Vec3& norm);
-void SetupMaxEdgeLength(double length, void (*pRet)(const Geom_Vec3 &pnt, const Geom_Vec3 &norm), double (*Metric)(const Geom_Vec3& a, const Geom_Vec3& b), Geom_Vec3 (*Subdivide)(const Geom_Vec3 &a, const Geom_Vec3 &b));
+void SetupMaxEdgeLength(void (*pRet)(const Geom_Vec3 &pnt, const Geom_Vec3 &norm), const ICanSubdivide *subdivide);
 
 #endif
