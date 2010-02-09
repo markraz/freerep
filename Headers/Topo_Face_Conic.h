@@ -17,6 +17,8 @@ class Topo_Face_Conic: public Topo_Face, public ICanSubdivide
     double m_radius_1;
     double m_radius_2;
     double m_length;
+    Geom_Ax2 m_axis;
+    
     mutable double m_deviation;
     
     std::vector<Geom_Vec3> m_edge_vertices;
@@ -24,7 +26,7 @@ class Topo_Face_Conic: public Topo_Face, public ICanSubdivide
 public:
 	Topo_Face_Conic();
     Topo_Face_Conic(const ICanAssociate *);
-    Topo_Face_Conic(Geom_Ax2 axis,double r1, double r2, double length);
+    Topo_Face_Conic(Geom_Ax2 axis, Geom_Ax2 caxis, double r1, double r2, double length);
 
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
     void ProjectPoint(const Geom_Vec3 &pnt, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;

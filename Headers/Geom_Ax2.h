@@ -7,6 +7,7 @@
 #define GEOM_AX2_H
 
 #include "Geom_Vec3.h"
+#include "Geom_Line.h"
 
 class Geom_Ax2
 {
@@ -24,6 +25,8 @@ public:
     Geom_Vec3 YDir() const {return m_zdir ^ m_xdir;}
 
     void SetLocation(Geom_Vec3 p){m_loc = p;}
+    
+    Geom_Line GetLine() const {return Geom_Line(m_loc,m_loc+m_zdir);}
 };
 
 #endif

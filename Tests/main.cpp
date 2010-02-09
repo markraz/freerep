@@ -162,7 +162,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     face->Add(e1);
     face->Add(e2);*/
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glEnable(GL_AUTO_NORMAL);
 
     glBegin(GL_TRIANGLES);
@@ -196,7 +196,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     	if(obj)
     	{
     		glBegin(GL_TRIANGLES);
-    		obj->Triangulate(.20,vCall);
+    		obj->Triangulate(.10,vCall);
     		glEnd();	
     	}
     	else
