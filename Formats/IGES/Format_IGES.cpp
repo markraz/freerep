@@ -5,7 +5,7 @@
 #include "Topo_Shape.h"
 #include "Topo_Line.h"
 #include "Topo_Arc.h"
-#include "Topo_Face.h"
+#include "Topo_Face_Planar.h";
 #include "Geom_Transform.h"
 
 #include <stdio.h>
@@ -301,6 +301,67 @@ void ParseLine(std::string &line, int index, DirectoryEntry* de)
 	de->m_shape = new Topo_Line(p1,p2);
 }
 
+void ParsePlane(std::string &line, int index, DirectoryEntry *de)
+{
+	bool m_inverted = de->m_form == -1;
+	double a,b,c,d,x,y,z,size;
+	int ptr;
+	index = ReadReal(a,line,index,parm_delimiter);	
+	index = ReadReal(b,line,index,parm_delimiter);
+	index = ReadReal(c,line,index,parm_delimiter);
+	index = ReadReal(d,line,index,parm_delimiter);
+	
+	index = ReadInt(ptr,line,index,parm_delimiter);
+	
+	index = ReadReal(x,line,index,parm_delimiter);
+	index = ReadReal(y,line,index,parm_delimiter);
+	index = ReadReal(z,line,index,parm_delimiter);
+	
+	index = ReadReal(size,line,index,parm_delimiter);
+	
+	//de->m_shape = new Topo_Face_Planar(Geom_Plane(a,b,c,d));
+}
+
+void ParseCurveOnParametricSurface(std::string &line, int index, DirectoryEntry *de)
+{
+	int creation;
+	int surface;
+	int parametriccurve;
+	int worldcurve;
+	int preferredrep;
+	
+	index = ReadInt(creation,line,index,parm_delimiter);	
+	index = ReadInt(surface,line,index,parm_delimiter);
+	index = ReadInt(parametriccurve,line,index,parm_delimiter);
+	index = ReadInt(worldcurve,line,index,parm_delimiter);
+	index = ReadInt(preferredrep,line,index,parm_delimiter);
+	
+	//TODO: do something with this data
+}
+
+void ParseTrimmedSurface(std::string &line, int index, DirectoryEntry* de)
+{
+	int surface;
+	int is_outer;
+	int n_inner_curves;
+	int p_outer;
+
+	index = ReadInt(surface,line,index,parm_delimiter);
+	index = ReadInt(is_outer,line,index,parm_delimiter);
+	index = ReadInt(n_inner_curves,line,index,parm_delimiter);
+	index = ReadInt(p_outer,line,index,parm_delimiter);
+		
+	std::vector<int> inner_curves;
+	int inner_curve=-1;
+	for(int i=0; i < n_inner_curves; i++)
+	{
+		index = ReadInt(inner_curve,line,index,parm_delimiter);			
+		inner_curves.push_back(inner_curve);
+	}
+	
+	//TODO: do something with this data	
+}
+
 void ParseComposite(std::string &line, int index, DirectoryEntry* de)
 {
 //	printf("%s\n",line.c_str());
@@ -346,11 +407,20 @@ void ParseParm(std::string &line, int de_pointer)
 		case 102:
 			ParseComposite(line,index,de);
 			break;
+		case 108:
+			ParsePlane(line,index,de);
+			break;
 		case 110:
 			ParseLine(line,index,de);
 			break;
 		case 124:
 			ParseMatrix(line,index,de);
+			break;
+		case 142:
+			ParseCurveOnParametricSurface(line,index,de);
+			break;
+		case 144:
+			ParseTrimmedSurface(line,index,de);
 			break;
 		default:
 			break;	

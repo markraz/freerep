@@ -15,6 +15,14 @@ Geom_Plane::Geom_Plane(Geom_Ax2 axis)
 	m_axis = axis;	
 }
 
+Geom_Plane::Geom_Plane(double a, double b, double c, double d)
+{
+	//TODO: this is fubar and doesn't work at all. Even if it did, i'm not sure how to find xdir
+	
+	Geom_Vec3 norm = Geom_Vec3(a,b,c);
+	m_axis = Geom_Ax2(Geom_Vec3(0,0,-d/norm.Norm()),norm.Normalized(),Geom_Vec3(1,0,0));
+}
+
 Geom_Plane::Geom_Plane(Geom_Vec3 pnt1, Geom_Vec3 pnt2, Geom_Vec3 pnt3)
 {
     Geom_Vec3 dir1 = pnt2 - pnt1;

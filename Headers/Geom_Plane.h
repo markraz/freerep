@@ -16,6 +16,7 @@ class Geom_Plane
     
 public:
 	Geom_Plane();
+	Geom_Plane(double a, double b, double c, double d);
     Geom_Plane(Geom_Vec3 pnt1, Geom_Vec3 pnt2, Geom_Vec3 pnt3);
     Geom_Plane(Geom_Vec3 pnt, Geom_Vec3 norm);
     Geom_Plane(Geom_Ax2 ax);

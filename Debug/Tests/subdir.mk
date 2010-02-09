@@ -4,15 +4,12 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../Tests/FREP.cpp \
 ../Tests/main.cpp 
 
 CPP_DEPS += \
-./Tests/FREP.d \
 ./Tests/main.d 
 
 OBJS += \
-./Tests/FREP.o \
 ./Tests/main.o 
 
 
