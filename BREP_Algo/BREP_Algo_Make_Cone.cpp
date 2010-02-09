@@ -30,7 +30,7 @@ Topo_Face * CreateConeFace(Topo_Wire* s1, Topo_Wire* s2, Topo_Wire *s3, Topo_Wir
 	Geom_Vec3 z = coneax.ZDir();
 	
 	
-	Topo_Face *f = new Topo_Face_Conic(coneax, r1, r2, length);
+	Topo_Face *f = new Topo_Face_Conic(coneax, ax, r1, r2, length);
 	f->Add(e);
 	return f;
 }

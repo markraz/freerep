@@ -5,6 +5,7 @@
 #include "Topo_Face_Conic.h"
 #include "Geom_Vec3.h"
 #include "Sub_MaxEdgeLength.h"
+#include "Geom_Matrix.h"
 
 #include <math.h>
 
@@ -18,8 +19,9 @@ Topo_Face_Conic::Topo_Face_Conic(const ICanAssociate *associate):Topo_Face(assoc
 	
 }
 
-Topo_Face_Conic::Topo_Face_Conic(Geom_Ax2 axis, double r1, double r2, double length)
+Topo_Face_Conic::Topo_Face_Conic(Geom_Ax2 axis, Geom_Ax2 caxis, double r1, double r2, double length)
 {
+	m_axis = caxis;
 	m_plane = Geom_Plane(axis);
 	m_radius_1 = r1;
 	m_radius_2 = r2;
@@ -28,9 +30,16 @@ Topo_Face_Conic::Topo_Face_Conic(Geom_Ax2 axis, double r1, double r2, double len
 
 void Topo_Face_Conic::ProjectPoint(const Geom_Vec3 &pnt, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
-	//TODO: figure out projection for conics
-	Geom_Vec3 norm = (pnt - m_plane.GetLocation()).Normalized();
-	pRet(pnt, norm);
+	Geom_Line line = m_axis.GetLine();
+	Geom_Vec3 p = line.ClosestPoint(pnt);
+	Geom_Vec3 norm = (pnt - p).Normalized();
+	
+	Geom_Vec3 around = (m_axis.ZDir() ^ norm).Normalized();
+	
+	double dr = m_radius_2 - m_radius_1;
+	
+	Geom_Matrix m = Geom_Matrix::RotateAround(around,atan2(dr,m_length));
+	pRet(pnt, m.Multiply(norm).Normalized());
 }
 
 const Topo_Face_Conic *cone;
