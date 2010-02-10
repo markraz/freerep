@@ -16,11 +16,21 @@ Geom_Plane::Geom_Plane(Geom_Ax2 axis)
 }
 
 Geom_Plane::Geom_Plane(double a, double b, double c, double d)
-{
-	//TODO: this is fubar and doesn't work at all. Even if it did, i'm not sure how to find xdir
-	
+{	
 	Geom_Vec3 norm = Geom_Vec3(a,b,c);
-	m_axis = Geom_Ax2(Geom_Vec3(0,0,-d/norm.Norm()),norm.Normalized(),Geom_Vec3(1,0,0));
+	
+	double dot = norm.Normalized().Dot(Geom_Vec3(1,0,0));
+    //TODO: get confusion from settings class
+    double confusion = 10e-9;
+    if((dot > 1 - confusion && dot <  1 + confusion) || (dot > -1 -confusion && dot <  -1 + confusion))
+    {
+    	m_axis = Geom_Ax2(norm.Normalized() *(d/norm.Norm()) ,norm.Normalized(),Geom_Vec3(0,1,0));
+    }
+	else
+	{
+    	Geom_Vec3 xdir = (norm ^ Geom_Vec3(1,0,0)).Normalized();
+    	m_axis = Geom_Ax2(norm.Normalized() *(d/norm.Norm()) ,norm.Normalized(),xdir);
+	}
 }
 
 Geom_Plane::Geom_Plane(Geom_Vec3 pnt1, Geom_Vec3 pnt2, Geom_Vec3 pnt3)

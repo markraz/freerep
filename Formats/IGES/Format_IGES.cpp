@@ -5,6 +5,7 @@
 #include "Topo_Shape.h"
 #include "Topo_Line.h"
 #include "Topo_Arc.h"
+#include "Topo_Face.h"
 #include "Topo_Face_Planar.h";
 #include "Geom_Transform.h"
 
@@ -319,7 +320,7 @@ void ParsePlane(std::string &line, int index, DirectoryEntry *de)
 	
 	index = ReadReal(size,line,index,parm_delimiter);
 	
-	//de->m_shape = new Topo_Face_Planar(Geom_Plane(a,b,c,d));
+	de->m_shape = new Topo_Face_Planar(Geom_Plane(a,b,c,d));
 }
 
 void ParseCurveOnParametricSurface(std::string &line, int index, DirectoryEntry *de)
@@ -335,8 +336,11 @@ void ParseCurveOnParametricSurface(std::string &line, int index, DirectoryEntry 
 	index = ReadInt(parametriccurve,line,index,parm_delimiter);
 	index = ReadInt(worldcurve,line,index,parm_delimiter);
 	index = ReadInt(preferredrep,line,index,parm_delimiter);
-	
-	//TODO: do something with this data
+
+	//TODO: if we are given a parametric curve instead of a world curve
+	//it must be converted into world space. Unfortunately at this
+	//point we don't even know what parametric surface the curve belongs to.
+	de->m_shape = directory_entries[(worldcurve-1)/2].m_shape;
 }
 
 void ParseTrimmedSurface(std::string &line, int index, DirectoryEntry* de)
@@ -358,8 +362,19 @@ void ParseTrimmedSurface(std::string &line, int index, DirectoryEntry* de)
 		index = ReadInt(inner_curve,line,index,parm_delimiter);			
 		inner_curves.push_back(inner_curve);
 	}
+
+	Topo_Face *psurface = (Topo_Face*)directory_entries[(surface-1)/2].m_shape;
 	
-	//TODO: do something with this data	
+	if(p_outer)
+	{
+		psurface->Add((Topo_Edge*)directory_entries[(p_outer-1)/2].m_shape,false);	
+	}
+	
+	for(size_t i=0; i < inner_curves.size(); i++)
+	{
+		int entry = (inner_curves[i]-1)/2;
+		psurface->Add((Topo_Edge*)directory_entries[entry].m_shape,true);	
+	}	
 }
 
 void ParseComposite(std::string &line, int index, DirectoryEntry* de)

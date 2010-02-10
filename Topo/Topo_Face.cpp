@@ -35,6 +35,14 @@ void Topo_Face::Add(Topo_Edge *edge)
     edge->AddParent(this);
 }
 
+void Topo_Face::Add(Topo_Edge *edge, bool inside)
+{
+	//TODO: check edges cw/ccw after being projected onto this Topo_Face
+    m_edges.push_back(edge);
+    edge->AddParent(this);
+}
+
+
 std::vector<std::vector<Geom_Vec3> > topo_face_vertices;
 int topo_face_current_edge;
 
