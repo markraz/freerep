@@ -37,7 +37,10 @@ void Topo_Face::Add(Topo_Edge *edge)
 
 void Topo_Face::Add(Topo_Edge *edge, bool inside)
 {
-	//TODO: check edges cw/ccw after being projected onto this Topo_Face
+	double area = edge->Area(this);
+	if((area < 0 && !inside) || (area > 0 && inside))
+		edge->Reverse();
+		
     m_edges.push_back(edge);
     edge->AddParent(this);
 }
@@ -191,4 +194,10 @@ Topo_Edge* Topo_Face::GetNextEdge()
     if(m_edges_it != m_edges.end())
         return *m_edges_it++;
     return 0;
+}
+
+Topo_Wire* Topo_Face::Project(Topo_Wire *wire)
+{
+	//Default operation is to project the wire onto m_plane by flattening the Z coordinate
+	return wire->Project(m_plane);
 }

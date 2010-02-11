@@ -70,3 +70,10 @@ Geom_Vec3 Topo_Arc::Norm() const
 {
     return m_A.ZDir();
 }
+
+Topo_Wire* Topo_Arc::Project(Geom_Plane &plane) const
+{
+	//TODO: implement me. Need support for elliptical arcs in case
+	//we are not on a plane at least parallel to &plane
+	return 0;	
+}

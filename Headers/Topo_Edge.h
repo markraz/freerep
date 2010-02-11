@@ -5,6 +5,7 @@
 #ifndef TOPO_EDGE_H
 #define TOPO_EDGE_H
 
+#include "Topo_Face.h"
 #include "Topo_Shape.h"
 #include "Topo_Wire.h"
 #include "EnumWireOrder.h"
@@ -50,6 +51,8 @@ public:
     Topo_Face* GetFirstParent();
     Topo_Face* GetNextParent();
     void AddParent(Topo_Face*);
+    
+    double Area(Topo_Face *face);
 
 //Overrides from ICanCopyWithTranslation
     void* MakeTranslatedCopy(Geom_Vec3 dir) const;

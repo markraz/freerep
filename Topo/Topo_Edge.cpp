@@ -185,6 +185,28 @@ void* Topo_Edge::MakeTranslatedCopy(Geom_Vec3 dir) const
     return nedge;
 }
 
+double Topo_Edge::Area(Topo_Face *face)
+{
+	Topo_Wire *wire;
+	EnumWireOrder order;
+	
+	GetFirstWire(&wire,&order);
+	
+	double area=0;
+	
+	while(wire)
+	{
+		Topo_Wire *newwire = face->Project(wire);
+		
+		area += newwire->GetArea(order);
+		delete newwire;
+		
+		GetNextWire(&wire,&order);
+	}
+	
+	return area;
+}
+
 void Topo_Edge::GetFirstWire(Topo_Wire **ppwire, EnumWireOrder *porder)
 {
     m_wires_it = m_wires.begin();

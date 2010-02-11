@@ -53,7 +53,7 @@ void dvCall(const Geom_Vec3 &pt, double d)
 
 void vCall(const Geom_Vec3 &pt,const Geom_Vec3 &n)
 {
-	Geom_Vec3 norm = n * -1;
+	Geom_Vec3 norm = n;// * -1;
 	
 	glNormal3d(norm.m_x,norm.m_y,norm.m_z);
     glVertex3d(pt.m_x,pt.m_y,pt.m_z);
@@ -91,8 +91,10 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
 	// glRotatef (ang, 0, 0, 1);
 
 	glShadeModel(GL_SMOOTH);
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	
 
 /*
 	glBegin (GL_LINES);
@@ -162,7 +164,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     face->Add(e1);
     face->Add(e2);*/
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     //glEnable(GL_AUTO_NORMAL);
 
     glBegin(GL_TRIANGLES);

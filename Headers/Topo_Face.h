@@ -12,6 +12,8 @@
 #include "ICanCopy.h"
 #include "ICanAssociate.h"
 #include "ICanTriangulate.h"
+#include "Topo_Wire.h"
+
 
 #include <list>
 
@@ -21,7 +23,7 @@ enum Topo_Face_Type
     TopoFacePlanar
 };
 
-class Topo_Face;
+class Topo_Edge;
 
 class Topo_Face: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate, public ICanTriangulate
 {
@@ -40,6 +42,7 @@ public:
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
 
 	virtual double Area();
+	virtual Topo_Wire* Project(Topo_Wire *wire);
 	
 	Geom_Plane GetPlane() const;
 	

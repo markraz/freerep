@@ -52,19 +52,18 @@ Geom_Vec3 Topo_Line::Norm() const
     return Geom_Vec3(0,0,1);
 }
 
-double Topo_Line::GetArea(EnumWireOrder order,Geom_Plane plane) const
+Topo_Wire* Topo_Line::Project(Geom_Plane &plane) const
 {
 	Geom_Vec3 a;
 	Geom_Vec3 b;
-	if(order == AFirst)
-	{
-		a = plane.MapPoint(m_A);	
-		b = plane.MapPoint(m_B);
-	}
-	else
-	{
-		b = plane.MapPoint(m_A);	
-		a = plane.MapPoint(m_B);
-	}
-	return (a.m_x * b.m_y - a.m_y * b.m_x)/2;
+	a = plane.MapPoint(m_A);	
+	b = plane.MapPoint(m_B);
+
+	return new Topo_Line(a,b);	
+}
+
+
+double Topo_Line::GetArea(EnumWireOrder order) const
+{
+	return (m_A.m_x * m_B.m_y - m_A.m_y * m_B.m_x)/2;
 }
