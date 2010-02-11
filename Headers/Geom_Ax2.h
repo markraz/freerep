@@ -9,6 +9,8 @@
 #include "Geom_Vec3.h"
 #include "Geom_Line.h"
 
+class Geom_Plane;
+
 class Geom_Ax2
 {
     Geom_Vec3 m_loc;
@@ -23,6 +25,7 @@ public:
     Geom_Vec3 ZDir() const {return m_zdir;}
     Geom_Vec3 XDir() const {return m_xdir;}
     Geom_Vec3 YDir() const {return m_zdir ^ m_xdir;}
+    Geom_Ax2 Project(Geom_Plane &plane) const;  
 
     void SetLocation(Geom_Vec3 p){m_loc = p;}
     

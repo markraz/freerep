@@ -364,6 +364,11 @@ void ParseTrimmedSurface(std::string &line, int index, DirectoryEntry* de)
 	}
 
 	Topo_Face *psurface = (Topo_Face*)directory_entries[(surface-1)/2].m_shape;
+	if(!psurface)
+	{
+		//TODO: throw some kind of error, we didn't build a surface for this curve
+		return;	
+	}
 	
 	if(p_outer)
 	{

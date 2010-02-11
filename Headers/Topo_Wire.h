@@ -22,7 +22,7 @@ public:
     virtual Geom_Vec3 GetEnd() const = 0;
     virtual bool HasNorm() const = 0;
     virtual Geom_Vec3 Norm() const = 0;
-    virtual double GetArea(EnumWireOrder order) const {return 0;}
+    virtual double GetArea(EnumWireOrder order) const = 0;
 	virtual Topo_Wire* Project(Geom_Plane &plane) const = 0;
 };
 

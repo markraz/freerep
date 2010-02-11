@@ -23,6 +23,7 @@ public:
     Geom_Vec3 GetEnd() const;
     bool HasNorm() const;
     Geom_Vec3 Norm() const;
+    double GetArea(EnumWireOrder order) const;
 	Topo_Wire* Project(Geom_Plane &plane) const;
 
 

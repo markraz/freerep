@@ -75,5 +75,16 @@ Topo_Wire* Topo_Arc::Project(Geom_Plane &plane) const
 {
 	//TODO: implement me. Need support for elliptical arcs in case
 	//we are not on a plane at least parallel to &plane
+	
+	Geom_Ax2 axis = m_A.Project(plane);
+	
+	
+	//TODO: even if we are coplanar, this probably doesn't work
+	return new Topo_Arc(axis,m_radius,m_start,m_end);
+}
+
+double Topo_Arc::GetArea(EnumWireOrder order) const
+{
+	//TODO: implement me
 	return 0;	
 }
