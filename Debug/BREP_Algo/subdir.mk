@@ -7,19 +7,22 @@ CPP_SRCS += \
 ../BREP_Algo/BREP_Algo_Extrude.cpp \
 ../BREP_Algo/BREP_Algo_Inside.cpp \
 ../BREP_Algo/BREP_Algo_Make_Cone.cpp \
-../BREP_Algo/BREP_Algo_Make_Sphere.cpp 
+../BREP_Algo/BREP_Algo_Make_Sphere.cpp \
+../BREP_Algo/BREP_Algo_Revolve.cpp 
 
 CPP_DEPS += \
 ./BREP_Algo/BREP_Algo_Extrude.d \
 ./BREP_Algo/BREP_Algo_Inside.d \
 ./BREP_Algo/BREP_Algo_Make_Cone.d \
-./BREP_Algo/BREP_Algo_Make_Sphere.d 
+./BREP_Algo/BREP_Algo_Make_Sphere.d \
+./BREP_Algo/BREP_Algo_Revolve.d 
 
 OBJS += \
 ./BREP_Algo/BREP_Algo_Extrude.o \
 ./BREP_Algo/BREP_Algo_Inside.o \
 ./BREP_Algo/BREP_Algo_Make_Cone.o \
-./BREP_Algo/BREP_Algo_Make_Sphere.o 
+./BREP_Algo/BREP_Algo_Make_Sphere.o \
+./BREP_Algo/BREP_Algo_Revolve.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

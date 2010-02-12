@@ -7,6 +7,7 @@ CPP_SRCS += \
 ../Topo/Topo_Arc.cpp \
 ../Topo/Topo_Edge.cpp \
 ../Topo/Topo_Face.cpp \
+../Topo/Topo_Face_Compound.cpp \
 ../Topo/Topo_Face_Conic.cpp \
 ../Topo/Topo_Face_Planar.cpp \
 ../Topo/Topo_Face_Spheric.cpp \
@@ -19,6 +20,7 @@ CPP_DEPS += \
 ./Topo/Topo_Arc.d \
 ./Topo/Topo_Edge.d \
 ./Topo/Topo_Face.d \
+./Topo/Topo_Face_Compound.d \
 ./Topo/Topo_Face_Conic.d \
 ./Topo/Topo_Face_Planar.d \
 ./Topo/Topo_Face_Spheric.d \
@@ -31,6 +33,7 @@ OBJS += \
 ./Topo/Topo_Arc.o \
 ./Topo/Topo_Edge.o \
 ./Topo/Topo_Face.o \
+./Topo/Topo_Face_Compound.o \
 ./Topo/Topo_Face_Conic.o \
 ./Topo/Topo_Face_Planar.o \
 ./Topo/Topo_Face_Spheric.o \

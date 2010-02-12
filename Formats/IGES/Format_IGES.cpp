@@ -8,6 +8,7 @@
 #include "Topo_Face.h"
 #include "Topo_Face_Planar.h";
 #include "Geom_Transform.h"
+#include "BREP_Algo_Revolve.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -402,6 +403,10 @@ void ParseSurfaceOfRevolution(std::string &line, int index, DirectoryEntry* de)
 	Topo_Shape *g = directory_entries[(generatrix-1)/2].m_shape;
 	
 	//TODO: build the surface
+	de->m_shape = RevolveSkeleton(d,g);
+	
+	int x=0;
+	x++;
 }
 
 void ParseComposite(std::string &line, int index, DirectoryEntry* de)
