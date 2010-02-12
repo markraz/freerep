@@ -76,6 +76,9 @@ Topo_Wire* Topo_Arc::Project(Geom_Plane &plane) const
 	//TODO: implement me. Need support for elliptical arcs in case
 	//we are not on a plane at least parallel to &plane
 	
+	//TODO: immediately important case is when we are perpendicular to 
+	//plane and projection is a line
+	
 	Geom_Ax2 axis = m_A.Project(plane);
 	Geom_Vec3 spnt = plane.MapPoint(GetStart());
 	Geom_Vec3 epnt = plane.MapPoint(GetEnd());
