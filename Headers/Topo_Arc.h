@@ -30,6 +30,8 @@ public:
 //Overrides from ICanCopyWithTranslation
     void* MakeTranslatedCopy(Geom_Vec3 dir) const;
 
+private:
+	double IntegrateArc(double t) const;
 };
 
 #endif

@@ -277,6 +277,10 @@ void ParseArc(std::string &line, int index, DirectoryEntry* de)
 	double sa = atan2(sy-cy,sx-cx);
 	double ea = atan2(ey-cy,ex-cx);
 	
+	//IGES arcs are always counter clockwise
+	if(sa > ea)
+		sa-=2*M_PI;
+	
 	Geom_Vec3 loc = TransformPoint(Geom_Vec3(0,0,z),de);
 	Geom_Vec3 zvec = RotatePoint(Geom_Vec3(0,0,1),de);
 	Geom_Vec3 xvec = RotatePoint(Geom_Vec3(1,0,0),de);
@@ -382,6 +386,24 @@ void ParseTrimmedSurface(std::string &line, int index, DirectoryEntry* de)
 	}	
 }
 
+void ParseSurfaceOfRevolution(std::string &line, int index, DirectoryEntry* de)
+{
+	int directrix;
+	int generatrix;
+	double startangle;
+	double endangle;
+	
+	index = ReadInt(directrix,line,index,parm_delimiter);
+	index = ReadInt(generatrix,line,index,parm_delimiter);
+	index = ReadReal(startangle,line,index,parm_delimiter);
+	index = ReadReal(endangle,line,index,parm_delimiter);
+	
+	Topo_Line *d = (Topo_Line*)directory_entries[(directrix-1)/2].m_shape;	
+	Topo_Shape *g = directory_entries[(generatrix-1)/2].m_shape;
+	
+	//TODO: build the surface
+}
+
 void ParseComposite(std::string &line, int index, DirectoryEntry* de)
 {
 //	printf("%s\n",line.c_str());
@@ -432,6 +454,9 @@ void ParseParm(std::string &line, int de_pointer)
 			break;
 		case 110:
 			ParseLine(line,index,de);
+			break;
+		case 120:
+			ParseSurfaceOfRevolution(line,index,de);
 			break;
 		case 124:
 			ParseMatrix(line,index,de);

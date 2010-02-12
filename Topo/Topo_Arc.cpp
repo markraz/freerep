@@ -77,14 +77,39 @@ Topo_Wire* Topo_Arc::Project(Geom_Plane &plane) const
 	//we are not on a plane at least parallel to &plane
 	
 	Geom_Ax2 axis = m_A.Project(plane);
+	Geom_Vec3 spnt = plane.MapPoint(GetStart());
+	Geom_Vec3 epnt = plane.MapPoint(GetEnd());
 	
+	double start = atan2(spnt.m_y - axis.Location().m_y, spnt.m_x - axis.Location().m_x);
+	double end = start + (m_end - m_start);
+		
 	
-	//TODO: even if we are coplanar, this probably doesn't work
-	return new Topo_Arc(axis,m_radius,m_start,m_end);
+	return new Topo_Arc(axis,m_radius,start,end);
+}
+
+double Topo_Arc::IntegrateArc(double t) const
+{
+	return m_A.Location().m_y * m_radius * cos(t)  + (m_radius * m_radius/2) * ( -sin(t) * cos(t) + t);
 }
 
 double Topo_Arc::GetArea(EnumWireOrder order) const
 {
-	//TODO: implement me
-	return 0;	
+	//TODO: test this
+	
+	//Equation for parametric arc is (x,y) = P + r (cos t, sin t)
+	//Line integral symbolically Integral  -(P_y + r sin t ) ( - r sin t ) dt,
+	//Solved: -P_y r cos t  + (r^2/2)( -sin t cos t + t)
+	
+	//Only works for counter clockwise arcs
+	double start = m_start;
+	double end = m_end;
+	
+	if(start < end)
+	{
+		double t = start;
+		start = end;
+		end = t;	
+	}
+	
+	return IntegrateArc(start) - IntegrateArc(end);	
 }
