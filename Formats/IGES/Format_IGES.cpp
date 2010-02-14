@@ -403,6 +403,7 @@ void ParseSurfaceOfRevolution(std::string &line, int index, DirectoryEntry* de)
 	Topo_Shape *g = directory_entries[(generatrix-1)/2].m_shape;
 	
 	//TODO: build the surface
+	return;
 	de->m_shape = RevolveSkeleton(d,g);
 	
 	int x=0;

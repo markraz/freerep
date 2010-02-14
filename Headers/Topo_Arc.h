@@ -16,6 +16,7 @@ public:
     Topo_Arc(const Geom_Ax2& A, double radius, double start, double end);
 
     Geom_Vec3 GetPntAtU(double u) const;
+    Geom_Ax2 GetAxis() const;
 
 //Overrides from Topo_Wire
     void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt, double u)) const;

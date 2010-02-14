@@ -67,3 +67,8 @@ double Topo_Line::GetArea(EnumWireOrder order) const
 {
 	return (m_A.m_x * m_B.m_y - m_A.m_y * m_B.m_x)/2;
 }
+
+Geom_Line Topo_Line::GetLine()
+{
+	return Geom_Line(m_A,m_B);	
+}

@@ -14,6 +14,8 @@ class Topo_Line: public Topo_Wire
 public:
     Topo_Line(const Geom_Vec3& A, const Geom_Vec3& B);
     ~Topo_Line();
+    
+    Geom_Line GetLine();
 
 //Overrides from Topo_Wire
     void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt, double u)) const;

@@ -14,7 +14,9 @@ class Geom_Line
 public:
 	Geom_Line(Geom_Vec3 a, Geom_Vec3 b);
 	
+	Geom_Vec3 Direction();
 	Geom_Vec3 ClosestPoint(Geom_Vec3 p);
+	bool IsOn(Geom_Vec3 p);
 };
 
 #endif 

@@ -116,3 +116,8 @@ double Topo_Arc::GetArea(EnumWireOrder order) const
 	
 	return IntegrateArc(start) - IntegrateArc(end);	
 }
+
+Geom_Ax2 Topo_Arc::GetAxis() const
+{
+	return m_A;	
+}

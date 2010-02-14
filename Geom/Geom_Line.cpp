@@ -19,3 +19,14 @@ Geom_Vec3 Geom_Line::ClosestPoint(Geom_Vec3 p)
 	double d = u * v;
 	return (u * d) + m_a;
 }
+
+bool Geom_Line::IsOn(Geom_Vec3 p)
+{
+	Geom_Vec3 p2 = ClosestPoint(p);
+	return p2 == p;	
+}
+
+Geom_Vec3 Geom_Line::Direction()
+{
+	return m_b - m_a;	
+}
