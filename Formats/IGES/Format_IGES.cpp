@@ -404,7 +404,7 @@ void ParseSurfaceOfRevolution(std::string &line, int index, DirectoryEntry* de)
 	
 	//TODO: build the surface
 	return;
-	de->m_shape = RevolveSkeleton(d,g);
+	de->m_shape = RevolveSkeleton(d,g,startangle,endangle);
 	
 	int x=0;
 	x++;

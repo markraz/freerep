@@ -38,6 +38,7 @@ public:
     
     Geom_Vec3 Crossed(Geom_Vec3) const;
     double Dot(Geom_Vec3) const;
+ 
  };
 
 #endif

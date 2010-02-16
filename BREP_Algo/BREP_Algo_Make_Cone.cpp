@@ -12,6 +12,15 @@
 
 #include <math.h>
 
+std::vector<Topo_Face*> MakeConeSectionSkeleton(Geom_Ax2 loc, double r1, double r2, double length, double sa, double ea)
+{
+	std::vector<Topo_Face*> ret;
+	
+	//TODO: implement me
+	
+	return ret;
+}
+
 Topo_Face * CreateConeFace(Topo_Wire* s1, Topo_Wire* s2, Topo_Wire *s3, Topo_Wire *s4, Geom_Ax2 ax, double r1, double r2, double length, double t1, double t2)
 {
 	Topo_Edge *e = new Topo_Edge();

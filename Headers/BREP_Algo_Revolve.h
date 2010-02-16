@@ -8,6 +8,6 @@
 #include "Topo_Face_Compound.h"
 #include "Topo_Line.h"
 
-Topo_Face_Compound* RevolveSkeleton(Topo_Line *line, Topo_Shape *generatrix);
+Topo_Face_Compound* RevolveSkeleton(Topo_Line *line, Topo_Shape *generatrix, double start, double end);
 
 #endif

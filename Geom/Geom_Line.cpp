@@ -30,3 +30,14 @@ Geom_Vec3 Geom_Line::Direction()
 {
 	return m_b - m_a;	
 }
+
+Geom_Vec3 Geom_Line::MidPoint()
+{
+	return (m_b/2) + (m_a/2);	
+}
+
+double Geom_Line::DistanceToLine(Geom_Vec3 p)
+{
+	Geom_Vec3 p2 = ClosestPoint(p);
+	return (p2 - p).Norm();	
+}

@@ -16,6 +16,8 @@ public:
 	
 	Geom_Vec3 Direction();
 	Geom_Vec3 ClosestPoint(Geom_Vec3 p);
+	Geom_Vec3 MidPoint();
+	double DistanceToLine(Geom_Vec3 p);
 	bool IsOn(Geom_Vec3 p);
 };
 
