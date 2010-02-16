@@ -61,7 +61,7 @@ std::vector<Topo_Face*> RevolveWireSkeleton(Topo_Line *directrix, Topo_Wire *wir
 	
 	if(dynamic_cast<Topo_Line*>(wire))
 	{
-		Topo_Line* line = (Topo_Line*)line;
+		Topo_Line* line = (Topo_Line*)directrix;
 		
 		//Check is generatrix line is coplanar to directrix line
 		

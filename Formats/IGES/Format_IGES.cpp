@@ -2,6 +2,9 @@
 //See License.txt for terms and conditions
 //Format_IGES.cpp - Author Jon Pry 
 
+//#define EDGES //enables the creation of edges from wires
+//#define FACES //enables the creation of faces from edges
+
 #include "Topo_Shape.h"
 #include "Topo_Line.h"
 #include "Topo_Arc.h"
@@ -324,8 +327,9 @@ void ParsePlane(std::string &line, int index, DirectoryEntry *de)
 	index = ReadReal(z,line,index,parm_delimiter);
 	
 	index = ReadReal(size,line,index,parm_delimiter);
-	
+#ifdef FACES	
 	de->m_shape = new Topo_Face_Planar(Geom_Plane(a,b,c,d));
+#endif
 }
 
 void ParseCurveOnParametricSurface(std::string &line, int index, DirectoryEntry *de)
@@ -403,9 +407,10 @@ void ParseSurfaceOfRevolution(std::string &line, int index, DirectoryEntry* de)
 	Topo_Shape *g = directory_entries[(generatrix-1)/2].m_shape;
 	
 	//TODO: build the surface
-	return;
+	//return;
+#ifdef FACES
 	de->m_shape = RevolveSkeleton(d,g,startangle,endangle);
-	
+#endif	
 	int x=0;
 	x++;
 }
@@ -427,6 +432,7 @@ void ParseComposite(std::string &line, int index, DirectoryEntry* de)
 	
 	//return; 
 		
+#ifdef EDGES
 	de->m_shape = new Topo_Edge();
 	
 	for(size_t i=0; i < elements.size(); i++)
@@ -434,6 +440,7 @@ void ParseComposite(std::string &line, int index, DirectoryEntry* de)
 		int entry = (elements[i]-1)/2;
 		((Topo_Edge*)de->m_shape)->Add((Topo_Wire*)directory_entries[entry].m_shape);	
 	}
+#endif
 }
 
 void ParseParm(std::string &line, int de_pointer)
