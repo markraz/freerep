@@ -41,3 +41,8 @@ double Geom_Line::DistanceToLine(Geom_Vec3 p)
 	Geom_Vec3 p2 = ClosestPoint(p);
 	return (p2 - p).Norm();	
 }
+
+double Geom_Line::Length()
+{
+	return m_a.Distance(m_b);	
+}

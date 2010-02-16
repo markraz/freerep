@@ -9,14 +9,34 @@
 #include "Topo_Face_Conic.h"
 #include "Topo_Solid.h"
 #include "Geom_Matrix.h"
+#include "FreeREP.h"
 
 #include <math.h>
+
+Topo_Face * CreateConeFace(Geom_Ax2 ax, double r1, double r2, double length, double t1, double t2)
+{
+	Geom_Matrix m = Geom_Matrix::RotateAround(ax.ZDir(),(t1+t2)/2);
+	
+	Geom_Ax2 coneax(ax.Location(),m.Multiply(ax.YDir()),m.Multiply(ax.ZDir()));
+	
+	Geom_Vec3 x = coneax.XDir();
+	Geom_Vec3 y = coneax.YDir();
+	Geom_Vec3 z = coneax.ZDir();
+		
+	Topo_Face *f = new Topo_Face_Conic(coneax, ax, r1, r2, length);
+	return f;
+}
+
 
 std::vector<Topo_Face*> MakeConeSectionSkeleton(Geom_Ax2 loc, double r1, double r2, double length, double sa, double ea)
 {
 	std::vector<Topo_Face*> ret;
 	
 	//TODO: implement me
+	for(double a = sa; a < ea && !ISZERO(a-ea); a +=M_PI/2)
+	{
+		ret.push_back(CreateConeFace(loc,r1,r2,length,a,a+M_PI/2));
+	}
 	
 	return ret;
 }
@@ -29,17 +49,7 @@ Topo_Face * CreateConeFace(Topo_Wire* s1, Topo_Wire* s2, Topo_Wire *s3, Topo_Wir
 	e->Add(s3);
 	e->Add(s4);
 	
-	
-	Geom_Matrix m = Geom_Matrix::RotateAround(ax.ZDir(),(t1+t2)/2);
-	
-	Geom_Ax2 coneax(ax.Location(),m.Multiply(ax.YDir()),m.Multiply(ax.ZDir()));
-	
-	Geom_Vec3 x = coneax.XDir();
-	Geom_Vec3 y = coneax.YDir();
-	Geom_Vec3 z = coneax.ZDir();
-	
-	
-	Topo_Face *f = new Topo_Face_Conic(coneax, ax, r1, r2, length);
+	Topo_Face *f = CreateConeFace(ax, r1, r2, length,t1,t2);
 	f->Add(e);
 	return f;
 }

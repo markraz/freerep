@@ -26,10 +26,13 @@ void GenerateConicSurface(Topo_Line *directrix, Topo_Line *generatrix, std::vect
 	Geom_Line dline = directrix->GetLine();
 	Geom_Line gline = generatrix->GetLine();
 	
+//	double l1 = dline.Length();
+//	double l2 = gline.Length();
+	
 	Geom_Vec3 mpt = gline.MidPoint();
 	
 	Geom_Vec3 loc = dline.ClosestPoint(mpt);
-	Geom_Vec3 zdir = dline.Direction();
+	Geom_Vec3 zdir = dline.Direction().Normalized();
 	
 	Geom_Vec3 xdir = (mpt-loc).Normalized();
 	
@@ -61,7 +64,7 @@ std::vector<Topo_Face*> RevolveWireSkeleton(Topo_Line *directrix, Topo_Wire *wir
 	
 	if(dynamic_cast<Topo_Line*>(wire))
 	{
-		Topo_Line* line = (Topo_Line*)directrix;
+		Topo_Line* line = (Topo_Line*)wire;
 		
 		//Check is generatrix line is coplanar to directrix line
 		

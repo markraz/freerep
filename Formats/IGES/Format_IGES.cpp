@@ -2,8 +2,8 @@
 //See License.txt for terms and conditions
 //Format_IGES.cpp - Author Jon Pry 
 
-//#define EDGES //enables the creation of edges from wires
-//#define FACES //enables the creation of faces from edges
+#define EDGES //enables the creation of edges from wires
+#define FACES //enables the creation of faces from edges
 
 #include "Topo_Shape.h"
 #include "Topo_Line.h"

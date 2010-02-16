@@ -17,6 +17,9 @@ public:
 	Topo_Face_Compound();
 	
 	void Add(Topo_Face *face);
+	
+//Override from Topo_Face
+	void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
 
 	//Override from ICanCopyAndTranslate
 	void *MakeTranslatedCopy(Geom_Vec3 dir) const;

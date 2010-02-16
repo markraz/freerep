@@ -56,6 +56,9 @@ void topo_face_vertex_absorber(const Geom_Vec3 &pnt)
 
 void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const
 {
+	if(!m_edges.size())
+		return;
+	
     Geom_Plane plane = GetPlane();
 
     topo_face_vertices.clear();

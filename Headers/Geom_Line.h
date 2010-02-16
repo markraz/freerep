@@ -19,6 +19,7 @@ public:
 	Geom_Vec3 MidPoint();
 	double DistanceToLine(Geom_Vec3 p);
 	bool IsOn(Geom_Vec3 p);
+	double Length();
 };
 
 #endif 

@@ -37,8 +37,8 @@ public:
     Topo_Face();
     Topo_Face(const ICanAssociate *);
 
-    void Add(Topo_Edge *edge);
-    void Add(Topo_Edge *edge,bool inside);
+    virtual void Add(Topo_Edge *edge);
+    virtual void Add(Topo_Edge *edge,bool inside);
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
 
 	virtual double Area();

@@ -18,3 +18,8 @@ void *Topo_Face_Compound::MakeTranslatedCopy(Geom_Vec3 dir) const
 {
 	
 }
+
+void Topo_Face_Compound::Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const
+{
+	//We don't actually support triangulation. But there is no sense in crashing when called	
+}
