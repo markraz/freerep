@@ -4,6 +4,8 @@
 
 #include "Topo_Edge.h"
 
+#include "stdio.h"
+
 Topo_Edge::Topo_Edge()
 {
     m_closed = false;
@@ -244,6 +246,20 @@ Topo_Face* Topo_Edge::GetNextParent()
 void Topo_Edge::AddParent(Topo_Face* parent)
 {
 	m_parents.push_back(parent);	
+}
+
+void Topo_Edge::Print()
+{
+	printf("Topo_Edge\n");
+	Topo_Wire *wire;
+	EnumWireOrder order;
+	
+	GetFirstWire(&wire,&order);
+	while(wire)
+	{
+		wire->Print();
+		GetNextWire(&wire,&order);
+	}
 }
 
 /*

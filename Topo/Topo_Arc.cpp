@@ -3,6 +3,9 @@
 //Topo_Arc.cpp - Author Jon Pry 
 
 #include "Topo_Arc.h"
+#include "FreeREP.h"
+
+#include <stdio.h>
 #include <math.h>
 
 Topo_Arc::Topo_Arc(const Geom_Ax2 &A, double radius, double start, double end)
@@ -120,4 +123,20 @@ double Topo_Arc::GetArea(EnumWireOrder order) const
 Geom_Ax2 Topo_Arc::GetAxis() const
 {
 	return m_A;	
+}
+
+void Topo_Arc::Print() 
+{
+	Geom_Vec3 loc = m_A.Location();
+	Geom_Vec3 zdir = m_A.ZDir();
+	Geom_Vec3 xdir = m_A.XDir();
+	printf("Topo_Arc: loc: x: %lf, y: %lf, z: %lf, zdir: x: %lf, y: %lf, z: %lf, xdir: x: %lf, y: %lf, z: %lf, rad: %lf, start: %lf, end: %lf\n",
+		loc.m_x,loc.m_y,loc.m_z,zdir.m_x,zdir.m_y,zdir.m_z,xdir.m_x,xdir.m_y,xdir.m_z,m_radius,m_start,m_end);
+}
+
+bool Topo_Arc::IsCoplanar(Geom_Plane &plane) const
+{
+	Geom_Vec3 c = plane.MapPoint(m_A.Location());
+	double dot = m_A.ZDir() * plane.GetNorm();
+	return ISZERO(c.m_z) && ISZERO(dot);	
 }

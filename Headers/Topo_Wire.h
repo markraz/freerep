@@ -11,8 +11,9 @@
 #include "Geom_Plane.h"
 #include "ICanCopy.h"
 #include "ICanAssociate.h"
+#include "ICanPrettyPrint.h"
 
-class Topo_Wire: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate
+class Topo_Wire: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate, public ICanPrettyPrint
 {
 public:
     Topo_Wire();
@@ -21,6 +22,7 @@ public:
     virtual Geom_Vec3 GetStart() const = 0;
     virtual Geom_Vec3 GetEnd() const = 0;
     virtual bool HasNorm() const = 0;
+    virtual bool IsCoplanar(Geom_Plane &plane) const = 0;
     virtual Geom_Vec3 Norm() const = 0;
     virtual double GetArea(EnumWireOrder order) const = 0;
 	virtual Topo_Wire* Project(Geom_Plane &plane) const = 0;

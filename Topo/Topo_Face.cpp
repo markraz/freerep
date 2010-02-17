@@ -204,3 +204,9 @@ Topo_Wire* Topo_Face::Project(Topo_Wire *wire)
 	//Default operation is to project the wire onto m_plane by flattening the Z coordinate
 	return wire->Project(m_plane);
 }
+
+bool Topo_Face::Contains(Topo_Wire *wire)
+{
+	//TODO: should never get called, throw exception
+	return false;	
+}

@@ -16,10 +16,37 @@ void Topo_Face_Compound::Add(Topo_Face *face)
 
 void *Topo_Face_Compound::MakeTranslatedCopy(Geom_Vec3 dir) const
 {
-	
+	//TODO: implement this, or throw exception
+	return 0;
 }
 
 void Topo_Face_Compound::Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const
 {
 	//We don't actually support triangulation. But there is no sense in crashing when called	
+}
+
+void Topo_Face_Compound::Add(Topo_Edge *edge)
+{
+	edge->Print();	
+}
+
+void Topo_Face_Compound::Add(Topo_Edge *edge,bool inside)
+{
+	for(size_t i=0; i < m_faces.size(); i++)
+	{
+		Topo_Wire *wire;
+		EnumWireOrder order;
+		edge->GetFirstWire(&wire,&order);
+		while(wire)
+		{
+			if(m_faces[i]->Contains(wire))
+			{
+				//TODO: do something	
+			}
+			
+			edge->GetNextWire(&wire,&order);	
+		}	
+	}
+	
+	edge->Print();	
 }

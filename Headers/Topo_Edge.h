@@ -12,6 +12,7 @@
 #include "Geom_Vec3.h"
 #include "Geom_Plane.h"
 #include "ICanCopy.h"
+#include "ICanPrettyPrint.h"
 #include "ICanAssociate.h"
 
 #include <list>
@@ -27,7 +28,7 @@ public:
 
 class Topo_Face;
 
-class Topo_Edge: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate
+class Topo_Edge: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate, public ICanPrettyPrint
 {
 	std::list<Topo_Face*> m_parents;
 	std::list<Topo_Face*>::iterator m_parents_it;
@@ -53,6 +54,9 @@ public:
     void AddParent(Topo_Face*);
     
     double Area(Topo_Face *face);
+    
+//Override from ICanPrettyPrint
+	void Print();
 
 //Overrides from ICanCopyWithTranslation
     void* MakeTranslatedCopy(Geom_Vec3 dir) const;
