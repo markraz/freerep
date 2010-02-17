@@ -3,6 +3,9 @@
 //Topo_Line.cpp - Author Jon Pry 
 
 #include "Topo_Line.h"
+#include "FreeREP.h"
+
+#include "stdio.h"
 
 Topo_Line::Topo_Line(const Geom_Vec3& A, const Geom_Vec3& B)
 {
@@ -71,4 +74,18 @@ double Topo_Line::GetArea(EnumWireOrder order) const
 Geom_Line Topo_Line::GetLine()
 {
 	return Geom_Line(m_A,m_B);	
+}
+
+void Topo_Line::Print()
+{
+	printf("Topo_Line: x1: %lf, y1: %lf, z1: %lf, x2: %lf, y2: %lf, z2: %lf\n",
+		m_A.m_x,m_A.m_y,m_A.m_z,m_B.m_x,m_B.m_y,m_B.m_z);	
+}
+
+bool Topo_Line::IsCoplanar(Geom_Plane &plane) const
+{
+	Geom_Vec3 a = plane.MapPoint(m_A);
+	Geom_Vec3 b = plane.MapPoint(m_B);
+	
+	return ISZERO(a.m_z) && ISZERO(b.m_z);	
 }

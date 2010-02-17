@@ -26,7 +26,10 @@ public:
     Geom_Vec3 Norm() const;
     double GetArea(EnumWireOrder order) const;
 	Topo_Wire* Project(Geom_Plane &plane) const;
+	bool IsCoplanar(Geom_Plane &plane) const;
 
+//Override from ICanPrettyPrint
+	void Print();
 
 //Overrides from ICanCopyWithTranslation
     void* MakeTranslatedCopy(Geom_Vec3 dir) const;

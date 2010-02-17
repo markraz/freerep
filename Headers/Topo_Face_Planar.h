@@ -14,6 +14,7 @@ public:
     Topo_Face_Planar(const ICanAssociate *);
 
 //Overrides from Topo_Face
+	bool Contains(Topo_Wire* wire);
 	double Area();
 	
 //Override from ICanCopyAndTranslate

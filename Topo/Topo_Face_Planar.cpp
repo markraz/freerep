@@ -32,3 +32,8 @@ double Topo_Face_Planar::Area()
 {
 	//TODO: implement me	
 }
+
+bool Topo_Face_Planar::Contains(Topo_Wire* wire)
+{
+	return wire->IsCoplanar(m_plane);
+}

@@ -11,6 +11,7 @@
 #include "Geom_Plane.h"
 #include "ICanCopy.h"
 #include "ICanAssociate.h"
+#include "ICanPrettyPrint.h"
 #include "ICanTriangulate.h"
 #include "Topo_Wire.h"
 
@@ -25,7 +26,7 @@ enum Topo_Face_Type
 
 class Topo_Edge;
 
-class Topo_Face: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate, public ICanTriangulate
+class Topo_Face: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate, public ICanTriangulate, public ICanPrettyPrint
 {
 protected:
     Topo_Face_Type m_type;
@@ -43,6 +44,7 @@ public:
 
 	virtual double Area();
 	virtual Topo_Wire* Project(Topo_Wire *wire);
+	virtual bool Contains(Topo_Wire* wire);
 	
 	Geom_Plane GetPlane() const;
 	
