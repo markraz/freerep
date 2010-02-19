@@ -30,6 +30,7 @@ public:
 
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
     void ProjectPoint(const Geom_Vec3 &pnt, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
+    bool Contains(Topo_Wire* wire);
     
 //Override from ICanCopyAndTranslate
 	void *MakeTranslatedCopy(Geom_Vec3 dir) const;

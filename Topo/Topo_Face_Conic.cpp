@@ -125,3 +125,7 @@ void *Topo_Face_Conic::MakeTranslatedCopy(Geom_Vec3 dir) const
     return nface;
 }
 
+bool Topo_Face_Conic::Contains(Topo_Wire *wire)
+{
+	
+}

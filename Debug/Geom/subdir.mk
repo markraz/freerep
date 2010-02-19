@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../Geom/ExactPredicates.cpp \
 ../Geom/Geom_Ax2.cpp \
 ../Geom/Geom_Line.cpp \
 ../Geom/Geom_Matrix.cpp \
@@ -12,6 +13,7 @@ CPP_SRCS += \
 ../Geom/Geom_Vec3.cpp 
 
 CPP_DEPS += \
+./Geom/ExactPredicates.d \
 ./Geom/Geom_Ax2.d \
 ./Geom/Geom_Line.d \
 ./Geom/Geom_Matrix.d \
@@ -20,6 +22,7 @@ CPP_DEPS += \
 ./Geom/Geom_Vec3.d 
 
 OBJS += \
+./Geom/ExactPredicates.o \
 ./Geom/Geom_Ax2.o \
 ./Geom/Geom_Line.o \
 ./Geom/Geom_Matrix.o \
