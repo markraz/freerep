@@ -14,6 +14,7 @@
 class Topo_Face_Spheric: public Topo_Face, public ICanSubdivide
 {
     double m_radius;
+    Geom_Ax2 m_axis;
     mutable double m_metric;
     
     std::vector<Geom_Vec3> m_edge_vertices;
@@ -21,10 +22,11 @@ class Topo_Face_Spheric: public Topo_Face, public ICanSubdivide
 public:
 	Topo_Face_Spheric();
     Topo_Face_Spheric(const ICanAssociate *);
-    Topo_Face_Spheric(Geom_Plane plane,double r);
+    Topo_Face_Spheric(Geom_Ax2 plane,double r);
 
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
     void ProjectPoint(const Geom_Vec3 &pnt, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
+    Geom_Vec3 ParameterizePoint(Geom_Vec3 p) const;
     
 //Override from ICanCopyAndTranslate
 	void *MakeTranslatedCopy(Geom_Vec3 dir) const;

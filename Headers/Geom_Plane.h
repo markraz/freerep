@@ -21,7 +21,7 @@ public:
     Geom_Plane(Geom_Vec3 pnt, Geom_Vec3 norm);
     Geom_Plane(Geom_Ax2 ax);
 
-    Geom_Vec3 MapPoint(Geom_Vec3 p);
+    Geom_Vec3 MapPoint(Geom_Vec3 p) const;
     Geom_Vec3 UnmapPoint(Geom_Vec3 p);
     Geom_Vec3 GetNorm() const;
     Geom_Vec3 GetLocation() const;

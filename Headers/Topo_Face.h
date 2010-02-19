@@ -45,6 +45,7 @@ public:
 	virtual double Area();
 	virtual Topo_Wire* Project(Topo_Wire *wire);
 	virtual bool Contains(Topo_Wire* wire);
+	virtual Geom_Vec3 ParameterizePoint(Geom_Vec3 p) const;
 	
 	Geom_Plane GetPlane() const;
 	

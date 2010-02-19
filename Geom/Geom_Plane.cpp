@@ -68,7 +68,7 @@ Geom_Plane::Geom_Plane(Geom_Vec3 pnt, Geom_Vec3 norm)
 
 }
 
-Geom_Vec3 Geom_Plane::MapPoint(Geom_Vec3 pnt)
+Geom_Vec3 Geom_Plane::MapPoint(Geom_Vec3 pnt) const
 {
 	pnt = pnt - m_axis.Location();
 

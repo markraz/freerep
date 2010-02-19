@@ -16,6 +16,8 @@
  *    gcc -o gtkglext-example `pkg-config --cflags --libs gtk+-2.0 gtkglext-1.0 gtkglext-x11-1.0` gtkglext-example.c
  */
  
+#define DRAWFACES
+
 #include <gtk/gtk.h>
 #include <gtk/gtkgl.h>
 #include <GL/gl.h>
@@ -164,14 +166,14 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     face->Add(e1);
     face->Add(e2);*/
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);//GL_FILL
     //glEnable(GL_AUTO_NORMAL);
 
     glBegin(GL_TRIANGLES);
     //face->Triangulate(.01,vCall);
     glEnd();
     
-    Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1)),1);
+    Topo_Face_Spheric *sphere = new Topo_Face_Spheric(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1);
     glBegin(GL_TRIANGLES);
     //sphere->Triangulate(.01,vCall);
     glEnd();
@@ -187,9 +189,9 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     //solid->Triangulate(.001,vCall);
     glEnd(); 
     
-    std::vector<Topo_Shape*> shapes = ReadIGES("Tests/ExtrudedArcs.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
+    std::vector<Topo_Shape*> shapes;// = ReadIGES("Tests/ExtrudedArcs.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
     
-    //shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,1.5),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.5));
+    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1.5));
     //shapes.push_back(MakeCone(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),.5,1,1));
     
     for(int i=0; i < shapes.size(); i++)
@@ -197,9 +199,46 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     	ICanTriangulate *obj = dynamic_cast<ICanTriangulate*>(shapes[i]);
     	if(obj)
     	{
+   #ifdef DRAWFACES
     		glBegin(GL_TRIANGLES);
-    		obj->Triangulate(.10,vCall);
-    		glEnd();	
+    		obj->Triangulate(.50,vCall);
+    		glEnd();
+    #endif
+    //#else
+    		Topo_Face *face = dynamic_cast<Topo_Face*>(shapes[i]);
+    		if(face)
+    		{
+    			Topo_Edge* edge = face->GetFirstEdge();
+    			while(edge)
+    			{
+	    			glBegin(GL_LINE_STRIP);
+    				edge->GetVertices(.01,nvCall);
+    				glEnd();	
+    				
+    				edge = face->GetNextEdge();	
+    			}	
+    		}
+
+    		Topo_Solid *solid = dynamic_cast<Topo_Solid*>(shapes[i]);
+    		if(solid)
+    		{
+    			face = solid->GetFirstFace();
+    			while(face)
+    			{
+    				Topo_Edge* edge = face->GetFirstEdge();
+    				while(edge)
+    				{
+		    			glBegin(GL_LINE_STRIP);
+    					edge->GetVertices(.01,nvCall);
+    					glEnd();	
+    				
+    					edge = face->GetNextEdge();	
+    				}
+    				face = solid->GetNextFace();
+    			}	
+    		}
+    	
+   //#endif
     	}
     	else
     	{

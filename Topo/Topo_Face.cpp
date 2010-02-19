@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <vector>
 
+#define TRI_DEBUG
+
 Topo_Face::Topo_Face()
 {
 	
@@ -54,6 +56,11 @@ void topo_face_vertex_absorber(const Geom_Vec3 &pnt)
     topo_face_vertices[topo_face_current_edge].push_back(pnt);
 }
 
+Geom_Vec3 Topo_Face::ParameterizePoint(Geom_Vec3 p) const
+{
+	return m_plane.MapPoint(p);	
+}
+
 void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const
 {
 	if(!m_edges.size())
@@ -91,13 +98,12 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
         for(size_t j = 0; j < (unsigned int)sizes[i]; j++)
         {
             Geom_Vec3 p = topo_face_vertices[i][j];
-            //TODO: project onto the faces plane
 
             uvertices[cvertex][0] = p.m_x;
             uvertices[cvertex][1] = p.m_y;
             uvertices[cvertex][2] = p.m_z;
 
-            Geom_Vec3 mp = plane.MapPoint(p);
+            Geom_Vec3 mp = ParameterizePoint(p);
             vertices[cvertex][0] = mp.m_x;
             vertices[cvertex][1] = mp.m_y;
 

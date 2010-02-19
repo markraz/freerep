@@ -106,7 +106,7 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 							face = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(vars[1],vars[2],vars[3])));
 							break;
 						case 1:
-							face = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(vars[1],vars[2],vars[3])),vars[4]);
+//							face = new Topo_Face_Spheric(Geom_Plane(Geom_Vec3(0,0,0),Geom_Vec3(vars[1],vars[2],vars[3])),vars[4]);
 							break;
 						default:
 							break;
