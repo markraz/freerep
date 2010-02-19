@@ -15,7 +15,7 @@ Topo_Arc::Topo_Arc(const Geom_Ax2 &A, double radius, double start, double end)
 
 void Topo_Arc::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt, double u)) const
 {
-    int nsegs = 5;
+    int nsegs = 6;
     if(dDeviation < m_radius)
     {
     	double da = m_end - m_start;
@@ -23,6 +23,13 @@ void Topo_Arc::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt, 
     	if(segs > nsegs)
     		nsegs = segs;	
     }
+    
+    //This improves stability with axis aligned spheres. Not a good general solution.
+    //We need to make sure that we include the maxima as defined by the underlying surface
+    //in the resultant vertices.
+    
+    if(nsegs%2)
+    	nsegs++;
     
     for(int i=0; i <= nsegs; i++)
     {

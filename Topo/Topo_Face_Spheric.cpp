@@ -30,9 +30,11 @@ void Topo_Face_Spheric::ProjectPoint(const Geom_Vec3 &pnt, void (*pRet)(const Ge
 {
 	//TODO: rotate into the axis zdir
 	double rt = sqrt(m_radius*m_radius - pnt.m_x *pnt.m_x);
-	Geom_Vec3 p(rt * sin(pnt.m_y),rt * cos(pnt.m_y),pnt.m_x);
-	p = Geom_Vec3(p.m_x,p.m_y,p.m_z);
-	Geom_Vec3 norm = p.Normalized();
+	Geom_Vec3 p((m_axis.XDir() * (rt * cos(pnt.m_y))) + 
+				(m_axis.YDir() * rt * sin(pnt.m_y)) +
+				(m_axis.ZDir() * pnt.m_x));
+			//p = Geom_Vec3(p.m_x,p.m_y,p.m_z);
+	Geom_Vec3 norm = p.Normalized()*-1;
 	pRet(p + m_plane.GetLocation(), norm);
 }
 
@@ -52,17 +54,13 @@ double Topo_Face_Spheric::GetRadius() const
 
 double Topo_Face_Spheric::MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const
 {
-	Geom_Vec3 start = a;
-	Geom_Vec3 end = b;
-	start.m_z = sqrt(m_radius * m_radius - start.m_x * start.m_x - start.m_y * start.m_y);
-	end.m_z = sqrt(m_radius * m_radius - end.m_x * end.m_x - end.m_y * end.m_y);
-	
-	return 0;//(start - end).Norm() * m_metric;
+	//TODO: implement this. This is not a reasonable metric for the parametric space
+	return (a-b).Norm() * m_metric;
 }
 
 Geom_Vec3 Topo_Face_Spheric::Subdivide(Geom_Vec3 a, Geom_Vec3 b) const
 {
- 	return (a+b).Normalized() * m_radius;
+ 	return (a+b)*.5;
 }
 
 void TopoFaceSphericVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
