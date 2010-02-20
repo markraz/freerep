@@ -56,7 +56,7 @@ void topo_face_vertex_absorber(const Geom_Vec3 &pnt)
     topo_face_vertices[topo_face_current_edge].push_back(pnt);
 }
 
-Geom_Vec3 Topo_Face::ParameterizePoint(Geom_Vec3 p) const
+Geom_Vec3 Topo_Face::ParameterizePoint(Geom_Vec3 p, Geom_Vec3 prev) const
 {
 	return m_plane.MapPoint(p);	
 }
@@ -103,7 +103,7 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
             uvertices[cvertex][1] = p.m_y;
             uvertices[cvertex][2] = p.m_z;
 
-            Geom_Vec3 mp = ParameterizePoint(p);
+			Geom_Vec3 mp = ParameterizePoint(p, j==0?topo_face_vertices[i][sizes[i]-1]:topo_face_vertices[i][j-1]);
             vertices[cvertex][0] = mp.m_x;
             vertices[cvertex][1] = mp.m_y;
 
@@ -129,15 +129,30 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
 
     for(int i=0; i < ntris; i++)
     {
-        pRet(Geom_Vec3(uvertices[triangles[i][0]][0],uvertices[triangles[i][0]][1],uvertices[triangles[i][0]][2]),plane.GetNorm());
-        pRet(Geom_Vec3(uvertices[triangles[i][1]][0],uvertices[triangles[i][1]][1],uvertices[triangles[i][1]][2]),plane.GetNorm());
-        pRet(Geom_Vec3(uvertices[triangles[i][2]][0],uvertices[triangles[i][2]][1],uvertices[triangles[i][2]][2]),plane.GetNorm());
+    	std::vector<Geom_Vec3> uvecs;
+    	uvecs.push_back(Geom_Vec3(uvertices[triangles[i][0]][0],uvertices[triangles[i][0]][1],uvertices[triangles[i][0]][2]));
+    	uvecs.push_back(Geom_Vec3(uvertices[triangles[i][1]][0],uvertices[triangles[i][1]][1],uvertices[triangles[i][1]][2]));
+    	uvecs.push_back(Geom_Vec3(uvertices[triangles[i][2]][0],uvertices[triangles[i][2]][1],uvertices[triangles[i][2]][2]));
+    	
+    	std::vector<Geom_Vec3> nvecs;
+    	nvecs.push_back(Geom_Vec3(vertices[triangles[i][0]][0],vertices[triangles[i][0]][1],vertices[triangles[i][0]][2]));
+    	nvecs.push_back(Geom_Vec3(vertices[triangles[i][1]][0],vertices[triangles[i][1]][1],vertices[triangles[i][1]][2]));
+    	nvecs.push_back(Geom_Vec3(vertices[triangles[i][2]][0],vertices[triangles[i][2]][1],vertices[triangles[i][2]][2]));
+    	
+        TriangulateI(pRet, uvecs, nvecs, m_plane.GetNorm());
     }
 
     delete sizes;
     delete vertices;
     delete triangles;
     delete uvertices;
+}
+
+void Topo_Face::TriangulateI(void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm), std::vector<Geom_Vec3> uvecs, std::vector<Geom_Vec3> nvec, Geom_Vec3 norm) const
+{
+		pRet(uvecs[0],norm);
+        pRet(uvecs[0],norm);
+        pRet(uvecs[0],norm);
 }
 
 void Topo_Face::GetFirstWire(Topo_Wire **ppwire, EnumWireOrder *porder)

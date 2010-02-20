@@ -8,6 +8,7 @@
 #include "FreeREP.h"
 
 #include <math.h>
+#include <stdio.h>
 
 Topo_Face_Spheric::Topo_Face_Spheric()
 {
@@ -36,6 +37,7 @@ void Topo_Face_Spheric::ProjectPoint(const Geom_Vec3 &pnt, void (*pRet)(const Ge
 			//p = Geom_Vec3(p.m_x,p.m_y,p.m_z);
 	Geom_Vec3 norm = p.Normalized()*-1;
 	pRet(p + m_plane.GetLocation(), norm);
+	//pRet(pnt,norm);
 }
 
 const Topo_Face_Spheric *sphere;
@@ -55,6 +57,7 @@ double Topo_Face_Spheric::GetRadius() const
 double Topo_Face_Spheric::MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const
 {
 	//TODO: implement this. This is not a reasonable metric for the parametric space
+	//return 1;
 	return (a-b).Norm() * m_metric;
 }
 
@@ -63,10 +66,11 @@ Geom_Vec3 Topo_Face_Spheric::Subdivide(Geom_Vec3 a, Geom_Vec3 b) const
  	return (a+b)*.5;
 }
 
-void TopoFaceSphericVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
+void Topo_Face_Spheric::TriangulateI(void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm), std::vector<Geom_Vec3> uvecs, std::vector<Geom_Vec3> nvecs, Geom_Vec3 argh) const
 {
-	Geom_Vec3 p = sphere->ParameterizePoint(pnt);
-	MaxEdgeLengthVertexAbsorber(p,argh);
+	MaxEdgeLengthVertexAbsorber(nvecs[0],argh);
+	MaxEdgeLengthVertexAbsorber(nvecs[1],argh);
+	MaxEdgeLengthVertexAbsorber(nvecs[2],argh);
 }
 
 void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
@@ -76,11 +80,12 @@ void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_V
 	
 	//save the metric normalizer
 	m_metric = 1/s;
+	//m_metric /= 2;
 	
 	sphere = this;
 	pTopoFaceSphericRet = pRet;
 	SetupMaxEdgeLength(TopoFaceSphericVertexAbsorber,this);
-	Topo_Face::Triangulate(dDeviation,TopoFaceSphericVertexMapper);
+	Topo_Face::Triangulate(dDeviation,0);
 }
 
 void *Topo_Face_Spheric::MakeTranslatedCopy(Geom_Vec3 dir) const
@@ -91,8 +96,10 @@ void *Topo_Face_Spheric::MakeTranslatedCopy(Geom_Vec3 dir) const
     return nface;
 }
 
-Geom_Vec3 Topo_Face_Spheric::ParameterizePoint(Geom_Vec3 p) const
+Geom_Vec3 Topo_Face_Spheric::ParameterizePoint(Geom_Vec3 p,Geom_Vec3 prev) const
 {
+	//printf("%lf,%lf,%lf\n",p.m_x,p.m_y,p.m_z);
+	
 	Geom_Line l = m_axis.GetLine();
 	Geom_Vec3 cpnt = l.ClosestPoint(p);
 	
@@ -102,11 +109,15 @@ Geom_Vec3 Topo_Face_Spheric::ParameterizePoint(Geom_Vec3 p) const
 	{
 		Geom_Vec3 v = (cpnt  - m_axis.Location()).Normalized();
 	
-		x = (m_axis.ZDir().Normalized() * v) * mag;
+		x = ((m_axis.ZDir().Normalized() * v)<0?-1:1) * mag;
 	}
 	
 	Geom_Vec3 map = m_plane.MapPoint(p);
 	
 	double y = atan2(map.m_y,map.m_x);
+	if(ISZERO(map.m_y-map.m_x))
+	{
+		y = ParameterizePoint(prev,Geom_Vec3(0,0,0)).m_y;	
+	}
 	return Geom_Vec3(x,y,0);
 }

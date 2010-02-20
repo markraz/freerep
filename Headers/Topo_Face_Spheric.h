@@ -26,7 +26,7 @@ public:
 
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
     void ProjectPoint(const Geom_Vec3 &pnt, void (*)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const;
-    Geom_Vec3 ParameterizePoint(Geom_Vec3 p) const;
+    Geom_Vec3 ParameterizePoint(Geom_Vec3 p, Geom_Vec3 prev) const;
     
 //Override from ICanCopyAndTranslate
 	void *MakeTranslatedCopy(Geom_Vec3 dir) const;
@@ -37,6 +37,9 @@ public:
 	
 	double GetRadius() const;
     
+protected:
+	void TriangulateI(void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm), std::vector<Geom_Vec3> uvecs, std::vector<Geom_Vec3> nvec, Geom_Vec3 norm) const;
+	
 private:
 };
 

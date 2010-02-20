@@ -17,12 +17,15 @@
 
 
 #include <list>
+#include <vector>
 
 enum Topo_Face_Type
 {
 	TopoFaceConic,
     TopoFacePlanar
 };
+
+typedef std::pair<Geom_Vec3,Geom_Vec3> NormalizedVertex;
 
 class Topo_Edge;
 
@@ -45,7 +48,7 @@ public:
 	virtual double Area();
 	virtual Topo_Wire* Project(Topo_Wire *wire);
 	virtual bool Contains(Topo_Wire* wire);
-	virtual Geom_Vec3 ParameterizePoint(Geom_Vec3 p) const;
+	virtual Geom_Vec3 ParameterizePoint(Geom_Vec3 p, Geom_Vec3 prev) const;
 	
 	Geom_Plane GetPlane() const;
 	
@@ -55,6 +58,9 @@ public:
 
     Topo_Edge* GetFirstEdge();
     Topo_Edge* GetNextEdge();
+    
+protected:
+	virtual void TriangulateI(void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm), std::vector<Geom_Vec3> uvecs, std::vector<Geom_Vec3> nvec, Geom_Vec3 norm) const;
 };
 
 #endif

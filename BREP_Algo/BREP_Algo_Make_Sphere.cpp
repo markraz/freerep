@@ -20,8 +20,8 @@ Topo_Arc* MakeArcForSphere(Geom_Ax2 loc, double r, Geom_Vec3 z_dir, Geom_Vec3 x_
 Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 {
 	//Arcs in XY Plane
-	Topo_Arc *a1 = MakeArcForSphere(loc,r,loc.XDir(),loc.ZDir(),-M_PI/2,M_PI/2);	
-	Topo_Arc *a2 = MakeArcForSphere(loc,r,loc.XDir(),loc.ZDir()*-1,-M_PI/2,M_PI/2);
+	Topo_Arc *a1 = MakeArcForSphere(loc,r,loc.XDir(),loc.ZDir(),-M_PI,0);	
+	Topo_Arc *a2 = MakeArcForSphere(loc,r,loc.XDir(),loc.ZDir(),0,M_PI);
 	
 	Topo_Edge *edge1 = new Topo_Edge();
 	edge1->Add(a1,BFirst);
@@ -39,7 +39,7 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 
 	Topo_Solid* solid = new Topo_Solid();
 	solid->Add(face1);
-	solid->Add(face2);
+	//solid->Add(face2);
 	
 	return solid;
 }
