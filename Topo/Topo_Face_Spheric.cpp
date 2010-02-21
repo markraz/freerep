@@ -27,17 +27,15 @@ Topo_Face_Spheric::Topo_Face_Spheric(Geom_Ax2 axis, double r)
 	m_radius = r;
 }
 
-void Topo_Face_Spheric::ProjectPoint(const Geom_Vec3 &pnt, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
+std::pair<Geom_Vec3,Geom_Vec3> Topo_Face_Spheric::ProjectPoint(Geom_Vec3 pnt,Geom_Vec3 argh) const
 {
-	//TODO: rotate into the axis zdir
 	double rt = sqrt(m_radius*m_radius - pnt.m_x *pnt.m_x);
 	Geom_Vec3 p((m_axis.XDir() * (rt * cos(pnt.m_y))) + 
 				(m_axis.YDir() * rt * sin(pnt.m_y)) +
 				(m_axis.ZDir() * pnt.m_x));
 			//p = Geom_Vec3(p.m_x,p.m_y,p.m_z);
 	Geom_Vec3 norm = p.Normalized()*-1;
-	pRet(p + m_plane.GetLocation(), norm);
-	//pRet(pnt,norm);
+	return std::pair<Geom_Vec3,Geom_Vec3>(p + m_plane.GetLocation(), norm);
 }
 
 const Topo_Face_Spheric *sphere;
@@ -46,7 +44,8 @@ void (*pTopoFaceSphericRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm);
 void TopoFaceSphericVertexAbsorber(const Geom_Vec3&pnt,const Geom_Vec3&argh)
 {
 	//Geom_Vec3 p = sphere->GetPlane().UnmapPoint(pnt);
-	sphere->ProjectPoint(pnt,pTopoFaceSphericRet);
+	std::pair<Geom_Vec3,Geom_Vec3> pair = sphere->ProjectPoint(pnt,argh);
+	pTopoFaceSphericRet(pair.first,pair.second);
 }
 
 double Topo_Face_Spheric::GetRadius() const
@@ -58,12 +57,23 @@ double Topo_Face_Spheric::MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const
 {
 	//TODO: implement this. This is not a reasonable metric for the parametric space
 	//return 1;
+	Geom_Vec3 argh(0,0,0);
+	return acos(ProjectPoint(a,argh).first * ProjectPoint(b,argh).first) / m_metric;
+	
 	return (a-b).Norm() * m_metric;
 }
 
 Geom_Vec3 Topo_Face_Spheric::Subdivide(Geom_Vec3 a, Geom_Vec3 b) const
 {
- 	return (a+b)*.5;
+	return (a + b) * .5;
+	
+	//TODO: implement this better. basically we want to find a point
+	//on the line ab by choosing an x vector that would subdivide
+	//the arc actually lying on ab
+	Geom_Vec3 argh(0,0,0);
+	Geom_Vec3 pa = ProjectPoint(a,argh).first;
+	Geom_Vec3 pb = ProjectPoint(b,argh).first;
+ 	return ParameterizePoint((pa - pb) *.5,pa-pb);
 }
 
 void Topo_Face_Spheric::TriangulateI(void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm), std::vector<Geom_Vec3> uvecs, std::vector<Geom_Vec3> nvecs, Geom_Vec3 argh) const
@@ -76,10 +86,11 @@ void Topo_Face_Spheric::TriangulateI(void (*pRet)(const Geom_Vec3&pnt, const Geo
 void Topo_Face_Spheric::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	double n = M_PI / acos((m_radius - dDeviation) / m_radius);
-	double s = 2 * dDeviation / tan(M_PI * (n-2)/ (2 * n));
+	//double s = 2 * dDeviation / tan(M_PI * (n-2)/ (2 * n));
+	double rads = 2 * M_PI / n;
 	
 	//save the metric normalizer
-	m_metric = 1/s;
+	m_metric = rads;
 	//m_metric /= 2;
 	
 	sphere = this;
@@ -96,7 +107,7 @@ void *Topo_Face_Spheric::MakeTranslatedCopy(Geom_Vec3 dir) const
     return nface;
 }
 
-Geom_Vec3 Topo_Face_Spheric::ParameterizePoint(Geom_Vec3 p,Geom_Vec3 prev) const
+Geom_Vec3 Topo_Face_Spheric::ParameterizePoint(Geom_Vec3 p,Geom_Vec3 derivitive) const
 {
 	//printf("%lf,%lf,%lf\n",p.m_x,p.m_y,p.m_z);
 	
@@ -117,7 +128,8 @@ Geom_Vec3 Topo_Face_Spheric::ParameterizePoint(Geom_Vec3 p,Geom_Vec3 prev) const
 	double y = atan2(map.m_y,map.m_x);
 	if(ISZERO(map.m_y-map.m_x))
 	{
-		y = ParameterizePoint(prev,Geom_Vec3(0,0,0)).m_y;	
+		map = map - derivitive;
+		y = atan2(map.m_y,map.m_x);	
 	}
 	return Geom_Vec3(x,y,0);
 }

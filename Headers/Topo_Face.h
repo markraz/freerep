@@ -44,11 +44,13 @@ public:
     virtual void Add(Topo_Edge *edge);
     virtual void Add(Topo_Edge *edge,bool inside);
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
+    
+    virtual std::pair<Geom_Vec3,Geom_Vec3> ProjectPoint(Geom_Vec3,Geom_Vec3) const;
 
 	virtual double Area();
 	virtual Topo_Wire* Project(Topo_Wire *wire);
 	virtual bool Contains(Topo_Wire* wire);
-	virtual Geom_Vec3 ParameterizePoint(Geom_Vec3 p, Geom_Vec3 prev) const;
+	virtual Geom_Vec3 ParameterizePoint(Geom_Vec3 p, Geom_Vec3 derivitive) const;
 	
 	Geom_Plane GetPlane() const;
 	

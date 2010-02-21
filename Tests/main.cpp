@@ -44,12 +44,7 @@
 
 #define ALPHA 0.5
 
-void nvCall(const Geom_Vec3 &pt)
-{
-    glVertex3d(pt.m_x,pt.m_y,pt.m_z);
-}
-
-void dvCall(const Geom_Vec3 &pt, double d)
+void dvCall(const Geom_Vec3 &pt,const Geom_Vec3 &derivitive)
 {
     glVertex3d(pt.m_x,pt.m_y,pt.m_z);
 }
@@ -167,8 +162,9 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     face->Add(e1);
     face->Add(e2);*/
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//GL_FILL
-    //glEnable(GL_AUTO_NORMAL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_AUTO_NORMAL);
     
     //Draw a coordinate axis on the screen
     glBegin(GL_LINES);
@@ -216,7 +212,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     	{
  #ifdef DRAWFACES
     		glBegin(GL_TRIANGLES);
-    		obj->Triangulate(.50,vCall);
+    		obj->Triangulate(.005,vCall);
     		glEnd();
  #endif
  #ifdef DRAWEDGES
@@ -261,7 +257,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     		if(edge)
     		{
     			glBegin(GL_LINE_STRIP);
-    			edge->GetVertices(.01,nvCall);
+    			edge->GetVertices(.01,dvCall);
     			glEnd();	
     		}
     		

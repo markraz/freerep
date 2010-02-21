@@ -84,7 +84,7 @@ Geom_Vec3 Geom_Plane::MapPoint(Geom_Vec3 pnt) const
     return ret;
 }
 
-Geom_Vec3 Geom_Plane::UnmapPoint(Geom_Vec3 pnt)
+Geom_Vec3 Geom_Plane::UnmapPoint(Geom_Vec3 pnt) const
 {
 	Geom_Vec3 xdir = m_axis.XDir();
 	Geom_Vec3 ydir = m_axis.YDir();

@@ -9,6 +9,8 @@
 //TODO: what is a good value for this?
 #define REALLY_BIG 10e20
 
+#define EPSILON 10e-8 //Numeric derivitives
+
 class FreeREP
 {
 public:
