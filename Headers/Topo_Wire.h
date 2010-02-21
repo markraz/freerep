@@ -18,7 +18,7 @@ class Topo_Wire: public Topo_Shape, public ICanCopyWithTranslation, public ICanA
 public:
     Topo_Wire();
 
-    virtual void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt, double u)) const = 0;
+    virtual void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt, const Geom_Vec3 &derivitive)) const = 0;
     virtual Geom_Vec3 GetStart() const = 0;
     virtual Geom_Vec3 GetEnd() const = 0;
     virtual bool HasNorm() const = 0;

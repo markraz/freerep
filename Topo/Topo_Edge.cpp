@@ -99,18 +99,18 @@ void Topo_Edge::Add(Topo_Wire *w)
         m_closed = true;
 }
 
-std::list<Geom_Vec3> vertices;
+std::list<std::pair<Geom_Vec3,Geom_Vec3> > vertices;
 
-void EdgeVertexAbsorber(const Geom_Vec3 &pt, double u)
+void EdgeVertexAbsorber(const Geom_Vec3 &pt, const Geom_Vec3 &derivitive)
 {
-    vertices.push_back(pt);
+    vertices.push_back(std::pair<Geom_Vec3,Geom_Vec3> (pt,derivitive));
 }
 
-void Topo_Edge::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt))
+void Topo_Edge::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt, const Geom_Vec3 &derivitive))
 {
     bool GotStart;
-    Geom_Vec3 start;
-    Geom_Vec3 last;
+    std::pair<Geom_Vec3,Geom_Vec3> start;
+    std::pair<Geom_Vec3,Geom_Vec3> last;
 
     std::list<PlacedWire*>::iterator it;
     for(it = m_wires.begin(); it != m_wires.end(); ++it)
@@ -126,14 +126,15 @@ void Topo_Edge::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt)
             {
                 start = vertices.front();
                 GotStart = true;
-                pRet(start);
+                pRet(start.first,start.second);
                 last = start;
             }
-            std::list<Geom_Vec3>::iterator it2 = vertices.begin();
-            for(it2++; it2 != vertices.end(); it2++)
+            std::list<std::pair<Geom_Vec3,Geom_Vec3> >::iterator it2 = vertices.begin();
+            //it2++;
+            for(; it2 != vertices.end(); it2++)
             {
                 last = *it2;
-                pRet(last);
+                pRet(last.first,last.second);
             }
         }
         else
@@ -142,21 +143,22 @@ void Topo_Edge::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt)
             {
                 start = vertices.back();
                 GotStart = true;
-                pRet(start);
+                pRet(start.first,start.second);
                 last = start;
             }
-            std::list<Geom_Vec3>::iterator it2 = vertices.end();
-            it2--;
+            std::list<std::pair<Geom_Vec3,Geom_Vec3> >::iterator it2 = vertices.end();
+            //it2--;
             for(it2--;; it2--)
             {
                 last = *it2;
-                pRet(last);
+                last.second = last.second * -1;
+                pRet(last.first,last.second);
                 if(it2 == vertices.begin())
                     break;
             }
         }
     }
-    pRet(start);
+    pRet(start.first,start.second);
 }
 
 void Topo_Edge::Reverse()

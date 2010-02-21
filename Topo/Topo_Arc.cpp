@@ -13,7 +13,7 @@ Topo_Arc::Topo_Arc(const Geom_Ax2 &A, double radius, double start, double end)
     m_A = A; m_radius = radius, m_start = start; m_end = end;
 }
 
-void Topo_Arc::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt, double u)) const
+void Topo_Arc::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt, const Geom_Vec3 &derivitive)) const
 {
     int nsegs = 6;
     if(dDeviation < m_radius)
@@ -35,7 +35,8 @@ void Topo_Arc::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt, 
     {
         double u = 1.0 / nsegs * i;
         Geom_Vec3 pnt = GetPntAtU(u);
-        pRet(pnt,u);
+        Geom_Vec3 pnt2 = u < 1 - EPSILON?GetPntAtU(u+EPSILON):GetPntAtU(u-EPSILON);
+        pRet(pnt,pnt2-pnt);
     }
 }
 

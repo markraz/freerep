@@ -43,7 +43,7 @@ public:
 
     void Add(Topo_Wire *w);
     void Add(Topo_Wire *w, EnumWireOrder order);
-    void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt));
+    void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt, const Geom_Vec3 &derivitive));
     void Reverse();
 
     void GetFirstWire(Topo_Wire **wire, EnumWireOrder *order);

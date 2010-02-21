@@ -18,7 +18,7 @@ public:
     Geom_Line GetLine();
 
 //Overrides from Topo_Wire
-    void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt, double u)) const;
+    void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt, const Geom_Vec3 &derivitive)) const;
     Geom_Vec3 GetStart() const;
     Geom_Vec3 GetEnd() const;
     bool HasNorm() const;

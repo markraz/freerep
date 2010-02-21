@@ -17,10 +17,10 @@ Topo_Line::~Topo_Line()
 
 }
 
-void Topo_Line::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt, double u)) const
+void Topo_Line::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt, const Geom_Vec3 &derivitive)) const
 {
-    pRet(m_A,0);
-    pRet(m_B,1);
+    pRet(m_A,(m_A - m_B).Normalized());
+    pRet(m_B,(m_B - m_A).Normalized());
 }
 
 Geom_Vec3 Topo_Line::GetStart() const
