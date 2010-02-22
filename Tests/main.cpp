@@ -163,7 +163,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     face->Add(e2);*/
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_AUTO_NORMAL);
     
     //Draw a coordinate axis on the screen

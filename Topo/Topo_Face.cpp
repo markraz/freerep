@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <vector>
 
-#define TRI_DEBUG
+//#define TRI_DEBUG
 
 Topo_Face::Topo_Face()
 {
@@ -85,7 +85,7 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
     int *sizes = new int[topo_face_vertices.size()];
     for(size_t i=0; i < topo_face_vertices.size(); i++)
     {
-        sizes[i] = topo_face_vertices[i].size()-2;
+        sizes[i] = topo_face_vertices[i].size()-1;
         total_size += sizes[i];
     }
 
