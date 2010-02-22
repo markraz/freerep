@@ -17,7 +17,7 @@
  */
  
 #define DRAWFACES
-#define DRAWEDGES
+//#define DRAWEDGES
 
 #include <gtk/gtk.h>
 #include <gtk/gtkgl.h>
@@ -163,7 +163,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     face->Add(e2);*/
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_AUTO_NORMAL);
     
     //Draw a coordinate axis on the screen
@@ -200,10 +200,10 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     //solid->Triangulate(.001,vCall);
     glEnd(); 
     
-    std::vector<Topo_Shape*> shapes;// = ReadIGES("Tests/ExtrudedArcs.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
+    std::vector<Topo_Shape*> shapes = ReadIGES("Tests/ExtrudedArcs.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
     
 //    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1));
-    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),0.5));
+    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),0.25));
     //shapes.push_back(MakeCone(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),.5,1,1));
     
     for(int i=0; i < shapes.size(); i++)

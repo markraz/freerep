@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <vector>
 
-#define TRI_DEBUG
+//#define TRI_DEBUG
 
 Topo_Face::Topo_Face()
 {
@@ -87,19 +87,23 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
     {
     	bool gotfirst=false;
     	Geom_Vec3 lastparm;
+    	Geom_Vec3 start;
     	new_topo_face_vertices.resize(i+1);
     	for(size_t j=0; j < topo_face_vertices[i].size(); j++)
     	{
     		std::pair<Geom_Vec3,Geom_Vec3> pair = topo_face_vertices[i][j];
     		Geom_Vec3 parm = ParameterizePoint(pair.first, pair.second);
-    		if(gotfirst && (lastparm == parm))
-    		{
-    			//ditch the point	
-    		}
-    		else
+     		if(gotfirst && (!(lastparm == parm)) && !(start == parm))
     			new_topo_face_vertices[i].push_back(pair);
-    		lastparm=parm;
-    		gotfirst=true;
+    			
+    		if(!gotfirst)
+    		{
+    			new_topo_face_vertices[i].push_back(pair);
+    			start = parm;
+    			gotfirst=true;	
+    		}
+    		
+    		lastparm = parm;    		
     	}
     }
     
