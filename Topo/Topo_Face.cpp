@@ -108,7 +108,7 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
     int *sizes = new int[new_topo_face_vertices.size()];
     for(size_t i=0; i < new_topo_face_vertices.size(); i++)
     {
-        sizes[i] = new_topo_face_vertices[i].size()-1;
+        sizes[i] = new_topo_face_vertices[i].size();
         total_size += sizes[i];
     }
 
