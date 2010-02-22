@@ -58,7 +58,7 @@ double Topo_Face_Spheric::MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const
 	//TODO: implement this. This is not a reasonable metric for the parametric space
 	//return 1;
 	Geom_Vec3 argh(0,0,0);
-	return acos(ProjectPoint(a,argh).first * ProjectPoint(b,argh).first) / m_metric;
+	return acos(ProjectPoint(a,argh).first.Normalized() * ProjectPoint(b,argh).first.Normalized()) / m_metric;
 	
 	return (a-b).Norm() * m_metric;
 }

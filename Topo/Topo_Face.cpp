@@ -80,12 +80,39 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
 
         topo_face_current_edge++;
     }
-
-    size_t total_size=0;
-    int *sizes = new int[topo_face_vertices.size()];
+    
+    //We need to concatenate points for which the parameterizations are coincident
+    std::vector<std::vector<std::pair<Geom_Vec3,Geom_Vec3> > > new_topo_face_vertices;
     for(size_t i=0; i < topo_face_vertices.size(); i++)
     {
-        sizes[i] = topo_face_vertices[i].size()-2;
+    	bool gotfirst=false;
+    	Geom_Vec3 lastparm;
+    	Geom_Vec3 start;
+    	new_topo_face_vertices.resize(i+1);
+    	for(size_t j=0; j < topo_face_vertices[i].size(); j++)
+    	{
+    		std::pair<Geom_Vec3,Geom_Vec3> pair = topo_face_vertices[i][j];
+    		Geom_Vec3 parm = ParameterizePoint(pair.first, pair.second);
+     		if(gotfirst && (!(lastparm == parm)) && !(start == parm))
+    			new_topo_face_vertices[i].push_back(pair);
+    			
+    		if(!gotfirst)
+    		{
+    			new_topo_face_vertices[i].push_back(pair);
+    			start = parm;
+    			gotfirst=true;	
+    		}
+    		
+    		lastparm = parm;    		
+    	}
+    }
+    
+
+    size_t total_size=0;
+    int *sizes = new int[new_topo_face_vertices.size()];
+    for(size_t i=0; i < new_topo_face_vertices.size(); i++)
+    {
+        sizes[i] = new_topo_face_vertices[i].size();
         total_size += sizes[i];
     }
 
@@ -93,11 +120,11 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
     double (*uvertices)[3] = new double[total_size + 1][3];
     int (*triangles)[3] = new int[total_size * 8][3];
     size_t cvertex = 1;
-    for(size_t i=0; i < topo_face_vertices.size(); i++)
+    for(size_t i=0; i < new_topo_face_vertices.size(); i++)
     {
         for(size_t j = 0; j < (unsigned int)sizes[i]; j++)
         {
-            std::pair<Geom_Vec3,Geom_Vec3> pair = topo_face_vertices[i][j];
+            std::pair<Geom_Vec3,Geom_Vec3> pair = new_topo_face_vertices[i][j];
             Geom_Vec3 p = pair.first;
 
             uvertices[cvertex][0] = p.m_x;
@@ -113,9 +140,9 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
     }
 
 #ifdef TRI_DEBUG
-    printf("%d\n", (int)topo_face_vertices.size());
+    printf("%d\n", (int)new_topo_face_vertices.size());
 
-    for(size_t i=0; i < topo_face_vertices.size();i++)
+    for(size_t i=0; i < new_topo_face_vertices.size();i++)
     {
         printf("%d\n",sizes[i]);
     }
@@ -126,7 +153,7 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
     }
 #endif
 
-    int ntris = triangulate_polygon(topo_face_vertices.size(),sizes, vertices,triangles);
+    int ntris = triangulate_polygon(new_topo_face_vertices.size(),sizes, vertices,triangles);
 
     for(int i=0; i < ntris; i++)
     {
@@ -157,8 +184,8 @@ std::pair<Geom_Vec3,Geom_Vec3> Topo_Face::ProjectPoint(Geom_Vec3 pnt,Geom_Vec3 n
 void Topo_Face::TriangulateI(void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm), std::vector<Geom_Vec3> uvecs, std::vector<Geom_Vec3> nvec, Geom_Vec3 norm) const
 {
 		pRet(uvecs[0],norm);
-        pRet(uvecs[0],norm);
-        pRet(uvecs[0],norm);
+        pRet(uvecs[1],norm);
+        pRet(uvecs[2],norm);
 }
 
 void Topo_Face::GetFirstWire(Topo_Wire **ppwire, EnumWireOrder *porder)
