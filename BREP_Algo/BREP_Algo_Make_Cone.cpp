@@ -23,7 +23,7 @@ Topo_Face * CreateConeFace(Geom_Ax2 ax, double r1, double r2, double length, dou
 	Geom_Vec3 y = coneax.YDir();
 	Geom_Vec3 z = coneax.ZDir();
 		
-	Topo_Face *f = new Topo_Face_Conic(coneax, ax, r1, r2, length);
+	Topo_Face *f = new Topo_Face_Conic(ax, r1, r2, length);
 	return f;
 }
 
@@ -54,6 +54,13 @@ Topo_Face * CreateConeFace(Topo_Wire* s1, Topo_Wire* s2, Topo_Wire *s3, Topo_Wir
 	return f;
 }
 
+Topo_Arc* MakeArcForCone(Geom_Ax2 loc, double r, double start, double end)
+{
+	//Todo, transform the specified z and x vector by the Geom_Ax2 vector	
+	return new Topo_Arc(loc,r,start,end);
+}
+
+
 Topo_Shape * MakeCone(Geom_Ax2 loc, double r1, double r2, double length)
 {
 	Geom_Vec3 p1 = loc.Location() - loc.ZDir() * (length/2);
@@ -62,74 +69,38 @@ Topo_Shape * MakeCone(Geom_Ax2 loc, double r1, double r2, double length)
 	Geom_Ax2 ax1 = Geom_Ax2(p1, loc.ZDir()*-1, loc.XDir()*-1);	
 	Geom_Ax2 ax2 = Geom_Ax2(p2, loc.ZDir(), loc.XDir());
 	
-	Topo_Arc *a1 = new Topo_Arc(ax1,r1,0,M_PI/2);
-	Topo_Arc *a2 = new Topo_Arc(ax1,r1,M_PI/2,M_PI);
-	Topo_Arc *a3 = new Topo_Arc(ax1,r1,M_PI,3*M_PI/2);
-	Topo_Arc *a4 = new Topo_Arc(ax1,r1,3*M_PI/2,2*M_PI);
+	Topo_Arc *a1 = MakeArcForCone(Geom_Ax2(p1,loc.ZDir(),loc.XDir()),r1,-M_PI/2,M_PI/2);
+	Topo_Arc *a2 = MakeArcForCone(Geom_Ax2(p1,loc.ZDir(),loc.XDir()),r1,M_PI/2,3*M_PI/2);
 	
-	Topo_Arc *a5 = new Topo_Arc(ax2,r2,0,-M_PI/2);
-	Topo_Arc *a6 = new Topo_Arc(ax2,r2,-M_PI/2,-M_PI);
-	Topo_Arc *a7 = new Topo_Arc(ax2,r2,-M_PI,-3*M_PI/2);
-	Topo_Arc *a8 = new Topo_Arc(ax2,r2,-3*M_PI/2,-2*M_PI);
+	Topo_Arc *a3 = MakeArcForCone(Geom_Ax2(p2,loc.ZDir(),loc.XDir()),r2,-M_PI/2,M_PI/2);
+	Topo_Arc *a4 = MakeArcForCone(Geom_Ax2(p2,loc.ZDir(),loc.XDir()),r2,M_PI/2,3*M_PI/2);
+	
+	Topo_Line *l1 = new Topo_Line(a1->GetStart(),a3->GetStart());
+	Topo_Line *l2 = new Topo_Line(a3->GetEnd(),a1->GetEnd());
 	
 	
-	Geom_Vec3 a1start = a1->GetStart();
-	Geom_Vec3 a1end = a1->GetEnd();
-	Geom_Vec3 a2start = a2->GetStart();
-	Geom_Vec3 a2end = a2->GetEnd();
-	Geom_Vec3 a3start = a3->GetStart();
-	Geom_Vec3 a3end = a3->GetEnd();
-	Geom_Vec3 a4start = a4->GetStart();
-	Geom_Vec3 a4end = a4->GetEnd();
+	Topo_Edge *edge1 = new Topo_Edge();
+	edge1->Add(a1,BFirst);
+	edge1->Add(l1);
+	edge1->Add(a3);
+	edge1->Add(l2);
 	
-	Geom_Vec3 a5start = a5->GetStart();
-	Geom_Vec3 a5end = a5->GetEnd();
-	Geom_Vec3 a6start = a6->GetStart();
-	Geom_Vec3 a6end = a6->GetEnd();
-	Geom_Vec3 a7start = a7->GetStart();
-	Geom_Vec3 a7end = a7->GetEnd();
-	Geom_Vec3 a8start = a8->GetStart();
-	Geom_Vec3 a8end = a8->GetEnd();
+	Topo_Edge *edge2 = new Topo_Edge();
+	edge2->Add(a2,BFirst);
+	edge2->Add(l1);
+	edge2->Add(a4);
+	edge2->Add(l2);
 	
-	 
-	//TODO: handle zero radius ends
-	Topo_Line *l1 = new Topo_Line(a1->GetStart(),a7->GetStart());
-	Topo_Line *l2 = new Topo_Line(a1->GetEnd(),a7->GetEnd());
+	Topo_Face* face1 = new Topo_Face_Conic(loc,r1,r2,length);
+	face1->Add(edge1);
 	
-	Topo_Line *l3 = l2;//new Topo_Line(a2->GetStart(),a8->GetStart());
-	Topo_Line *l4 = new Topo_Line(a2->GetEnd(),a8->GetEnd());
-
-	Topo_Line *l5 = l4;//new Topo_Line(a3->GetStart(),a5->GetStart());
-	Topo_Line *l6 = new Topo_Line(a3->GetEnd(),a5->GetEnd());
-	
-	Topo_Line *l7 = l6;//new Topo_Line(a4->GetStart(),a6->GetStart());
-	Topo_Line *l8 = l1;//new Topo_Line(a4->GetEnd(),a6->GetEnd());
-	
-	Geom_Vec3 l1start = l1->GetStart();
-	Geom_Vec3 l1end = l1->GetEnd();
-	Geom_Vec3 l2start = l2->GetStart();
-	Geom_Vec3 l2end = l2->GetEnd();
-	Geom_Vec3 l3start = l3->GetStart(); 
-	Geom_Vec3 l3end = l3->GetEnd();
-	Geom_Vec3 l4start = l4->GetStart();
-	Geom_Vec3 l4end = l4->GetEnd();
-	
-	Geom_Vec3 l5start = l5->GetStart();
-	Geom_Vec3 l5end = l5->GetEnd();
-	Geom_Vec3 l6start = l6->GetStart(); 
-	Geom_Vec3 l6end = l6->GetEnd();
-	Geom_Vec3 l7start = l7->GetStart();
-	Geom_Vec3 l7end = l7->GetEnd();
-	Geom_Vec3 l8start = l8->GetStart();
-	Geom_Vec3 l8end = l8->GetEnd();
+	//TODO: reverse the x-axis? on this face
+	Topo_Face* face2 = new Topo_Face_Conic(Geom_Ax2(loc.Location(),loc.ZDir(),loc.XDir() * -1),r1,r2,length);
+	face2->Add(edge2);
 	
 	Topo_Solid *solid = new Topo_Solid();
-
-	solid->Add(CreateConeFace(a7,l1,a1,l2,loc,r1,r2,length,0,M_PI/2));
-	solid->Add(CreateConeFace(a8,l3,a2,l4,loc,r1,r2,length,3*M_PI/2,2*M_PI));
-	solid->Add(CreateConeFace(a5,l5,a3,l6,loc,r1,r2,length,M_PI,3*M_PI/2));
-	solid->Add(CreateConeFace(a6,l7,a4,l8,loc,r1,r2,length,M_PI/2,M_PI));
-	
+	solid->Add(face1);
+	//solid->Add(face2);
 	return solid;
 }
 
