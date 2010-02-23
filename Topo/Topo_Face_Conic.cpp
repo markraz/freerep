@@ -23,6 +23,7 @@ Topo_Face_Conic::Topo_Face_Conic(const ICanAssociate *associate):Topo_Face(assoc
 Topo_Face_Conic::Topo_Face_Conic(Geom_Ax2 axis, double r1, double r2, double length)
 {
 	m_axis = axis;
+	m_plane = Geom_Plane(axis);
 	m_radius_1 = r1;
 	m_radius_2 = r2;
 	m_length = length;
@@ -35,10 +36,14 @@ std::pair<Geom_Vec3,Geom_Vec3> Topo_Face_Conic::ProjectPoint(Geom_Vec3 pnt,Geom_
 	Geom_Vec3 p((m_axis.XDir() * (rt * cos(pnt.m_y))) + 
 				(m_axis.YDir() * rt * sin(pnt.m_y)) +
 				(m_axis.ZDir() * pnt.m_x));
-			//p = Geom_Vec3(p.m_x,p.m_y,p.m_z);
-	//TODO: normal calculation not correct
-	Geom_Vec3 norm = p.Normalized()*-1;
-	return std::pair<Geom_Vec3,Geom_Vec3>(p + m_plane.GetLocation(), norm);
+
+	Geom_Vec3 norm = Geom_Vec3(p.m_x,p.m_y,0).Normalized()*-1;
+	
+	Geom_Vec3 around = (norm ^ m_axis.ZDir()).Normalized();
+	double dr = m_radius_2 - m_radius_1;
+	Geom_Matrix m = Geom_Matrix::RotateAround(around,atan2(dr,m_length));
+	
+	return std::pair<Geom_Vec3,Geom_Vec3>(p + m_plane.GetLocation(), m.Multiply(norm).Normalized());
 }
 
 const Topo_Face_Conic *cone;
@@ -68,7 +73,7 @@ double Topo_Face_Conic::GetLength() const
 
 double Topo_Face_Conic::MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const
 {
-	return 0;
+	//return 0;
 	double x1 = -a.m_x/m_length + .5;
 	double x2 = -b.m_x/m_length + .5;
 	
@@ -80,9 +85,10 @@ double Topo_Face_Conic::MeterDivision(Geom_Vec3 a, Geom_Vec3 b) const
 		r = r2;
 		
 	double n = M_PI / acos((r - m_deviation) / r);
-	double s = 2 * m_deviation / tan(M_PI * (n-2)/ (2 * n));
+	//double s = 2 * m_deviation / tan(M_PI * (n-2)/ (2 * n));
+	double rads = 2 * M_PI / n;
 	
-	return fabs(a.m_y - b.m_y) / s;
+	return fabs(a.m_y - b.m_y) / rads;
 }
 
 Geom_Vec3 Topo_Face_Conic::Subdivide(Geom_Vec3 a, Geom_Vec3 b) const

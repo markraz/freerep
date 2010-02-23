@@ -227,7 +227,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     
 //    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1));
 //    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),0.25));
-//    shapes.push_back(MakeCone(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),.5,1,1));
+    shapes.push_back(MakeCone(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),.5,1,1));
     
     for(int i=0; i < shapes.size(); i++)
     {
@@ -236,7 +236,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     	{
  #ifdef DRAWFACES
     		glBegin(GL_TRIANGLES);
-    		obj->Triangulate(.01,vCall);
+    		obj->Triangulate(.005,vCall);
     		glEnd();
  #endif
  #ifdef DRAWEDGES
