@@ -1,5 +1,0 @@
-#summary Why FreeREP?
-
-= Introduction =
-
-Where is opensource CAD? It seems like opensource photoshop, ie gimp, sprung up as early as linux itself, followed by office software, web browsers, mathematics and engineering software, games and a plethora of widgets gizmos and gadgets. It seems as though something so commonly useful as CAD software would have made it to the free desktop by now, but it really hasn't. Imho, this is a result of the recent shift to 3D solid modeling for the average cad user. This software has become as easy or easier to use than its 2d counterparts, and very affordable as well. So whenever a group of people decide to start working on opensource CAD, they all of a sudden go 3d, wanting nothing to do with that useless antiquated 2d stuff. Problem is, there are no free software libraries for doing solid modeling. There is OpenCASCADE, but it is not free software, and will never make it into mainstream linux distributions. This project aims to totally transform the free software world, by building the infrastructure upon which great new opensource software will be written. Think of it as the linux kernel for the future of engineering. 
