@@ -39,7 +39,7 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 
 	Topo_Solid* solid = new Topo_Solid();
 	solid->Add(face1);
-	solid->Add(face2);
+	//solid->Add(face2);
 	
 	return solid;
 }

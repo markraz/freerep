@@ -126,7 +126,7 @@ void Topo_Edge::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt,
             {
                 start = vertices.front();
                 GotStart = true;
-                //pRet(start.first,start.second);
+                pRet(start.first,start.second);
                 last = start;
             }
             std::list<std::pair<Geom_Vec3,Geom_Vec3> >::iterator it2 = vertices.begin();
@@ -142,9 +142,8 @@ void Topo_Edge::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt,
             if(!GotStart)
             {
                 start = vertices.back();
-                start.second = start.second * -1;
                 GotStart = true;
-                //pRet(start.first,start.second);
+                pRet(start.first,start.second);
                 last = start;
             }
             std::list<std::pair<Geom_Vec3,Geom_Vec3> >::iterator it2 = vertices.end();
@@ -159,7 +158,7 @@ void Topo_Edge::GetVertices(double dDeviation, void (*pRet)(const Geom_Vec3 &pt,
             }
         }
     }
-    //pRet(start.first,start.second);
+    pRet(start.first,start.second);
 }
 
 void Topo_Edge::Reverse()

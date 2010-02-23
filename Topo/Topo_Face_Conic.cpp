@@ -6,7 +6,6 @@
 #include "Geom_Vec3.h"
 #include "Sub_MaxEdgeLength.h"
 #include "Geom_Matrix.h"
-#include "FreeREP.h"
 
 #include <math.h>
 
@@ -20,7 +19,7 @@ Topo_Face_Conic::Topo_Face_Conic(const ICanAssociate *associate):Topo_Face(assoc
 	
 }
 
-Topo_Face_Conic::Topo_Face_Conic(Geom_Ax2 axis, double r1, double r2, double length)
+Topo_Face_Conic::Topo_Face_Conic(Geom_Ax2 axis, Geom_Ax2 caxis, double r1, double r2, double length)
 {
 	m_axis = axis;
 	m_plane = Geom_Plane(axis);
@@ -29,7 +28,7 @@ Topo_Face_Conic::Topo_Face_Conic(Geom_Ax2 axis, double r1, double r2, double len
 	m_length = length;
 }
 
-std::pair<Geom_Vec3,Geom_Vec3> Topo_Face_Conic::ProjectPoint(Geom_Vec3 pnt,Geom_Vec3 argh) const
+void Topo_Face_Conic::ProjectPoint(const Geom_Vec3 &pnt, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
 {
 	double xl = (pnt.m_x + m_length/2)/m_length;
 	double rt = m_radius_1 + xl * (m_radius_2 - m_radius_1);
@@ -51,8 +50,8 @@ void (*pTopoFaceConicRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm);
 
 void TopoFaceConicVertexAbsorber(const Geom_Vec3&pnt,const Geom_Vec3&argh)
 {
-	std::pair<Geom_Vec3,Geom_Vec3> pair = cone->ProjectPoint(pnt,argh);
-	pTopoFaceConicRet(pair.first,pair.second);
+	Geom_Vec3 p = cone->GetPlane().UnmapPoint(pnt);
+	cone->ProjectPoint(p,pTopoFaceConicRet);
 }
 
 double Topo_Face_Conic::GetRadius1() const
@@ -95,15 +94,22 @@ Geom_Vec3 Topo_Face_Conic::Subdivide(Geom_Vec3 a, Geom_Vec3 b) const
 {
 	Geom_Vec3 ret = (a+b)/2;
 	
+	double x = a.m_x/m_length + .5;
+	double r = x * m_radius_2 + (1-x) * m_radius_1;
+	
+	//ret.m_z = sqrt(r*r - ret.m_y * ret.m_y);
+	
+	int y=0;
+	y++;
+	
 	return ret;
 	
 }
 
-void Topo_Face_Conic::TriangulateI(void (*pRet)(const Geom_Vec3&pnt, const Geom_Vec3&norm), std::vector<Geom_Vec3> uvecs, std::vector<Geom_Vec3> nvecs, Geom_Vec3 argh) const
+void TopoFaceConicVertexMapper(const Geom_Vec3&pnt,const Geom_Vec3&argh)
 {
-	MaxEdgeLengthVertexAbsorber(nvecs[0],argh);
-	MaxEdgeLengthVertexAbsorber(nvecs[1],argh);
-	MaxEdgeLengthVertexAbsorber(nvecs[2],argh);
+	Geom_Vec3 p = cone->GetPlane().MapPoint(pnt);
+	MaxEdgeLengthVertexAbsorber(p,argh);
 }
 
 void Topo_Face_Conic::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,const Geom_Vec3&norm)) const
@@ -113,7 +119,7 @@ void Topo_Face_Conic::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec
 	cone = this;
 	pTopoFaceConicRet = pRet;
 	SetupMaxEdgeLength(TopoFaceConicVertexAbsorber,this);
-	Topo_Face::Triangulate(dDeviation,0);
+	Topo_Face::Triangulate(dDeviation,TopoFaceConicVertexMapper);
 }
 
 void *Topo_Face_Conic::MakeTranslatedCopy(Geom_Vec3 dir) const
@@ -127,31 +133,4 @@ void *Topo_Face_Conic::MakeTranslatedCopy(Geom_Vec3 dir) const
 bool Topo_Face_Conic::Contains(Topo_Wire *wire)
 {
 	
-}
-
-Geom_Vec3 Topo_Face_Conic::ParameterizePoint(Geom_Vec3 p,Geom_Vec3 derivitive) const
-{
-	//printf("%lf,%lf,%lf\n",p.m_x,p.m_y,p.m_z);
-	
-	Geom_Line l = m_axis.GetLine();
-	Geom_Vec3 cpnt = l.ClosestPoint(p);
-	
-	double mag = cpnt.Distance(m_axis.Location());
-	double x=mag;
-	if(!ISZERO(x))
-	{
-		Geom_Vec3 v = (cpnt  - m_axis.Location()).Normalized();
-	
-		x = ((m_axis.ZDir().Normalized() * v)<0?-1:1) * mag;
-	}
-	
-	Geom_Vec3 map = m_plane.MapPoint(p);
-	
-	double y = atan2(map.m_y,map.m_x);
-	if(ISZERO(map.m_y-map.m_x))
-	{
-		map = map - derivitive;
-		y = atan2(map.m_y,map.m_x);	
-	}
-	return Geom_Vec3(x,y,0);
 }
