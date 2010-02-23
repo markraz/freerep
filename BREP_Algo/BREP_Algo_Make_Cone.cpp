@@ -100,7 +100,7 @@ Topo_Shape * MakeCone(Geom_Ax2 loc, double r1, double r2, double length)
 	
 	Topo_Solid *solid = new Topo_Solid();
 	solid->Add(face1);
-	//solid->Add(face2);
+	solid->Add(face2);
 	return solid;
 }
 

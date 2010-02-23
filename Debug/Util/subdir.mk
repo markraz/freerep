@@ -4,13 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../Util/Test.cpp 
+../Util/Test.cpp \
+../Util/Text3d.cpp 
 
 CPP_DEPS += \
-./Util/Test.d 
+./Util/Test.d \
+./Util/Text3d.d 
 
 OBJS += \
-./Util/Test.o 
+./Util/Test.o \
+./Util/Text3d.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

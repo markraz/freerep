@@ -42,6 +42,8 @@
 #include "Format_IGES.h"
 #include "ICanTriangulate.h"
 
+#include "../Util/Text3d.h"
+
 #define ALPHA 0.5
 
 void dvCall(const Geom_Vec3 &pt,const Geom_Vec3 &derivitive)
@@ -179,6 +181,27 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     glVertex3d(.5,0,0);
     
     glEnd();
+    
+    glPushMatrix();
+    glScaled(.25,.25,.25);
+    
+    glPushMatrix();
+    glTranslated(-.5,.5,0);
+    t3dDraw3D("Y", 0, 0, 0.05f);
+	glPopMatrix();
+
+	glPushMatrix();
+    glTranslated(.5,-.5,0); 
+    glRotated(90,0,0,1);
+    t3dDraw3D("X", 0, 0, 0.05f);
+	glPopMatrix();
+	
+	glTranslated(-.5,0,0.5); 
+    glRotated(90,1,0,0);
+    t3dDraw3D("Z", 0, 0, 0.05f);
+	
+	
+	glPopMatrix();
 
     glBegin(GL_TRIANGLES);
     //face->Triangulate(.01,vCall);
@@ -204,7 +227,7 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
     
 //    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1));
 //    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),0.25));
-    shapes.push_back(MakeCone(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),.5,1,1));
+//    shapes.push_back(MakeCone(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),.5,1,1));
     
     for(int i=0; i < shapes.size(); i++)
     {
@@ -395,6 +418,8 @@ main (int argc, char **argv)
 	gtk_widget_show_all (window);
 
 	g_timeout_add (1000 / 30, rotate, da);
-
+	
+	t3dInit();
+	
 	gtk_main ();
 }
