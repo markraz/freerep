@@ -97,6 +97,38 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
     	}
     }
     
+    //We need to enfore the orientation order of the vertices now
+    topo_face_current_edge = 0;
+    for(it = m_edges.begin(); it != m_edges.end(); it++)
+    {
+        EdgeOrientation orientation = (*it).m_orientation;
+        double area = 0;
+        
+        for(size_t i=0; i < new_topo_face_vertices[topo_face_current_edge].size(); i++)
+        {
+        	std::pair<Geom_Vec3,Geom_Vec3> Bp = new_topo_face_vertices[topo_face_current_edge][i];
+        	std::pair<Geom_Vec3,Geom_Vec3> Ap = new_topo_face_vertices[topo_face_current_edge][i==0?(new_topo_face_vertices[topo_face_current_edge].size()-1):(i-1)];
+        	
+        	Geom_Vec3 B = ParameterizePoint(Bp.first,Bp.second);
+        	Geom_Vec3 A = ParameterizePoint(Ap.first,Ap.second);
+        	area += A.m_x * B.m_y - A.m_y * B.m_x;	
+        }
+
+		if((area < 0 && (orientation == EdgeOutside)) || (area > 0 && (orientation == EdgeInside)))
+		{
+			//Reverse the points
+			for(size_t j=0; j < new_topo_face_vertices[topo_face_current_edge].size()/2; j++)
+			{
+				std::pair<Geom_Vec3,Geom_Vec3> temp = new_topo_face_vertices[topo_face_current_edge][j];
+				new_topo_face_vertices[topo_face_current_edge][j] = new_topo_face_vertices[topo_face_current_edge][new_topo_face_vertices[topo_face_current_edge].size()-1-j];
+				new_topo_face_vertices[topo_face_current_edge][new_topo_face_vertices[topo_face_current_edge].size()-1-j] = temp;
+			}
+		}
+			
+        topo_face_current_edge++;
+    }
+    
+
 
     size_t total_size=0;
     int *sizes = new int[new_topo_face_vertices.size()];

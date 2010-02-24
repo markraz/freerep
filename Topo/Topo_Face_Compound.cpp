@@ -47,7 +47,7 @@ void Topo_Face_Compound::Add(Topo_Edge *edge,bool inside)
 			edge->GetNextWire(&wire,&order);	
 		}	
 	}*/
-	edge->Reverse();
+	//edge->Reverse();
 	m_faces[0]->Add(edge,inside);
 	
 	edge->Print();	
