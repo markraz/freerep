@@ -16,7 +16,9 @@ void Topo_Face_Compound::Add(Topo_Face *face)
 
 Topo_Face* Topo_Face_Compound::GetFaces()
 {
-	return m_faces[0];	
+	if(m_faces.size())
+		return m_faces[0];
+	return 0;	
 }
 
 void *Topo_Face_Compound::MakeTranslatedCopy(Geom_Vec3 dir) const
@@ -48,7 +50,8 @@ void Topo_Face_Compound::Add(Topo_Edge *edge,bool inside)
 		}	
 	}*/
 	//edge->Reverse();
-	m_faces[0]->Add(edge,inside);
+	if(m_faces.size())
+		m_faces[0]->Add(edge,inside);
 	
-	edge->Print();	
+	//edge->Print();	
 }

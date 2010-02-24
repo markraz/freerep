@@ -593,7 +593,9 @@ std::vector<Topo_Shape*> ReadIGES(const char* filename)
 		{
 			if(dynamic_cast<Topo_Face_Compound*>(de->m_shape))
 			{
-				faces.push_back(((Topo_Face_Compound*)de->m_shape)->GetFaces());
+				Topo_Face *face = ((Topo_Face_Compound*)de->m_shape)->GetFaces();
+				if(face)
+					faces.push_back(face);
 		/*		std::vector<Topo_Face*> cfaces = ((Topo_Face_Compound*)de->m_shape)->GetFaces();
 				for(size_t j = 0; j < cfaces.size(); j++)
 				{

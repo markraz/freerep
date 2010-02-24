@@ -219,11 +219,11 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
 
     //Topo_Solid *solid = BrepAlgoExtrude(face,Geom_Vec3(0,0,.5));
 
-    glBegin(GL_TRIANGLES);
-    //solid->Triangulate(.001,vCall);
+    glBegin(GL_TRIANGLES); 
+    //solid->Triangulate(.001,vCall); 
     glEnd(); 
     
-    std::vector<Topo_Shape*> shapes = ReadIGES("Tests/ExtrudedArcs.iges");// = ReadFREP("Tests/SimpleFaces.FREP");
+    std::vector<Topo_Shape*> shapes = ReadIGES("Tests/SurfaceofRevWithArcs.igs");// = ReadFREP("Tests/SimpleFaces.FREP");
     
 //    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),1));
 //    shapes.push_back(MakeSphere(Geom_Ax2(Geom_Vec3(0,0,0),Geom_Vec3(0,0,1),Geom_Vec3(1,0,0)),0.25));

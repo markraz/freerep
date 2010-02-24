@@ -112,7 +112,7 @@ std::vector<Topo_Face*> RevolveWireSkeleton(Topo_Line *directrix, Topo_Wire *wir
 	}
 	else if(dynamic_cast<Topo_Arc*>(wire))
 	{
-		Topo_Arc* arc = (Topo_Arc*)arc;
+		Topo_Arc* arc = (Topo_Arc*)wire;
 		Geom_Line dline = directrix->GetLine();
 		if(dline.IsOn(arc->GetAxis().Location()) && ISZERO(arc->GetAxis().ZDir() * dline.Direction()))
 		{
