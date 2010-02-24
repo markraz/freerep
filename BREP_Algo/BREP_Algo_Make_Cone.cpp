@@ -13,45 +13,10 @@
 
 #include <math.h>
 
-Topo_Face * CreateConeFace(Geom_Ax2 ax, double r1, double r2, double length, double t1, double t2)
+Topo_Face* MakeConeSectionSkeleton(Geom_Ax2 loc, double r1, double r2, double length, double sa)
 {
-	Geom_Matrix m = Geom_Matrix::RotateAround(ax.ZDir(),(t1+t2)/2);
-	
-	Geom_Ax2 coneax(ax.Location(),m.Multiply(ax.YDir()),m.Multiply(ax.ZDir()));
-	
-	Geom_Vec3 x = coneax.XDir();
-	Geom_Vec3 y = coneax.YDir();
-	Geom_Vec3 z = coneax.ZDir();
-		
-	Topo_Face *f = new Topo_Face_Conic(ax, r1, r2, length);
-	return f;
-}
-
-
-std::vector<Topo_Face*> MakeConeSectionSkeleton(Geom_Ax2 loc, double r1, double r2, double length, double sa, double ea)
-{
-	std::vector<Topo_Face*> ret;
-	
-	//TODO: implement me
-	for(double a = sa; a < ea && !ISZERO(a-ea); a +=M_PI/2)
-	{
-		ret.push_back(CreateConeFace(loc,r1,r2,length,a,a+M_PI/2));
-	}
-	
-	return ret;
-}
-
-Topo_Face * CreateConeFace(Topo_Wire* s1, Topo_Wire* s2, Topo_Wire *s3, Topo_Wire *s4, Geom_Ax2 ax, double r1, double r2, double length, double t1, double t2)
-{
-	Topo_Edge *e = new Topo_Edge();
-	e->Add(s1);//,BFirst);
-	e->Add(s2);
-	e->Add(s3);
-	e->Add(s4);
-	
-	Topo_Face *f = CreateConeFace(ax, r1, r2, length,t1,t2);
-	f->Add(e);
-	return f;
+	Geom_Matrix m = Geom_Matrix::RotateAround(loc.ZDir(),sa);
+	return new Topo_Face_Conic(Geom_Ax2(loc.Location(),loc.ZDir(),m.Multiply(loc.XDir())),r1,r2,length);
 }
 
 Topo_Arc* MakeArcForCone(Geom_Ax2 loc, double r, double start, double end)

@@ -6,15 +6,17 @@
 #define TOPO_FACE_COMPOUND_H
 
 #include "Topo_Face.h"
+#include "Topo_Line.h"
 
 #include <vector>
 
 class Topo_Face_Compound: public Topo_Face
 {
+	Topo_Line *m_directrix;
 	std::vector<Topo_Face*> m_faces;
 	
 public:
-	Topo_Face_Compound();
+	Topo_Face_Compound(Topo_Line *directrix);
 	
 	void Add(Topo_Face *face);
 	

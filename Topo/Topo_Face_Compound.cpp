@@ -4,9 +4,9 @@
 
 #include "Topo_Face_Compound.h"
 
-Topo_Face_Compound::Topo_Face_Compound()
+Topo_Face_Compound::Topo_Face_Compound(Topo_Line *directrix)
 {
-	
+	m_directrix = directrix;
 }
 
 void Topo_Face_Compound::Add(Topo_Face *face)
@@ -48,5 +48,5 @@ void Topo_Face_Compound::Add(Topo_Edge *edge,bool inside)
 		}	
 	}
 	
-	edge->Print();	
+//	edge->Print();	
 }

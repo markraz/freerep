@@ -52,10 +52,7 @@ void GenerateConicSurface(Topo_Line *directrix, Topo_Line *generatrix, std::vect
 	
 	double length = dline.ClosestPoint(generatrix->GetStart()).Distance(dline.ClosestPoint(generatrix->GetEnd()));
 	
-	std::vector<Topo_Face*> faces = MakeConeSectionSkeleton(Geom_Ax2(loc,zdir,xdir),r1,r2,length,start,end);
-	
-	for(size_t i=0; i < faces.size(); i++)
-		ret.push_back(faces[i]);
+	ret.push_back(MakeConeSectionSkeleton(Geom_Ax2(loc,zdir,xdir),r1,r2,length,start));
 }
 
 std::vector<Topo_Face*> RevolveWireSkeleton(Topo_Line *directrix, Topo_Wire *wire, double start, double end)
@@ -133,7 +130,7 @@ std::vector<Topo_Face*> RevolveWireSkeleton(Topo_Line *directrix, Topo_Wire *wir
 
 Topo_Face_Compound* RevolveSkeleton(Topo_Line *line, Topo_Shape* g, double start, double end)
 {
-	Topo_Face_Compound *mface = new Topo_Face_Compound();
+	Topo_Face_Compound *mface = new Topo_Face_Compound(line);
 		
 	if(dynamic_cast<Topo_Edge*>(g))
 	{

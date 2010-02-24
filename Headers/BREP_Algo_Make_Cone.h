@@ -12,6 +12,6 @@
 #include <vector>
 
 Topo_Shape * MakeCone(Geom_Ax2 loc, double r1, double r2, double length);
-std::vector<Topo_Face*> MakeConeSectionSkeleton(Geom_Ax2 loc, double r1, double r2, double length, double sa, double ea);
+Topo_Face* MakeConeSectionSkeleton(Geom_Ax2 loc, double r1, double r2, double length, double sa);
 
 #endif 
