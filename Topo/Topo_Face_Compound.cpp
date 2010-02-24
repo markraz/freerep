@@ -14,6 +14,11 @@ void Topo_Face_Compound::Add(Topo_Face *face)
 	m_faces.push_back(face);	
 } 
 
+Topo_Face* Topo_Face_Compound::GetFaces()
+{
+	return m_faces[0];	
+}
+
 void *Topo_Face_Compound::MakeTranslatedCopy(Geom_Vec3 dir) const
 {
 	//TODO: implement this, or throw exception
@@ -32,7 +37,7 @@ void Topo_Face_Compound::Add(Topo_Edge *edge)
 
 void Topo_Face_Compound::Add(Topo_Edge *edge,bool inside)
 {
-	for(size_t i=0; i < m_faces.size(); i++)
+/*	for(size_t i=0; i < m_faces.size(); i++)
 	{
 		Topo_Wire *wire;
 		EnumWireOrder order;
@@ -46,7 +51,9 @@ void Topo_Face_Compound::Add(Topo_Edge *edge,bool inside)
 			
 			edge->GetNextWire(&wire,&order);	
 		}	
-	}
+	}*/
+	edge->Reverse();
+	m_faces[0]->Add(edge);
 	
-//	edge->Print();	
+	edge->Print();	
 }

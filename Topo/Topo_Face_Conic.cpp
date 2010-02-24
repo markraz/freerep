@@ -9,6 +9,7 @@
 #include "FreeREP.h"
 
 #include <math.h>
+#include <stdio.h>
 
 Topo_Face_Conic::Topo_Face_Conic()
 {
@@ -131,7 +132,7 @@ bool Topo_Face_Conic::Contains(Topo_Wire *wire)
 
 Geom_Vec3 Topo_Face_Conic::ParameterizePoint(Geom_Vec3 p,Geom_Vec3 derivitive) const
 {
-	//printf("%lf,%lf,%lf\n",p.m_x,p.m_y,p.m_z);
+	printf("%lf,%lf,%lf\n",p.m_x,p.m_y,p.m_z);
 	
 	Geom_Line l = m_axis.GetLine();
 	Geom_Vec3 cpnt = l.ClosestPoint(p);
@@ -148,10 +149,13 @@ Geom_Vec3 Topo_Face_Conic::ParameterizePoint(Geom_Vec3 p,Geom_Vec3 derivitive) c
 	Geom_Vec3 map = m_plane.MapPoint(p);
 	
 	double y = atan2(map.m_y,map.m_x);
-	if(ISZERO(map.m_y-map.m_x))
+	if(ISZERO(map.m_y*map.m_y-map.m_x*map.m_x))
 	{
 		map = map - derivitive;
 		y = atan2(map.m_y,map.m_x);	
 	}
+	
+	if(ISZERO(y - M_PI))
+		y -= 2 * M_PI;
 	return Geom_Vec3(x,y,0);
 }

@@ -578,7 +578,7 @@ std::vector<Topo_Shape*> ReadIGES(const char* filename)
 	std::vector<Topo_Shape*> edges;
 	std::vector<Topo_Shape*> faces;
 	
-	for(int i=0; i < directory_entries.size(); i++)
+	for(size_t i=0; i < directory_entries.size(); i++)
 	{
 		DirectoryEntry *de = &directory_entries[i];
 		if(!de->m_shape)
@@ -590,7 +590,20 @@ std::vector<Topo_Shape*> ReadIGES(const char* filename)
 			edges.push_back(de->m_shape);	
 		
 		if(dynamic_cast<Topo_Face*>(de->m_shape))
-			faces.push_back(de->m_shape);	
+		{
+			if(dynamic_cast<Topo_Face_Compound*>(de->m_shape))
+			{
+				faces.push_back(((Topo_Face_Compound*)de->m_shape)->GetFaces());
+		/*		std::vector<Topo_Face*> cfaces = ((Topo_Face_Compound*)de->m_shape)->GetFaces();
+				for(size_t j = 0; j < cfaces.size(); j++)
+				{
+					ICanTriangulate* face = dynamic_cast<ICanTriangulate*>(cfaces[i]);
+					faces.push_back(cfaces[i]);
+				}*/
+			}
+			else
+				faces.push_back(de->m_shape);
+		}	
 	}
 	
 	if(faces.size())

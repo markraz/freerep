@@ -15,7 +15,7 @@
 
 Topo_Face* MakeConeSectionSkeleton(Geom_Ax2 loc, double r1, double r2, double length, double sa)
 {
-	Geom_Matrix m = Geom_Matrix::RotateAround(loc.ZDir(),sa);
+	Geom_Matrix m = Geom_Matrix::RotateAround(loc.ZDir(),sa-M_PI);
 	return new Topo_Face_Conic(Geom_Ax2(loc.Location(),loc.ZDir(),m.Multiply(loc.XDir())),r1,r2,length);
 }
 

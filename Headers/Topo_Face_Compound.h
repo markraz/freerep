@@ -19,6 +19,7 @@ public:
 	Topo_Face_Compound(Topo_Line *directrix);
 	
 	void Add(Topo_Face *face);
+	Topo_Face* GetFaces();
 	
 //Overrides from Topo_Face
 	void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
