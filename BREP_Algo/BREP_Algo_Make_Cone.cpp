@@ -57,11 +57,11 @@ Topo_Shape * MakeCone(Geom_Ax2 loc, double r1, double r2, double length)
 	edge2->Add(l2);
 	
 	Topo_Face* face1 = new Topo_Face_Conic(loc,r1,r2,length);
-	face1->Add(edge1);
+	face1->Add(edge1,false);
 	
 	//TODO: reverse the x-axis? on this face
 	Topo_Face* face2 = new Topo_Face_Conic(Geom_Ax2(loc.Location(),loc.ZDir(),loc.XDir() * -1),r1,r2,length);
-	face2->Add(edge2);
+	face2->Add(edge2,false);
 	
 	Topo_Solid *solid = new Topo_Solid();
 	solid->Add(face1);

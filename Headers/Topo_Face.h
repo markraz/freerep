@@ -25,23 +25,36 @@ enum Topo_Face_Type
     TopoFacePlanar
 };
 
-typedef std::pair<Geom_Vec3,Geom_Vec3> NormalizedVertex;
+enum EdgeOrientation{
+	EdgeOutside,
+	EdgeInside
+};
 
 class Topo_Edge;
+
+class OrientedEdge
+{
+public:
+	Topo_Edge *m_edge;
+	EdgeOrientation m_orientation;
+	
+	OrientedEdge(Topo_Edge *edge, EdgeOrientation orientation){m_edge=edge;m_orientation=orientation;}
+};
+
+typedef std::pair<Geom_Vec3,Geom_Vec3> NormalizedVertex;
 
 class Topo_Face: public Topo_Shape, public ICanCopyWithTranslation, public ICanAssociate, public ICanTriangulate, public ICanPrettyPrint
 {
 protected:
     Topo_Face_Type m_type;
-    std::list<Topo_Edge*> m_edges;
-    std::list<Topo_Edge*>::iterator m_edges_it;
+    std::list<OrientedEdge> m_edges;
+    std::list<OrientedEdge>::iterator m_edges_it;
     Geom_Plane m_plane;
 
 public:
     Topo_Face();
     Topo_Face(const ICanAssociate *);
 
-    virtual void Add(Topo_Edge *edge);
     virtual void Add(Topo_Edge *edge,bool inside);
     void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
     

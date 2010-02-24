@@ -113,7 +113,7 @@ std::vector<Topo_Shape*> ReadFREP(const char* filename)
 					}
 					for(int i=4; i < cidx; i++)
 					{
-						face->Add((Topo_Edge*)edges[ivars[i]]);	
+						face->Add((Topo_Edge*)edges[ivars[i]],false);	
 					}	
 					faces.push_back(face);
 				}

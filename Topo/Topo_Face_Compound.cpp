@@ -30,11 +30,6 @@ void Topo_Face_Compound::Triangulate(double dDeviation, void (*)(const Geom_Vec3
 	//We don't actually support triangulation. But there is no sense in crashing when called	
 }
 
-void Topo_Face_Compound::Add(Topo_Edge *edge)
-{
-	edge->Print();	
-}
-
 void Topo_Face_Compound::Add(Topo_Edge *edge,bool inside)
 {
 /*	for(size_t i=0; i < m_faces.size(); i++)
@@ -53,7 +48,7 @@ void Topo_Face_Compound::Add(Topo_Edge *edge,bool inside)
 		}	
 	}*/
 	edge->Reverse();
-	m_faces[0]->Add(edge);
+	m_faces[0]->Add(edge,inside);
 	
 	edge->Print();	
 }

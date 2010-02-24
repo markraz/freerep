@@ -32,10 +32,10 @@ Topo_Shape * MakeSphere(Geom_Ax2 loc, double r)
 	edge2->Add(a2);
 	
 	Topo_Face *face1 = new Topo_Face_Spheric(loc,r);
-	face1->Add(edge1);
+	face1->Add(edge1,false);
 
 	Topo_Face *face2 = new Topo_Face_Spheric(Geom_Ax2(loc.Location(),loc.ZDir(),loc.XDir()*-1),r);
-	face2->Add(edge2);
+	face2->Add(edge2,false);
 
 	Topo_Solid* solid = new Topo_Solid();
 	solid->Add(face1);

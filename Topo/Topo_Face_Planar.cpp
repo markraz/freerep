@@ -19,10 +19,10 @@ Topo_Face_Planar::Topo_Face_Planar(const ICanAssociate *associate):Topo_Face(ass
 void *Topo_Face_Planar::MakeTranslatedCopy(Geom_Vec3 dir) const
 {
     Topo_Face *nface = new Topo_Face_Planar(this);
-    std::list<Topo_Edge*>::const_iterator it;
+    std::list<OrientedEdge>::const_iterator it;
     for(it = m_edges.begin(); it != m_edges.end(); ++it)
     {
-        nface->Add((Topo_Edge*)(*it)->MakeTranslatedCopy(dir));
+        nface->Add((Topo_Edge*)((*it).m_edge)->MakeTranslatedCopy(dir),(*it).m_orientation==EdgeInside?true:false);
     }
 
     return nface;

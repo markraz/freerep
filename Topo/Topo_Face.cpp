@@ -31,19 +31,9 @@ double Topo_Face::Area()
 	return 0;	
 }
 
-void Topo_Face::Add(Topo_Edge *edge)
-{
-    m_edges.push_back(edge);
-    edge->AddParent(this);
-}
-
 void Topo_Face::Add(Topo_Edge *edge, bool inside)
 {
-	double area = edge->Area(this);
-	if((area < 0 && !inside) || (area > 0 && inside))
-		edge->Reverse();
-		
-    m_edges.push_back(edge);
+    m_edges.push_back(OrientedEdge(edge,inside?EdgeInside:EdgeOutside));
     edge->AddParent(this);
 }
 
@@ -72,10 +62,10 @@ void Topo_Face::Triangulate(double dDeviation, void (*pRet)(const Geom_Vec3&pnt,
     topo_face_vertices.resize(m_edges.size());
 
     topo_face_current_edge = 0;
-    std::list<Topo_Edge*>::const_iterator it;
+    std::list<OrientedEdge>::const_iterator it;
     for(it = m_edges.begin(); it != m_edges.end(); it++)
     {
-        Topo_Edge *edge = *it;
+        Topo_Edge *edge = (*it).m_edge;
         edge->GetVertices(dDeviation, topo_face_vertex_absorber);
 
         topo_face_current_edge++;
@@ -198,7 +188,7 @@ void Topo_Face::GetFirstWire(Topo_Wire **ppwire, EnumWireOrder *porder)
     {
         if(m_edges_it != m_edges.end())
         {
-            Topo_Edge* edge = *m_edges_it;
+            Topo_Edge* edge = (*m_edges_it).m_edge;
             edge->GetFirstWire(&wire,&order);
             if(wire)
                 break;
@@ -218,7 +208,7 @@ void Topo_Face::GetNextWire(Topo_Wire **ppwire, EnumWireOrder *porder)
 
     if(m_edges_it != m_edges.end())
     {
-       Topo_Edge* edge = *m_edges_it;
+       Topo_Edge* edge = (*m_edges_it).m_edge;
        edge->GetNextWire(&wire,&order);
     }
 
@@ -228,7 +218,7 @@ void Topo_Face::GetNextWire(Topo_Wire **ppwire, EnumWireOrder *porder)
 
         if(m_edges_it != m_edges.end())
         {
-            Topo_Edge* edge = *m_edges_it;
+            Topo_Edge* edge = (*m_edges_it).m_edge;
             edge->GetFirstWire(&wire,&order);
             if(wire)
                 break;
@@ -249,7 +239,7 @@ Topo_Edge* Topo_Face::GetFirstEdge()
 Topo_Edge* Topo_Face::GetNextEdge()
 {
     if(m_edges_it != m_edges.end())
-        return *m_edges_it++;
+        return (*m_edges_it++).m_edge;
     return 0;
 }
 

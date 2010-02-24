@@ -82,7 +82,7 @@ Topo_Face *CreateExtrudedFace(Topo_Wire* wire, EnumWireOrder direction, Topo_Wir
         
         //TODO: this probably does correctly calculate the plane and orientation of the new face
         Topo_Face* aface = new Topo_Face_Planar(Geom_Plane(Geom_Vec3(0,0,0),(avertex - bvertex) ^ (b_2vertex - bvertex)));
-        aface->Add(nedge);
+        aface->Add(nedge,false);
 
         return aface;
     }

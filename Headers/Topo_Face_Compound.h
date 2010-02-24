@@ -23,7 +23,6 @@ public:
 	
 //Overrides from Topo_Face
 	void Triangulate(double dDeviation, void (*)(const Geom_Vec3&pnt, const Geom_Vec3&norm)) const;
-    void Add(Topo_Edge *edge);
     void Add(Topo_Edge *edge,bool inside);
 
 //Override from ICanCopyAndTranslate
