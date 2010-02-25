@@ -8,8 +8,20 @@
 #include "Topo_Face_Spheric.h"
 #include "Geom_Plane.h"
 #include "Topo_Solid.h"
+#include "Geom_Matrix.h"
 
 #include <math.h>
+
+Topo_Face* MakeSphereSectionSkeleton(Geom_Ax2 loc, double r, double sa)
+{
+	Geom_Vec3 z = loc.ZDir();
+	Geom_Vec3 x = loc.XDir();
+	Geom_Matrix m = Geom_Matrix::RotateAround(loc.ZDir(),sa);
+	z = loc.ZDir();
+	x = loc.XDir();
+	
+	return new Topo_Face_Spheric(Geom_Ax2(loc.Location(),loc.ZDir(),m.Multiply(loc.XDir())),r);
+}
 
 Topo_Arc* MakeArcForSphere(Geom_Ax2 loc, double r, Geom_Vec3 z_dir, Geom_Vec3 x_dir, double start, double end)
 {

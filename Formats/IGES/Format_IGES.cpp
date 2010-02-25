@@ -3,7 +3,7 @@
 //Format_IGES.cpp - Author Jon Pry 
 
 #define EDGES //enables the creation of edges from wires
-#define FACES //enables the creation of faces from edges
+//#define FACES //enables the creation of faces from edges
 
 #include "Topo_Shape.h"
 #include "Topo_Line.h"
@@ -345,6 +345,12 @@ void ParseCurveOnParametricSurface(std::string &line, int index, DirectoryEntry 
 	index = ReadInt(parametriccurve,line,index,parm_delimiter);
 	index = ReadInt(worldcurve,line,index,parm_delimiter);
 	index = ReadInt(preferredrep,line,index,parm_delimiter);
+	
+	if(de->m_transform)
+	{
+		int x=0;
+		x++;	
+	}
 
 	//TODO: if we are given a parametric curve instead of a world curve
 	//it must be converted into world space. Unfortunately at this
@@ -363,6 +369,13 @@ void ParseTrimmedSurface(std::string &line, int index, DirectoryEntry* de)
 	index = ReadInt(is_outer,line,index,parm_delimiter);
 	index = ReadInt(n_inner_curves,line,index,parm_delimiter);
 	index = ReadInt(p_outer,line,index,parm_delimiter);
+	
+	if(de->m_transform)
+	{
+		int x=0;
+		x++;	
+	}
+	
 		
 	std::vector<int> inner_curves;
 	int inner_curve=-1;
@@ -405,6 +418,13 @@ void ParseSurfaceOfRevolution(std::string &line, int index, DirectoryEntry* de)
 	
 	Topo_Line *d = (Topo_Line*)directory_entries[(directrix-1)/2].m_shape;	
 	Topo_Shape *g = directory_entries[(generatrix-1)/2].m_shape;
+	
+	if(de->m_transform)
+	{
+		int x=0;
+		x++;	
+	}
+	
 	
 	//TODO: build the surface
 	//return;

@@ -129,5 +129,9 @@ Geom_Vec3 Topo_Face_Spheric::ParameterizePoint(Geom_Vec3 p,Geom_Vec3 derivitive)
 		map = map - derivitive;
 		y = atan2(map.m_y,map.m_x);	
 	}
+	
+	if(ISZERO(y - M_PI))
+		y -= 2 * M_PI;
+	
 	return Geom_Vec3(x,y,0);
 }

@@ -17,6 +17,7 @@ public:
 
     Geom_Vec3 GetPntAtU(double u) const;
     Geom_Ax2 GetAxis() const;
+    double GetRadius() const;
 
 //Overrides from Topo_Wire
     void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt, const Geom_Vec3 &derivitive)) const;

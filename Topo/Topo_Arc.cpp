@@ -148,3 +148,8 @@ bool Topo_Arc::IsCoplanar(Geom_Plane &plane) const
 	double dot = m_A.ZDir() * plane.GetNorm();
 	return ISZERO(c.m_z) && ISZERO(dot);	
 }
+
+double Topo_Arc::GetRadius() const
+{
+	return m_radius;	
+}

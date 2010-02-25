@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <vector>
 
-//#define TRI_DEBUG
+#define TRI_DEBUG
 
 Topo_Face::Topo_Face()
 {

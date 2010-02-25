@@ -8,6 +8,7 @@
 #include "Topo_Arc.h"
 #include "Topo_Face_Planar.h"
 #include "BREP_Algo_Make_Cone.h"
+#include "BREP_Algo_Make_Sphere.h"
 
 #include <vector>
 
@@ -54,6 +55,23 @@ void GenerateConicSurface(Topo_Line *directrix, Topo_Line *generatrix, std::vect
 	
 	ret.push_back(MakeConeSectionSkeleton(Geom_Ax2(loc,zdir,xdir),r1,r2,length,start));
 }
+
+void GenerateSphericSurface(Topo_Line *directrix, Topo_Arc *generatrix, std::vector<Topo_Face*> &ret, double start, double end)
+{
+	Geom_Line dline = directrix->GetLine();
+	
+//	double l1 = dline.Length();
+//	double l2 = gline.Length();
+	
+	Geom_Vec3 cpt = generatrix->GetAxis().Location();
+	
+	Geom_Vec3 zdir = dline.Direction().Normalized();
+	
+	Geom_Vec3 xdir = zdir ^ Geom_Vec3(1,0,0);
+	
+	ret.push_back(MakeSphereSectionSkeleton(Geom_Ax2(cpt,zdir,xdir),generatrix->GetRadius(),start));
+}
+
 
 std::vector<Topo_Face*> RevolveWireSkeleton(Topo_Line *directrix, Topo_Wire *wire, double start, double end)
 {
@@ -114,9 +132,10 @@ std::vector<Topo_Face*> RevolveWireSkeleton(Topo_Line *directrix, Topo_Wire *wir
 	{
 		Topo_Arc* arc = (Topo_Arc*)wire;
 		Geom_Line dline = directrix->GetLine();
+		Geom_Vec3 dir = dline.Direction();
 		if(dline.IsOn(arc->GetAxis().Location()) && ISZERO(arc->GetAxis().ZDir() * dline.Direction()))
 		{
-			//TODO: build spherical surfaces				
+			GenerateSphericSurface(directrix,arc,ret,start,end);				
 		}
 		else
 		{

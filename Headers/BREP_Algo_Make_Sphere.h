@@ -5,9 +5,10 @@
 #ifndef BREP_ALGO_MAKE_SPHERE_H
 #define BREP_ALGO_MAKE_SPHERE_H
 
-#include "Topo_Shape.h"
+#include "Topo_Face.h"
 #include "Geom_Ax2.h"
 
 Topo_Shape * MakeSphere(Geom_Ax2 loc, double r);
+Topo_Face* MakeSphereSectionSkeleton(Geom_Ax2 loc, double r, double sa);
 
 #endif 
