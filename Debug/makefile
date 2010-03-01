@@ -14,6 +14,7 @@ RM := rm -rf
 -include Tests/subdir.mk
 -include Tess/Planar/subdir.mk
 -include Subdivision/subdir.mk
+-include Intersect/subdir.mk
 -include Geom/Tests/subdir.mk
 -include Geom/subdir.mk
 -include Formats/IGES/subdir.mk

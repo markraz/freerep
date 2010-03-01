@@ -28,6 +28,7 @@ Topo \
 Tests \
 Tess/Planar \
 Subdivision \
+Intersect \
 Geom/Tests \
 Geom \
 Formats/IGES \

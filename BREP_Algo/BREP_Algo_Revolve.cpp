@@ -69,7 +69,9 @@ void GenerateSphericSurface(Topo_Line *directrix, Topo_Arc *generatrix, std::vec
 	
 	Geom_Vec3 xdir = zdir ^ Geom_Vec3(1,0,0);
 	
-	ret.push_back(MakeSphereSectionSkeleton(Geom_Ax2(cpt,zdir,xdir),generatrix->GetRadius(),start));
+	Geom_Ax2 axis = generatrix->GetAxis();
+	
+	ret.push_back(MakeSphereSectionSkeleton(Geom_Ax2(axis.Location(),axis.XDir(),axis.ZDir()),generatrix->GetRadius(),start));
 }
 
 

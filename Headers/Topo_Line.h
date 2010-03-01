@@ -26,6 +26,7 @@ public:
     double GetArea(EnumWireOrder order) const;
     Topo_Wire* Project(Geom_Plane &plane) const;
     bool IsCoplanar(Geom_Plane &plane) const;
+    Intersection Intersect(Topo_Wire *wire) const;
     
 //Override from ICanPrettyPrint
 	void Print();

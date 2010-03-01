@@ -14,6 +14,8 @@
     
     
     
+    
+    
     <item id="org.eclipse.cdt.core.pathentry">
       <pathentry kind="src" path="Tests"/>
       <pathentry kind="out" path=""/>
@@ -22,12 +24,15 @@
       <pathentry kind="src" path="Geom"/>
       <pathentry kind="src" path="Headers"/>
       <pathentry kind="src" path="Tess"/>
+      <pathentry kind="src" path="Intersect"/>
     </item>
     
     
     
     
     
+    
+  
   
   
   

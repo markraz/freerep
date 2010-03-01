@@ -153,3 +153,8 @@ double Topo_Arc::GetRadius() const
 {
 	return m_radius;	
 }
+
+Intersection Topo_Arc::Intersect(Topo_Wire *wire) const
+{
+	//TODO: implement me	
+}

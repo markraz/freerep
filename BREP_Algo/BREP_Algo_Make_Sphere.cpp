@@ -16,7 +16,7 @@ Topo_Face* MakeSphereSectionSkeleton(Geom_Ax2 loc, double r, double sa)
 {
 	Geom_Vec3 z = loc.ZDir();
 	Geom_Vec3 x = loc.XDir();
-	Geom_Matrix m = Geom_Matrix::RotateAround(loc.ZDir(),sa);
+	Geom_Matrix m = Geom_Matrix::RotateAround(loc.ZDir(),sa+M_PI);
 	z = loc.ZDir();
 	x = loc.XDir();
 	

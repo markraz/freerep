@@ -89,3 +89,24 @@ bool Topo_Line::IsCoplanar(Geom_Plane &plane) const
 	
 	return ISZERO(a.m_z) && ISZERO(b.m_z);	
 }
+
+Intersection Topo_Line::Intersect(Topo_Wire *wire) const
+{
+	Topo_Line *line = dynamic_cast<Topo_Line*>(wire);
+	if(line)
+	{
+		double ua = ((line->m_B.m_x-line->m_A.m_x) * (m_A.m_y - line->m_A.m_y) - (line->m_B.m_y - line->m_A.m_y) * (m_A.m_x - line->m_A.m_x)) /
+					((line->m_B.m_y-line->m_A.m_y) * (m_B.m_x - m_A.m_x) - (line->m_B.m_x - line->m_A.m_x) * (m_B.m_y - m_A.m_y));
+					
+		double ub = ((m_B.m_x - m_A.m_x) * (m_A.m_y - line->m_A.m_y) - (m_B.m_y - m_A.m_y) * (m_A.m_x - line->m_A.m_x)) / 
+					((line->m_B.m_y - line->m_A.m_y) * (m_B.m_x - m_A.m_x) - (line->m_B.m_x - line->m_A.m_x) * (m_B.m_y - m_A.m_y));
+					
+		Geom_Vec3 pnt(m_A.m_x + ua * (m_B.m_x - m_A.m_x),m_A.m_y + ua * (m_B.m_y - m_A.m_y),0);
+		
+		bool exists = ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1;
+		return Intersection(exists,pnt,ua,ub);			
+		
+	}
+	
+	//TODO: implement the other cases	
+}
