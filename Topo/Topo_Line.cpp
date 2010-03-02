@@ -4,6 +4,7 @@
 
 #include "Topo_Line.h"
 #include "FreeREP.h"
+#include "ExactPredicates.h"
 
 #include "stdio.h"
 
@@ -109,4 +110,79 @@ Intersection Topo_Line::Intersect(Topo_Wire *wire) const
 	}
 	
 	//TODO: implement the other cases	
+}
+
+bool Orient(Geom_Vec3 a, Geom_Vec3 b, Geom_Vec3 c)
+{
+	if(c.ExactEquals(a) || c.ExactEquals(b))
+		return true;
+		
+	double 	av[2],bv[2],cv[2];
+	av[0] = a.m_x; av[1] = a.m_y;
+	bv[0] = b.m_x; bv[1] = b.m_y;
+	cv[0] = c.m_x; cv[1] = c.m_y;
+	
+	return orient2d(av,bv,cv) == 0;
+}
+
+bool Topo_Line::IsCoincident(Topo_Wire *wire) const 
+{
+	Topo_Line *line = dynamic_cast<Topo_Line*>(wire);
+	if(!line)
+		return false;
+		
+	if(!Orient(GetStart(),GetEnd(),line->GetStart())  &&
+			Orient(GetStart(),GetEnd(),line->GetEnd()))
+		return false;
+		
+	//Check if the endpoints of the line are inbetween our endpoints
+	//TODO: not sure if there are numerical problems with this
+	//we also do not want to return true if the lines are just sharing a single
+	//point
+	if(line->m_A.Distance(m_A) < GetLength() && line->m_A.Distance(m_B) < GetLength())
+		return true;
+		
+	if(line->m_A.Distance(m_B) < GetLength() && line->m_B.Distance(m_B) < GetLength())
+		return true;
+	
+	return false;
+}
+
+double Topo_Line::GetLength() const
+{
+	return m_A.Distance(m_B);
+}
+
+Topo_Wire* Topo_Line::Merge(Topo_Wire *wire) const 
+{
+	Topo_Line *line = (Topo_Line*)wire;
+	
+	Geom_Vec3 A = m_A;
+	Geom_Vec3 B = m_B;
+	
+	double d = GetLength();
+	double nd = line->m_A.Distance(A);
+	if(nd > d)
+	{
+		B = line->m_A;
+		d = nd;
+	}
+	
+	nd = line->m_B.Distance(A);
+	if(nd > d)
+		B = line->m_B;
+
+	d = A.Distance(B);
+	nd = line->m_A.Distance(B);
+	if(nd > d)
+	{
+		A = line->m_A;
+		d = nd;	
+	}
+	
+	nd = line->m_B.Distance(B);
+	if(nd > d)
+		A = line->m_B;
+		
+	return new Topo_Line(A,B);
 }

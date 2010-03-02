@@ -25,6 +25,11 @@ bool Geom_Vec3::IsEqual(Geom_Vec3 pnt) const
     return dx*dx+dy*dy+dz*dz < FreeREP::CONFUSION2;
 }
 
+bool Geom_Vec3::ExactEquals(Geom_Vec3 pnt) const
+{
+    return pnt.m_x == m_x && pnt.m_y == m_y && pnt.m_z == m_z;
+}
+
 double Geom_Vec3::Distance(Geom_Vec3 pnt) const
 {
     double dx = pnt.m_x - m_x;

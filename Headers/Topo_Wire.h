@@ -38,6 +38,8 @@ public:
     virtual double GetArea(EnumWireOrder order) const = 0;
 	virtual Topo_Wire* Project(Geom_Plane &plane) const = 0;
 	virtual Intersection Intersect(Topo_Wire *wire) const = 0;
+	virtual bool IsCoincident(Topo_Wire *wire) const = 0;
+	virtual Topo_Wire* Merge(Topo_Wire *wire) const = 0;
 };
 
 #endif

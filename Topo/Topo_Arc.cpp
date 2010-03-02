@@ -158,3 +158,13 @@ Intersection Topo_Arc::Intersect(Topo_Wire *wire) const
 {
 	//TODO: implement me	
 }
+
+bool Topo_Arc::IsCoincident(Topo_Wire *wire) const 
+{
+	//TODO: implement me	
+}
+
+Topo_Wire* Topo_Arc::Merge(Topo_Wire *wire) const
+{
+	//TODO: implement me	
+}

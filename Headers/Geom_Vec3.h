@@ -24,6 +24,7 @@ public:
    	Geom_Vec3 operator^(Geom_Vec3) const; 
 
     bool IsEqual(Geom_Vec3 pnt) const;
+    bool ExactEquals(Geom_Vec3 pnt) const;
     double Distance(Geom_Vec3 pnt) const;
     
     Geom_Vec3 Added(Geom_Vec3 pnt) const;

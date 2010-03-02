@@ -16,6 +16,7 @@ public:
     ~Topo_Line();
     
     Geom_Line GetLine();
+    double GetLength() const;
 
 //Overrides from Topo_Wire
     void GetVertices(double dDeviation, void (*)(const Geom_Vec3 &pt, const Geom_Vec3 &derivitive)) const;
@@ -27,6 +28,8 @@ public:
     Topo_Wire* Project(Geom_Plane &plane) const;
     bool IsCoplanar(Geom_Plane &plane) const;
     Intersection Intersect(Topo_Wire *wire) const;
+    bool IsCoincident(Topo_Wire *wire) const;
+    Topo_Wire* Merge(Topo_Wire *wire) const;
     
 //Override from ICanPrettyPrint
 	void Print();
