@@ -97,6 +97,31 @@ void checkUsedArgs(vector<char*> *usedargs, vector<char*> *args){
 	}
 }
 
+void recursiveFree(ast_t* ast){
+	switch(ast->type){
+		case NUMBER_TYPE: break;
+		case ARRAY_TYPE: break;
+		case PLUS_TYPE: //fall through
+		case MINUS_TYPE: //fall through
+		case MULT_TYPE: 
+			{
+				bin_t* bin = (bin_t*)ast;
+				recursiveFree(bin->a);
+				recursiveFree(bin->b);
+			}
+			break;
+		case NEG_TYPE: 
+			{
+				neg_t* neg = (neg_t*)ast;
+				recursiveFree(neg->expr);
+			}
+			break;
+		default:
+			printf("Fail\n");
+	}
+	free(ast);
+}
+
 bool reduceExpression(ast_t* expr, ast_t** prt){
 	switch(expr->type){
 		case NUMBER_TYPE: break;
@@ -117,6 +142,7 @@ bool reduceExpression(ast_t* expr, ast_t** prt){
 					num->ast.type = NUMBER_TYPE;
 					num->val = res;
 					*prt = (ast_t*)num;
+					recursiveFree(expr);
    				    return true;
 				}
 				return reduceExpression(bin->a,&bin->a) || reduceExpression(bin->b,&bin->b);
@@ -131,6 +157,7 @@ bool reduceExpression(ast_t* expr, ast_t** prt){
 					num->ast.type = NUMBER_TYPE;
 					num->val = res;
 					*prt = (ast_t*)num;
+					recursiveFree(expr);
 					return true;
 				}
 				return reduceExpression(neg->expr,&neg->expr);
@@ -141,58 +168,61 @@ bool reduceExpression(ast_t* expr, ast_t** prt){
 	return 0;
 }
 
-void printExprInexact(ast_t* expr){
+//code or names
+int printExprInexact(ast_t* expr, int idx, bool code){
 	switch(expr->type){
 		case NUMBER_TYPE: 
 			{
-				printf("%d");
+				number_t* number = (number_t*)expr;
+				if(!code)
+					printf("%d",number->val);
 			}				
 			break;
 		case ARRAY_TYPE: 
 			{
 				array_t* array = (array_t*)expr;
-				printf("%s[%d]", array->name, array->idx);	
+				if(!code)
+					printf("%s[%d]", array->name, array->idx);	
 			}
 			break;
-		case PLUS_TYPE: 
-			{
-				bin_t* bin = (bin_t*)expr;
-				printf("(");
-				printExprInexact(bin->a);
-				printf("+");
-				printExprInexact(bin->b);
-				printf(")");
-			}
-			break;
-
-		case MINUS_TYPE: 
-			{
-				bin_t* bin = (bin_t*)expr;
-				printf("(");
-				printExprInexact(bin->a);
-				printf("-");
-				printExprInexact(bin->b);
-				printf(")");
-			}
-			break;
-
+		case PLUS_TYPE: //fall through
+		case MINUS_TYPE: //fall through
 		case MULT_TYPE: 
 			{
 				bin_t* bin = (bin_t*)expr;
-				printf("(");
-				printExprInexact(bin->a);
-				printf("*");
-				printExprInexact(bin->b);
-				printf(")");
+				if(code){
+					int aidx = printExprInexact(bin->a,idx+1,1);
+					int bidx = printExprInexact(bin->b,aidx+1,1);
+					printf("\tepserr+=(ABS(");
+					printExprInexact(bin->a,idx+1,0);
+					printf(")+ABS(");
+					printExprInexact(bin->b,aidx+1,0);
+					printf(")*EPS_DBL;\n");
+					printf("\tdouble partial%d=", idx);
+					printExprInexact(bin->a,idx+1,0);
+					if(expr->type==MULT_TYPE)
+						printf("*");
+					if(expr->type==PLUS_TYPE)
+						printf("+");
+					if(expr->type==MINUS_TYPE)
+						printf("-");
+					idx = printExprInexact(bin->b,aidx+1,0);
+					printf(";\n");
+				}else{
+					printf("partial%d",idx);
+				}
 			}
 			break;
 		case NEG_TYPE: 
 			{
 				neg_t* neg = (neg_t*)expr;
+				printf("ENOIMPL-");
+				printExprInexact(neg->expr,idx,code);
 			}
 			break;
 		default: printf("Fail %d\n", expr->type); 
 	}
+	return idx;
 }
 
 void compile(ast_t* ast){
@@ -212,15 +242,16 @@ void compile(ast_t* ast){
 	getUsedArgs(assign->expr,&usedargs);
 
 	checkUsedArgs(&usedargs,&args);
-	//while(reduceExpression(assign->expr,&assign->expr)){printf("Reduce....\n");}
+	while(reduceExpression(assign->expr,&assign->expr)){printf("Reduce....\n");}
 
 	printPrototype(fname,args);
 
 	//Normal epsilon calculation
-	printf("\tdouble det=");
-	printExprInexact(assign->expr);
-	printf(";\n");
-
+	printf("\tdouble epserr=0;\n");
+	printExprInexact(assign->expr,0,1);
+	
+	printf("\n\tif(partial0>epserr||partial0<-epserr) return partial0;\n");
+	printf("\t return nan;\n");
 
 	printf("}\n");
 }
