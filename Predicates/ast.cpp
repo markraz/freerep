@@ -1,10 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "ast.h"
 
+using namespace std;
+
+static vector<ast_t*> statements;
+
+vector<ast_t*>* getStatements(){
+	return &statements;
+}
+
 void execute(int p1){
-	printf("execute\n");
+//	printf("execute\n");
 }
 
 ast_t* plus(ast_t* p1, ast_t* p2){
@@ -45,8 +54,8 @@ ast_t* assignment(ast_t* p1, ast_t* p2, ast_t *p3){
 }
 
 int statement(ast_t* p1){
-	printf("statement\n");
-	//TODO: save the statements
+	//printf("statement\n");
+	statements.push_back(p1);
 	return 0;
 }
 
@@ -97,7 +106,7 @@ ast_t* arg(char *p1, ast_t* p2){
 }
 
 int endseq(){
-	printf("endseq\n");
+//	printf("endseq\n");
 	return 0;
 }
 
