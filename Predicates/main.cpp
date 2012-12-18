@@ -141,6 +141,60 @@ bool reduceExpression(ast_t* expr, ast_t** prt){
 	return 0;
 }
 
+void printExprInexact(ast_t* expr){
+	switch(expr->type){
+		case NUMBER_TYPE: 
+			{
+				printf("%d");
+			}				
+			break;
+		case ARRAY_TYPE: 
+			{
+				array_t* array = (array_t*)expr;
+				printf("%s[%d]", array->name, array->idx);	
+			}
+			break;
+		case PLUS_TYPE: 
+			{
+				bin_t* bin = (bin_t*)expr;
+				printf("(");
+				printExprInexact(bin->a);
+				printf("+");
+				printExprInexact(bin->b);
+				printf(")");
+			}
+			break;
+
+		case MINUS_TYPE: 
+			{
+				bin_t* bin = (bin_t*)expr;
+				printf("(");
+				printExprInexact(bin->a);
+				printf("-");
+				printExprInexact(bin->b);
+				printf(")");
+			}
+			break;
+
+		case MULT_TYPE: 
+			{
+				bin_t* bin = (bin_t*)expr;
+				printf("(");
+				printExprInexact(bin->a);
+				printf("*");
+				printExprInexact(bin->b);
+				printf(")");
+			}
+			break;
+		case NEG_TYPE: 
+			{
+				neg_t* neg = (neg_t*)expr;
+			}
+			break;
+		default: printf("Fail %d\n", expr->type); 
+	}
+}
+
 void compile(ast_t* ast){
 	char* fname;
 	vector<char*> args;
@@ -158,9 +212,14 @@ void compile(ast_t* ast){
 	getUsedArgs(assign->expr,&usedargs);
 
 	checkUsedArgs(&usedargs,&args);
-	while(reduceExpression(assign->expr,&assign->expr)){printf("Reduce....\n");}
+	//while(reduceExpression(assign->expr,&assign->expr)){printf("Reduce....\n");}
 
 	printPrototype(fname,args);
+
+	//Normal epsilon calculation
+	printf("\tdouble det=");
+	printExprInexact(assign->expr);
+	printf(";\n");
 
 
 	printf("}\n");
