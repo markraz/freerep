@@ -9,8 +9,6 @@ using namespace std;
 #include "ast.h"
 #include "main.h"
 
-vector<ast_t*>* getStatements();
-
 extern "C"{
  
 void yyerror(const char *str)
@@ -33,111 +31,6 @@ void printPrototype(char* name, vector<char*> args){
 		printf("double *%s", args[i]);
 	}
 	printf(") {\n");
-}
-
-bool reduceExpression(ast_t* expr, ast_t** prt){
-	switch(expr->type){
-		case NUMBER_TYPE: break;
-		case ARRAY_TYPE: break;
-		case PLUS_TYPE: //fall through
-		case MINUS_TYPE: //fall through
-		case MULT_TYPE: 
-			{
-				bin_t* bin = (bin_t*)expr;
-				if(bin->a->type == NUMBER_TYPE &&	
-				   bin->b->type == NUMBER_TYPE){
-				   	double res = ((number_t*)bin->a)->val * ((number_t*)bin->b)->val;
-					if(expr->type==MINUS_TYPE)
-						res = ((number_t*)bin->a)->val - ((number_t*)bin->b)->val;
-					if(expr->type==PLUS_TYPE)
-						res = ((number_t*)bin->a)->val + ((number_t*)bin->b)->val;
-				  	number_t *num = (number_t*)malloc(sizeof(number_t));
-					num->ast.type = NUMBER_TYPE;
-					num->ast.ssa = 0;
-					num->val = res;
-					*prt = (ast_t*)num;
-					recursiveFree(expr);
-   				    return true;
-				}
-				return reduceExpression(bin->a,&bin->a) || reduceExpression(bin->b,&bin->b);
-			}
-			break;
-		case NEG_TYPE: 
-			{
-				neg_t* neg = (neg_t*)expr;
-				if(neg->expr->type == NUMBER_TYPE){
-					double res = -((number_t*)neg->expr)->val;
-				  	number_t *num = (number_t*)malloc(sizeof(number_t));
-					num->ast.type = NUMBER_TYPE;
-					num->ast.ssa = 0;
-					num->val = res;
-					*prt = (ast_t*)num;
-					recursiveFree(expr);
-					return true;
-				}
-				return reduceExpression(neg->expr,&neg->expr);
-			}
-			break;
-		default: printf("Fail %d\n", expr->type); 
-	}
-	return 0;
-}
-
-//code or names
-int printExprInexact(ast_t* expr, int idx, bool code){
-	switch(expr->type){
-		case NUMBER_TYPE: 
-			{
-				number_t* number = (number_t*)expr;
-				if(!code)
-					printf("%d",number->val);
-			}				
-			break;
-		case ARRAY_TYPE: 
-			{
-				array_t* array = (array_t*)expr;
-				if(!code)
-					printf("%s[%d]", array->name, array->idx);	
-			}
-			break;
-		case PLUS_TYPE: //fall through
-		case MINUS_TYPE: //fall through
-		case MULT_TYPE: 
-			{
-				bin_t* bin = (bin_t*)expr;
-				if(code){
-					int aidx = printExprInexact(bin->a,idx+1,1);
-					int bidx = printExprInexact(bin->b,aidx+1,1);
-					printf("\tepserr+=(ABS(");
-					printExprInexact(bin->a,idx+1,0);
-					printf(")+ABS(");
-					printExprInexact(bin->b,aidx+1,0);
-					printf("))*EPS_DBL;\n");
-					printf("\tdouble partial%d=", idx);
-					printExprInexact(bin->a,idx+1,0);
-					if(expr->type==MULT_TYPE)
-						printf("*");
-					if(expr->type==PLUS_TYPE)
-						printf("+");
-					if(expr->type==MINUS_TYPE)
-						printf("-");
-					idx = printExprInexact(bin->b,aidx+1,0);
-					printf(";\n");
-				}else{
-					printf("partial%d",idx);
-				}
-			}
-			break;
-		case NEG_TYPE: 
-			{
-				neg_t* neg = (neg_t*)expr;
-				printf("ENOIMPL-");
-				printExprInexact(neg->expr,idx,code);
-			}
-			break;
-		default: printf("Fail %d\n", expr->type); 
-	}
-	return idx;
 }
 
 void isPredictable(ast_t* expr, int sign){
@@ -273,11 +166,15 @@ void compile(ast_t* ast){
 
 	printPrototype(fname,args);
 
+	createssa(assign->expr);
+	printPartials();
+
 	//Normal epsilon calculation
 	printf("\tdouble epserr=0;\n");
-	printExprInexact(assign->expr,0,1);
-	
-	printf("\n\tif(partial0>epserr||partial0<-epserr) return partial0;\n");
+	printEpsPartials();
+
+	int nparts = getNumPartials()-1;
+	printf("\n\tif(partial%d>epserr||partial%d<-epserr) return partial%d;\n",nparts,nparts,nparts);
 
 
 	//Explicit zero
