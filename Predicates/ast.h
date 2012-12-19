@@ -16,8 +16,16 @@ int yylex();
 #define ARG_TYPE 8
 #define ASSIGN_TYPE 9
 
+struct ast;
+
+typedef struct ssa {
+	int idx;
+	struct ast* ast;
+} ssa_t;
+
 typedef struct ast {
 	unsigned type;
+	ssa_t *ssa;
 } ast_t;
 
 typedef struct name {
@@ -72,5 +80,7 @@ ast_t* assignment(ast_t* p1, ast_t* p2, ast_t *p3);
 int endseq();
 void execute(int p1);
 int statement(ast_t* p1);
+
+void recursiveFree(ast_t* ast);
 
 

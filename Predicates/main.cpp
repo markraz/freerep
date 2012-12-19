@@ -3,10 +3,11 @@
 #include <string.h>
 #include <vector>
 
+using namespace std;
+
 #include "y.tab.h"
 #include "ast.h"
-
-using namespace std;
+#include "main.h"
 
 vector<ast_t*>* getStatements();
 
@@ -24,18 +25,6 @@ int yywrap()
 
 } //Extern "C"
 
-vector<char*> getArgs(arg_t* args){
-	vector<char*> ret;
-	while(args){
-		if(args->ast.type != ARG_TYPE){
-			printf("Compiler error %s\n", __func__);
-		}
-		ret.push_back(args->name);
-		args = (arg_t*)args->next;
-	}
-	return ret;
-}
-
 void printPrototype(char* name, vector<char*> args){
 	printf("double %s(", name);
 	for(int i=0; i < args.size(); i++){
@@ -44,82 +33,6 @@ void printPrototype(char* name, vector<char*> args){
 		printf("double *%s", args[i]);
 	}
 	printf(") {\n");
-}
-
-void addArg(char* name, vector<char*> *args){
-	for(int i=0; i<args->size(); i++){
-		if(strcmp(name,args->at(i))==0)
-			return;
-	}
-	args->push_back(name);
-}
-
-void getUsedArgs(ast_t* expr, vector<char*> *args){
-	switch(expr->type){
-		case NUMBER_TYPE: break;
-		case ARRAY_TYPE:
-			{
-				array_t* array = (array_t*)expr;
-				addArg(array->name,args);
-			} 
-			break;
-		case PLUS_TYPE: //fall through
-		case MINUS_TYPE: //fall through
-		case MULT_TYPE: 
-			{
-				bin_t* bin = (bin_t*)expr;
-				getUsedArgs(bin->a,args);
-				getUsedArgs(bin->b,args);
-			}
-			break;
-		case NEG_TYPE: 
-			{
-				neg_t* neg = (neg_t*)expr;
-				getUsedArgs(neg->expr,args);
-			}
-			break;
-		default: printf("Fail\n"); 
-	}
-}
-
-void checkUsedArgs(vector<char*> *usedargs, vector<char*> *args){
-	for(int i=0; i < usedargs->size(); i++){
-		bool found=false;
-		for(int j=0; j < args->size(); j++){
-			if(strcmp(usedargs->at(i),args->at(j))==0){
-				found = true;
-				break;
-			}
-		}
-		if(!found){
-			printf("Undeclared variable %s\n", usedargs->at(i));
-		}
-	}
-}
-
-void recursiveFree(ast_t* ast){
-	switch(ast->type){
-		case NUMBER_TYPE: break;
-		case ARRAY_TYPE: break;
-		case PLUS_TYPE: //fall through
-		case MINUS_TYPE: //fall through
-		case MULT_TYPE: 
-			{
-				bin_t* bin = (bin_t*)ast;
-				recursiveFree(bin->a);
-				recursiveFree(bin->b);
-			}
-			break;
-		case NEG_TYPE: 
-			{
-				neg_t* neg = (neg_t*)ast;
-				recursiveFree(neg->expr);
-			}
-			break;
-		default:
-			printf("Fail\n");
-	}
-	free(ast);
 }
 
 bool reduceExpression(ast_t* expr, ast_t** prt){
@@ -140,6 +53,7 @@ bool reduceExpression(ast_t* expr, ast_t** prt){
 						res = ((number_t*)bin->a)->val + ((number_t*)bin->b)->val;
 				  	number_t *num = (number_t*)malloc(sizeof(number_t));
 					num->ast.type = NUMBER_TYPE;
+					num->ast.ssa = 0;
 					num->val = res;
 					*prt = (ast_t*)num;
 					recursiveFree(expr);
@@ -155,6 +69,7 @@ bool reduceExpression(ast_t* expr, ast_t** prt){
 					double res = -((number_t*)neg->expr)->val;
 				  	number_t *num = (number_t*)malloc(sizeof(number_t));
 					num->ast.type = NUMBER_TYPE;
+					num->ast.ssa = 0;
 					num->val = res;
 					*prt = (ast_t*)num;
 					recursiveFree(expr);
@@ -197,7 +112,7 @@ int printExprInexact(ast_t* expr, int idx, bool code){
 					printExprInexact(bin->a,idx+1,0);
 					printf(")+ABS(");
 					printExprInexact(bin->b,aidx+1,0);
-					printf(")*EPS_DBL;\n");
+					printf("))*EPS_DBL;\n");
 					printf("\tdouble partial%d=", idx);
 					printExprInexact(bin->a,idx+1,0);
 					if(expr->type==MULT_TYPE)
@@ -223,6 +138,118 @@ int printExprInexact(ast_t* expr, int idx, bool code){
 		default: printf("Fail %d\n", expr->type); 
 	}
 	return idx;
+}
+
+void isPredictable(ast_t* expr, int sign){
+	switch(expr->type){
+		case NUMBER_TYPE: 
+			{
+				number_t* number = (number_t*)expr;
+				if((sign==0 && number->val==0) ||  
+					(sign==1 && number->val>=0) ||
+					(sign==-1 && number->val<=0)) 
+						printf("true");
+					else
+						printf("false");
+			}				
+			break;
+		case ARRAY_TYPE: 
+			{
+				array_t* array = (array_t*)expr;
+				if(sign==0)
+					printf("%s[%d]==0", array->name, array->idx);	
+				if(sign==1)
+					printf("%s[%d]>=0", array->name, array->idx);
+				if(sign==-1)
+					printf("%s[%d]<=0", array->name, array->idx);
+			}
+			break;
+		case PLUS_TYPE: 
+			{
+				bin_t* bin = (bin_t*)expr;
+				printf("(");
+				if(sign==0){
+					isPredictable(bin->a,0);
+					printf("&&");
+					isPredictable(bin->b,0);
+				}
+				if(sign==1){
+					isPredictable(bin->a,1);
+					printf("&&");
+					isPredictable(bin->b,1);
+				}	
+				if(sign==-1){
+					isPredictable(bin->a,-1);
+					printf("&&");
+					isPredictable(bin->b,-1);
+				}	
+				printf(")");
+			}
+			break;
+		case MINUS_TYPE: 
+			{
+				bin_t* bin = (bin_t*)expr;
+				printf("(");
+				if(sign==0){
+					isPredictable(bin->a,0);
+					printf("&&");
+					isPredictable(bin->b,0);
+				}
+				if(sign==1){
+					isPredictable(bin->a,1);
+					printf("&&");
+					isPredictable(bin->b,-1);
+				}	
+				if(sign==-1){
+					isPredictable(bin->a,-1);
+					printf("&&");
+					isPredictable(bin->b,1);
+				}	
+				printf(")");
+			}
+			break;
+		case MULT_TYPE: 
+			{
+				bin_t* bin = (bin_t*)expr;
+				printf("(");
+				if(sign==0){
+					isPredictable(bin->a,sign);
+					printf("||");
+					isPredictable(bin->b,sign);
+				}
+				if(sign==1){
+					printf("(");
+					isPredictable(bin->a,1);
+					printf("&&");
+					isPredictable(bin->b,1);
+					printf(")||(");
+					isPredictable(bin->a,-1);
+					printf("&&");
+					isPredictable(bin->b,-1);
+					printf(")");
+				}	
+				if(sign==-1){
+					printf("(");
+					isPredictable(bin->a,1);
+					printf("&&");
+					isPredictable(bin->b,-1);
+					printf(")||(");
+					isPredictable(bin->a,-1);
+					printf("&&");
+					isPredictable(bin->b,1);
+					printf(")");
+				}	
+				printf(")");
+			}
+			break;
+		case NEG_TYPE: 
+			{
+				neg_t* neg = (neg_t*)expr;
+				isPredictable(neg->expr,sign);
+			}
+			break;
+		default: printf("Fail %d\n", expr->type); 
+	}
 }
 
 void compile(ast_t* ast){
@@ -251,7 +278,25 @@ void compile(ast_t* ast){
 	printExprInexact(assign->expr,0,1);
 	
 	printf("\n\tif(partial0>epserr||partial0<-epserr) return partial0;\n");
-	printf("\t return nan;\n");
+
+
+	//Explicit zero
+	printf("\tif(");
+	isPredictable(assign->expr,0);
+	printf(")\n\t{return 0;}\n");
+
+	//Explicit one
+	printf("\tif(");
+	isPredictable(assign->expr,1);
+	printf(")\n\t{return 1;}\n");
+
+	//Explicit neg
+	printf("\tif(");
+	isPredictable(assign->expr,-1);
+	printf(")\n\t{return -1;}\n");
+
+
+	printf("\treturn nan;\n");
 
 	printf("}\n");
 }
