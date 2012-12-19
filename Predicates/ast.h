@@ -15,12 +15,17 @@ int yylex();
 #define MINUS_TYPE 7
 #define ARG_TYPE 8
 #define ASSIGN_TYPE 9
+#define SUM_TYPE 10
+#define PART_TYPE 11
+#define MAG_TYPE 12
+#define EPS_TYPE 13
 
 struct ast;
 
 typedef struct ssa {
 	int idx;
 	struct ast* ast;
+	struct ast* eps;
 } ssa_t;
 
 typedef struct ast {
@@ -61,12 +66,32 @@ typedef struct arg {
 	ast_t* next;
 } arg_t;
 
+typedef struct sum {
+	ast_t ast;
+	ast_t* expr;
+	ast_t* next;
+} sum_t;
+
 typedef struct assign {
 	ast_t ast;
 	name_t* dst;
 	arg_t* args;
 	ast_t* expr;
 } assign_t;
+
+typedef struct part {
+	ast_t ast;
+	int idx;
+} part_t;
+
+typedef struct mag {
+	ast_t ast;
+	ast_t* expr;
+} mag_t;
+
+typedef struct eps {
+	ast_t ast;
+} eps_t;
 
 ast_t* name(char* p1);
 ast_t* number(int p1);

@@ -170,7 +170,6 @@ void compile(ast_t* ast){
 	printPartials();
 
 	//Normal epsilon calculation
-	printf("\tdouble epserr=0;\n");
 	printEpsPartials();
 
 	int nparts = getNumPartials()-1;
