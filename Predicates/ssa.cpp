@@ -7,6 +7,7 @@ using namespace std;
 
 #include "ast.h"
 #include "main.h"
+#include "ntree.h"
 
 static vector<ssa_t*> ssavec;
 
@@ -99,22 +100,6 @@ void printPartials(){
 	}
 }
 
-void printEpsPartialsOld(){
-	for(int i=0; i < ssavec.size(); i++){
-		ssa_t* ssa = ssavec.at(i);
-		if(ssa->ast->type==NEG_TYPE){
-			//no error
-		}else{ //plus minus mult
-			printf("\tepserr+=(ABS(");
-			bin_t* bin = (bin_t*)ssa->ast;
-			printPartialSrc(bin->a);
-			printf(")+ABS(");
-			printPartialSrc(bin->b);
-			printf("))*EPS_DBL\n");
-		}
-	}
-}
-
 bool isErrFree(ast_t* ast){
 	if(ast->type == NUMBER_TYPE || ast->type == ARRAY_TYPE)
 		return true;
@@ -137,7 +122,7 @@ void printEpsTree(ast_t* ast){
 				printf("(");
 				printEpsTree(bin->a);
 				if(ast->type==MULT_TYPE)
-					printf("*");
+					printf(" X ");
 				if(ast->type==SUM_TYPE)
 					printf(" +/- ");
 				printEpsTree(bin->b);
@@ -155,6 +140,12 @@ void printEpsTree(ast_t* ast){
 		case EPS_TYPE:
 			{
 				printf("e");
+			}
+			break;
+		case NUMBER_TYPE:
+			{
+				number_t* num = (number_t*)ast;
+				printf("%d", num->val);
 			}
 			break;
 	}
@@ -231,96 +222,6 @@ bool simplify(ast_t* ast, ast_t** past){
 	return false;
 }
 
-ast_t** getTerminus(ast_t** ast,bool left){
-	switch((*ast)->type){
-		case MULT_TYPE:
-			{
-				bin_t* bin = (bin_t*)*ast;
-				if(left)
-					return getTerminus(&bin->a,left);
-				return getTerminus(&bin->b,left);
-			}
-		case EPS_TYPE:
-		case PART_TYPE:
-			return ast;
-		case MAG_TYPE:
-			{
-				mag_t* mag = (mag_t*)*ast;
-				return getTerminus(&mag->expr,left);
-			}
-		default:
-			printf("Fail %d\n", (*ast)->type);
-	}
-	return 0;
-}
-
-typedef struct factor {
-	ast_t* tomove;
-	ast_t* actual;
-	ast_t** ptr;
-} factor_t;
-
-void assembleFactors(ast_t* ast, ast_t** ptr, vector<factor_t>* factors){
-	factor_t factor;
-	switch(ast->type){
-		case MULT_TYPE:
-			{
-				bin_t* bin = (bin_t*)ast;
-				assembleFactors(bin->a,&bin->a,factors);
-				assembleFactors(bin->b,&bin->b,factors);
-			}
-			break;
-/*		case MAG_TYPE:
-		//	factor.tomove = ast;
-			factor.actual
-			break;*/
-		case EPS_TYPE:
-			factor.tomove = ast;
-			factor.actual = ast;
-			factor.ptr = ptr;
-			factors->push_back(factor);
-			break;
-		case PART_TYPE:
-			factor.tomove = ast;
-			factor.actual = ast;
-			factor.ptr = ptr;
-			factors->push_back(factor);
-			break;
-		default:
-			printf("Fail %d\n", ast->type);
-	}
-}
-
-bool orderFactors(ast_t* ast){
-	if(ast->type == MULT_TYPE){
-		vector<factor_t> factors;
-		bin_t* bin = (bin_t*)ast;
-		assembleFactors(bin->a,&bin->a,&factors);
-		assembleFactors(bin->b,&bin->b,&factors);
-
-		for(int i=0; i < factors.size(); i++){
-			for(int j=i+1; j < factors.size(); j++){
-				factor_t a = factors.at(i);
-				factor_t b = factors.at(j);
-
-				if((a.actual->type == EPS_TYPE && b.actual->type != EPS_TYPE) || (b.actual->type == PART_TYPE && ((part_t*)(a.actual))->idx > ((part_t*)(b.actual))->idx)){
-					*a.ptr = b.actual;
-					*b.ptr = a.actual;
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	if(ast->type == SUM_TYPE){
-		bin_t* bin = (bin_t*)ast;
-		return orderFactors(bin->a)||orderFactors(bin->b);
-	}
-//	printf("No go %d\n", ast->type);
-	return false;
-}
-
 void printEpsPartials(){
 	for(int i=0; i < ssavec.size(); i++){
 		ssa_t* ssa = ssavec.at(i);
@@ -358,12 +259,16 @@ void printEpsPartials(){
 					printf("\";\n"); */
 				}
 
-				while(orderFactors(prod)){
-/*					printf("Reduce....\n");	
-					printf("\tconst char* epspart%d=\"",i);	
-					printEpsTree(prod);
-					printf("\";\n"); */
+				ntree_t* tree = toNTree(prod);
+				while(orderFactors(tree)){
+//					printf("Reduce....\n");	
 				}
+				while(combineTerms(tree)){
+					printf("Reduce...\n");
+				}
+				prod = fromNTree(tree);
+
+
 
 				printf("\tconst char* epspart%d=\"",i);
 				printEpsTree(prod);
