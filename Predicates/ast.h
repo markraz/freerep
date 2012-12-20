@@ -66,12 +66,6 @@ typedef struct arg {
 	ast_t* next;
 } arg_t;
 
-typedef struct sum {
-	ast_t ast;
-	ast_t* expr;
-	ast_t* next;
-} sum_t;
-
 typedef struct assign {
 	ast_t ast;
 	name_t* dst;
@@ -105,6 +99,10 @@ ast_t* assignment(ast_t* p1, ast_t* p2, ast_t *p3);
 int endseq();
 void execute(int p1);
 int statement(ast_t* p1);
+ast_t* make_eps();
+ast_t* make_mag(ast_t* expr);
+ast_t* make_part(int idx);
+ast_t* make_sum(ast_t* p1, ast_t* p2);
 
 void recursiveFree(ast_t* ast);
 

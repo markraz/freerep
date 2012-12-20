@@ -130,22 +130,16 @@ void printEpsTree(ast_t* ast){
 				printf("partial%d", part->idx);
 			}
 			break;
-		case SUM_TYPE:
-			{
-				sum_t* sum = (sum_t*)ast;
-				printEpsTree(sum->expr);
-				if(sum->next){
-					printf(" +/- ");
-					printEpsTree(sum->next);
-				}
-			}
-			break;
+		case SUM_TYPE: //fall through
 		case MULT_TYPE:
 			{
 				bin_t* bin = (bin_t*)ast;
 				printf("(");
 				printEpsTree(bin->a);
-				printf("*");
+				if(ast->type==MULT_TYPE)
+					printf("*");
+				if(ast->type==SUM_TYPE)
+					printf(" +/- ");
 				printEpsTree(bin->b);
 				printf(")");
 			}
@@ -166,6 +160,167 @@ void printEpsTree(ast_t* ast){
 	}
 }
 
+ast_t* copy(ast_t* ast){
+	switch(ast->type){
+		case PART_TYPE:
+			{
+				part_t* part = (part_t*)ast;
+				part_t* npart = (part_t*)malloc(sizeof(part_t));
+				*npart = *part;
+				return &npart->ast;
+			}
+		case MAG_TYPE:
+			{
+			 	mag_t* mag = (mag_t*)ast;
+				mag_t* nmag = (mag_t*)malloc(sizeof(mag_t));
+				*nmag = *mag;
+				nmag->expr = copy(mag->expr);
+				return &nmag->ast;
+			}
+		case EPS_TYPE:
+			{
+				eps_t* eps = (eps_t*)ast;
+				eps_t* neps = (eps_t*)malloc(sizeof(eps_t));
+				*neps = *eps;
+				return &neps->ast;
+			}
+		case PLUS_TYPE:
+		case MINUS_TYPE:
+		case SUM_TYPE:
+		case MULT_TYPE:
+			{
+				bin_t* bin = (bin_t*)ast;
+				bin_t* nbin = (bin_t*)malloc(sizeof(bin_t));
+				*nbin = *bin;
+				nbin->a = copy(bin->a);
+				nbin->b = copy(bin->b);
+				return &nbin->ast;
+			}
+		default:
+			printf("Fail %d\n", ast->type);
+	}
+}
+
+bool simplify(ast_t* ast, ast_t** past){
+	if(ast->type == MULT_TYPE){
+		bin_t* bin = (bin_t*)ast;
+		if(bin->a->type==SUM_TYPE){
+			bin_t* sum = (bin_t*)bin->a;
+			bin_t* proda = (bin_t*)mult(sum->a,bin->b);
+			bin_t* prodb = (bin_t*)mult(sum->b,copy(bin->b));
+			bin_t* nsum = (bin_t*)make_sum(&proda->ast,&prodb->ast);
+			*past = &nsum->ast;
+//			printf("Try a\n");
+			return true;
+		}
+		if(bin->b->type==SUM_TYPE){
+			bin_t* sum = (bin_t*)bin->b;
+			bin_t* proda = (bin_t*)mult(sum->a,bin->a);
+			bin_t* prodb = (bin_t*)mult(sum->b,copy(bin->a));
+			bin_t* nsum = (bin_t*)make_sum(&proda->ast,&prodb->ast);
+			*past = &nsum->ast;
+//			printf("Try b\n");
+			return true;
+		}
+		return simplify(bin->a,&bin->a)||simplify(bin->b,&bin->b);
+	}
+	if(ast->type == SUM_TYPE){
+		bin_t* bin = (bin_t*)ast;
+		return simplify(bin->a,&bin->a)||simplify(bin->b,&bin->b);
+	}
+	return false;
+}
+
+ast_t** getTerminus(ast_t** ast,bool left){
+	switch((*ast)->type){
+		case MULT_TYPE:
+			{
+				bin_t* bin = (bin_t*)*ast;
+				if(left)
+					return getTerminus(&bin->a,left);
+				return getTerminus(&bin->b,left);
+			}
+		case EPS_TYPE:
+		case PART_TYPE:
+			return ast;
+		case MAG_TYPE:
+			{
+				mag_t* mag = (mag_t*)*ast;
+				return getTerminus(&mag->expr,left);
+			}
+		default:
+			printf("Fail %d\n", (*ast)->type);
+	}
+	return 0;
+}
+
+typedef struct factor {
+	ast_t* tomove;
+	ast_t* actual;
+	ast_t** ptr;
+} factor_t;
+
+void assembleFactors(ast_t* ast, ast_t** ptr, vector<factor_t>* factors){
+	factor_t factor;
+	switch(ast->type){
+		case MULT_TYPE:
+			{
+				bin_t* bin = (bin_t*)ast;
+				assembleFactors(bin->a,&bin->a,factors);
+				assembleFactors(bin->b,&bin->b,factors);
+			}
+			break;
+/*		case MAG_TYPE:
+		//	factor.tomove = ast;
+			factor.actual
+			break;*/
+		case EPS_TYPE:
+			factor.tomove = ast;
+			factor.actual = ast;
+			factor.ptr = ptr;
+			factors->push_back(factor);
+			break;
+		case PART_TYPE:
+			factor.tomove = ast;
+			factor.actual = ast;
+			factor.ptr = ptr;
+			factors->push_back(factor);
+			break;
+		default:
+			printf("Fail %d\n", ast->type);
+	}
+}
+
+bool orderFactors(ast_t* ast){
+	if(ast->type == MULT_TYPE){
+		vector<factor_t> factors;
+		bin_t* bin = (bin_t*)ast;
+		assembleFactors(bin->a,&bin->a,&factors);
+		assembleFactors(bin->b,&bin->b,&factors);
+
+		for(int i=0; i < factors.size(); i++){
+			for(int j=i+1; j < factors.size(); j++){
+				factor_t a = factors.at(i);
+				factor_t b = factors.at(j);
+
+				if((a.actual->type == EPS_TYPE && b.actual->type != EPS_TYPE) || (b.actual->type == PART_TYPE && ((part_t*)(a.actual))->idx > ((part_t*)(b.actual))->idx)){
+					*a.ptr = b.actual;
+					*b.ptr = a.actual;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	if(ast->type == SUM_TYPE){
+		bin_t* bin = (bin_t*)ast;
+		return orderFactors(bin->a)||orderFactors(bin->b);
+	}
+//	printf("No go %d\n", ast->type);
+	return false;
+}
+
 void printEpsPartials(){
 	for(int i=0; i < ssavec.size(); i++){
 		ssa_t* ssa = ssavec.at(i);
@@ -174,48 +329,46 @@ void printEpsPartials(){
 		}else{ //plus minus mult
 			bin_t* bin = (bin_t*)ssa->ast;
 			if(isErrFree(bin->a) && isErrFree(bin->b)){
-				sum_t* asum = (sum_t*)malloc(sizeof(sum_t));
-				sum_t* bsum = (sum_t*)malloc(sizeof(sum_t));
-				asum->ast.type = SUM_TYPE;
-				asum->ast.ssa = 0;
-				asum->next = &bsum->ast;
-				bsum->ast.type = SUM_TYPE;
-				bsum->ast.ssa = 0;
-				bsum->next = 0;
-				
-				part_t* parta = (part_t*)malloc(sizeof(part_t));
-				parta->ast.type = PART_TYPE;
-				parta->ast.ssa = 0;
-				parta->idx = i;
-				asum->expr = &parta->ast;
-
-				part_t* partb = (part_t*)malloc(sizeof(part_t));
-				partb->ast.type = PART_TYPE;
-				partb->ast.ssa = 0;
-				partb->idx = i;
-
-				mag_t* mag = (mag_t*)malloc(sizeof(mag_t));
-				mag->ast.type = MAG_TYPE;
-				mag->ast.ssa = 0;
-				mag->expr = &partb->ast;
-
-				eps_t* eps = (eps_t*)malloc(sizeof(eps_t));
-				eps->ast.type = EPS_TYPE;
-				eps->ast.ssa = 0;	
-
-				bin_t* nbin = (bin_t*)malloc(sizeof(bin_t));
-				nbin->ast.type = MULT_TYPE;
-				nbin->ast.ssa = 0;
-				nbin->a = &mag->ast;
-				nbin->b = &eps->ast;	
-				bsum->expr = &nbin->ast;		
-		
+				part_t* parta = (part_t*)make_part(i);
+				part_t* partb = (part_t*)make_part(i);
+ 				//mag_t* mag = (mag_t*)make_mag(&partb->ast);
+				eps_t* eps = (eps_t*)make_eps();
+				bin_t* nbin = (bin_t*)mult(&partb->ast,&eps->ast);	
+				bin_t* asum = (bin_t*)make_sum(&parta->ast,&nbin->ast);
 				ssa->eps = &asum->ast;
 
 				printf("\tconst char* epspart%d=\"",i);
 				printEpsTree(&asum->ast);
 				printf("\";\n");
 //				printf("\tconst char* epspart%d=\"partial%d +/- (mag(partial%d) * e)\";\n",i,i,i);
+			}else{
+				if(bin->ast.type != MULT_TYPE){
+					printf("freak out\n");
+					continue;
+				}
+				//Multiply the 2 eps trees
+				ast_t* prod = mult(bin->a->ssa->eps, bin->b->ssa->eps);
+/*				printf("\tconst char* epspart%d=\"",i);
+				printEpsTree(prod);
+				printf("\";\n");*/
+				while(simplify(prod,&prod)){
+/*					printf("Reduce....\n");	
+					printf("\tconst char* epspart%d=\"",i);	
+					printEpsTree(prod);
+					printf("\";\n"); */
+				}
+
+				while(orderFactors(prod)){
+/*					printf("Reduce....\n");	
+					printf("\tconst char* epspart%d=\"",i);	
+					printEpsTree(prod);
+					printf("\";\n"); */
+				}
+
+				printf("\tconst char* epspart%d=\"",i);
+				printEpsTree(prod);
+				printf("\";\n");
+		
 			}
 		}
 	}

@@ -24,10 +24,7 @@ bool reduceExpression(ast_t* expr, ast_t** prt){
 						res = ((number_t*)bin->a)->val - ((number_t*)bin->b)->val;
 					if(expr->type==PLUS_TYPE)
 						res = ((number_t*)bin->a)->val + ((number_t*)bin->b)->val;
-				  	number_t *num = (number_t*)malloc(sizeof(number_t));
-					num->ast.type = NUMBER_TYPE;
-					num->ast.ssa = 0;
-					num->val = res;
+				  	number_t *num = (number_t*)number(res);
 					*prt = (ast_t*)num;
 					recursiveFree(expr);
    				    return true;
@@ -40,10 +37,7 @@ bool reduceExpression(ast_t* expr, ast_t** prt){
 				neg_t* neg = (neg_t*)expr;
 				if(neg->expr->type == NUMBER_TYPE){
 					double res = -((number_t*)neg->expr)->val;
-				  	number_t *num = (number_t*)malloc(sizeof(number_t));
-					num->ast.type = NUMBER_TYPE;
-					num->ast.ssa = 0;
-					num->val = res;
+				  	number_t *num = (number_t*)number(res);
 					*prt = (ast_t*)num;
 					recursiveFree(expr);
 					return true;

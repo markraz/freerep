@@ -119,6 +119,38 @@ int endseq(){
 	return 0;
 }
 
+ast_t* make_eps(){
+	eps_t* eps = (eps_t*)malloc(sizeof(eps_t));
+	eps->ast.type = EPS_TYPE;
+	eps->ast.ssa = 0;
+	return &eps->ast;
+}	
+
+ast_t* make_mag(ast_t* expr){
+	mag_t* mag = (mag_t*)malloc(sizeof(mag_t));
+	mag->ast.type = MAG_TYPE;
+	mag->ast.ssa = 0;
+	mag->expr = expr;
+	return &mag->ast;
+}
+
+ast_t* make_part(int idx){
+	part_t* partb = (part_t*)malloc(sizeof(part_t));
+	partb->ast.type = PART_TYPE;
+	partb->ast.ssa = 0;
+	partb->idx = idx;
+	return &partb->ast;
+}
+
+ast_t* make_sum(ast_t* p1, ast_t* p2){
+	bin_t* ret = (bin_t*)malloc(sizeof(bin_t));
+	ret->ast.type = SUM_TYPE;
+	ret->ast.ssa = 0;
+	ret->a = p1;
+	ret->b = p2;
+	return (ast_t*)ret;
+}	
+
 void recursiveFree(ast_t* ast){
 	switch(ast->type){
 		case NUMBER_TYPE: break;
