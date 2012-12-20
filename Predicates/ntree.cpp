@@ -80,8 +80,10 @@ ast_t* fromProdTree(ntree_t* tree){
 ast_t* fromNTree(ntree_t* tree){
 	ast_t* ret=0;
 	bin_t* sums = (bin_t*)malloc((tree->size-1)*sizeof(bin_t));
-	if(tree->size-1 == 0)
-		printf("boom\n");
+	if(tree->size-1 == 0){
+//		printf("Short tree\n");
+		return fromProdTree(tree->trees[0]);
+	}
 	for(int i=0; i < tree->size-1; i++){
 		sums[i].ast.type = SUM_TYPE;
 		sums[i].a = fromProdTree(tree->trees[i]);
@@ -108,8 +110,8 @@ bool orderFactorsProd(ntree_t* tree){
 			ast_t* b = getTerminal(tree->asts[j]);
 			part_t* pa = (part_t*)a;
 			part_t* pb = (part_t*)b;
-			if((a->type == EPS_TYPE && b->type != EPS_TYPE) || (
-				b->type == PART_TYPE && (pb->idx < pa->idx))){
+			if((a->type == EPS_TYPE && b->type != EPS_TYPE) || b->type == NUMBER_TYPE || (
+				b->type == PART_TYPE && a->type == PART_TYPE && (pb->idx < pa->idx))){
 				tree->asts[j] = a;
 				tree->asts[i] = b;
 				return true;
@@ -155,12 +157,25 @@ bool combineTerms(ntree_t* tree){
 		for(int j=i+1; j < tree->size; j++){
 			ntree_t* a = tree->trees[i];
 			ntree_t* b = tree->trees[j];
-			if(a->size != b->size)
-				continue;
+//			if(a->size != b->size)
+//				continue;
 			bool error = false;
-			for(int k=0; k < a->size; k++){
-				ast_t* ta = getTerminal(a->asts[k]);
-				ast_t* tb = getTerminal(b->asts[k]);
+			int ka=0;
+			int kb=0;
+			for(; ka < a->size && kb < b->size;){
+				ast_t* ta = getTerminal(a->asts[ka]);
+				ast_t* tb = getTerminal(b->asts[kb]);
+				if(ta->type==NUMBER_TYPE){
+					ka++;
+//					printf("ka\n");
+					continue;
+				}
+				if(tb->type==NUMBER_TYPE){
+					kb++;
+//					printf("kb\n");
+					continue;
+				}
+				ka++; kb++;
 				if(ta->type != tb->type){
 					error=true; break;
 				}
@@ -172,11 +187,22 @@ bool combineTerms(ntree_t* tree){
 					error=true; break;
 				}
 			}
-			if(error==false){
+//			printf("%d %d %d %d %d\n", error,ka,a->size,kb,b->size);
+			if(error==false && ka==a->size && kb==b->size){
+				ast_t* ta = getTerminal(a->asts[0]);
+				ast_t* tb = getTerminal(b->asts[0]);
+
+				number_t *num = (number_t*)number(1);
+				if(ta->type==NUMBER_TYPE)
+					num = (number_t*)ta;
+				if(tb->type==NUMBER_TYPE){
+					num->val += ((number_t*)tb)->val;
+				}else{
+					num->val++;
+				}						
 //				printf("Found one\n");
-				//TODO: extra crap for adding coefficients
-				ast_t *num = number(2);
-				insertProd(a,num);
+				if(ta->type!=NUMBER_TYPE)
+					insertProd(a,(ast_t*)num);
 				removeSum(tree,b);
 				return true;
 			}
@@ -205,6 +231,7 @@ bool equiv(ast_t* a, ast_t* b){
 
 void removeProd(ntree_t* tree, ast_t* prod){
 	int j=0;
+//	printf("%d\n", tree->size);
 	for(int i=0; i < tree->size-1; i++){
 		if(equiv(tree->asts[i],prod))
 			j++;
@@ -212,6 +239,7 @@ void removeProd(ntree_t* tree, ast_t* prod){
 		j++;
 	}
 	tree->size--;
+//	printf("%d\n", tree->size);
 }
 
 
@@ -232,7 +260,74 @@ void factorAndReplace(ntree_t* tree, ast_t* a, ast_t* b,ast_t* rep){
 
 		removeProd(ptree,a);
 		removeProd(ptree,b);
-		insertProd(ptree,rep);
+		insertProd(ptree,copy(rep));
 	}
 }
 
+bool epsOnly(ntree_t* tree){
+	for(int i=0; i < tree->size; i++){
+		ntree_t* ptree = tree->trees[i];
+		bool found=false;
+		for(int j=0; j < ptree->size; j++){
+			if(getTerminal(ptree->asts[j])->type == EPS_TYPE){
+				found=true;
+				break;
+			}
+		}
+		if(!found){
+			removeSum(tree,ptree);
+			return true;
+		}
+	}	
+	return false;
+}
+
+void getFactors(ntree_t* tree,vector<ast_t*>*factors){
+	for(int i=0; i < tree->size; i++){
+		ntree_t* ptree = tree->trees[i];
+		for(int j=0; j < ptree->size; j++){
+			if(ptree->asts[j]->type!=PART_TYPE)
+				continue;
+			bool found=false;
+			for(int k=0; k < factors->size(); k++){
+				if(((part_t*)factors->at(k))->idx == ((part_t*)ptree->asts[j])->idx){
+					found=true;
+					break;
+				}
+			}
+			if(found)
+				continue;
+			factors->push_back(ptree->asts[j]);
+		}
+	}
+}
+
+void factor(ntree_t* tree, ast_t* fac){
+	if(fac->type!=PART_TYPE)
+		printf("Fail\n");
+
+	vector<ntree_t*> tokill;
+	for(int i=0; i < tree->size; i++){
+		ntree_t* ptree = tree->trees[i];
+		bool found=false;
+		for(int j=0; j < ptree->size; j++){
+			if(ptree->asts[j]->type!=PART_TYPE)
+				continue;
+//			printf("%d %d\n", ((part_t*)ptree->asts[j])->idx, ((part_t*)fac)->idx);
+			if(equiv(ptree->asts[j],fac)){
+//				printf("found\n");
+				found=true;
+				break;
+			}
+		}
+		if(found){
+			removeProd(ptree,fac);
+		}else{
+			tokill.push_back(ptree);
+		}		
+	}	
+
+	for(int i=0; i < tokill.size(); i++){
+		removeSum(tree,tokill.at(i));
+	}
+}

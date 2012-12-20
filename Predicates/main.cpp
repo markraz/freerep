@@ -164,12 +164,15 @@ void compile(ast_t* ast){
 	checkUsedArgs(&usedargs,&args);
 	while(reduceExpression(assign->expr,&assign->expr)){printf("Reduce....\n");}
 
-	printPrototype(fname,args);
+
 
 	createssa(assign->expr);
+	//Normal epsilon calculation
+	createEpsPartials();
+
+	printPrototype(fname,args);
 	printPartials();
 
-	//Normal epsilon calculation
 	printEpsPartials();
 
 	int nparts = getNumPartials()-1;
