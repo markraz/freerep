@@ -187,8 +187,15 @@ ast_t* copy(ast_t* ast){
 				nbin->b = copy(bin->b);
 				return &nbin->ast;
 			}
+		case NUMBER_TYPE:
+			{
+				number_t* num = (number_t*)ast;
+				number_t* nnum = (number_t*)malloc(sizeof(number_t));
+				*nnum = *num;
+				return &nnum->ast;
+			}
 		default:
-			printf("Fail %d\n", ast->type);
+			printf("Fail %d %s\n", ast->type, __func__);
 	}
 }
 
@@ -264,10 +271,18 @@ void printEpsPartials(){
 //					printf("Reduce....\n");	
 				}
 				while(combineTerms(tree)){
-					printf("Reduce...\n");
+//					printf("Reduce...\n");
 				}
+				part_t* part = (part_t*)make_part(i);
+				eps_t* eps = (eps_t*)make_eps();
+				ast_t* nsum = 	make_sum(&part->ast,&eps->ast);
+
+				factorAndReplace(tree,make_part(bin->a->ssa->idx),make_part(bin->b->ssa->idx),nsum);
 				prod = fromNTree(tree);
 
+//				while(simplify(prod,&prod)){
+//					printf("Reduce....\n");	
+//					} 
 
 
 				printf("\tconst char* epspart%d=\"",i);

@@ -12,3 +12,4 @@ ntree_t* toNTree(ast_t*);
 ast_t* fromNTree(ntree_t* tree);
 bool orderFactors(ntree_t* tree);
 bool combineTerms(ntree_t* tree);
+void factorAndReplace(ntree_t* tree, ast_t* a, ast_t* b,ast_t* nsum);

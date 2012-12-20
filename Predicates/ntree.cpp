@@ -65,6 +65,9 @@ ntree_t* toNTree(ast_t* ast){
 ast_t* fromProdTree(ntree_t* tree){
 	ast_t* ret=0;
 	bin_t* prods = (bin_t*)malloc((tree->size-1)*sizeof(bin_t));
+	if(tree->size==1){
+		return tree->asts[0];
+	}
 	for(int i=0; i < tree->size-1; i++){
 		prods[i].ast.type = MULT_TYPE;
 		prods[i].a = tree->asts[i];
@@ -77,6 +80,8 @@ ast_t* fromProdTree(ntree_t* tree){
 ast_t* fromNTree(ntree_t* tree){
 	ast_t* ret=0;
 	bin_t* sums = (bin_t*)malloc((tree->size-1)*sizeof(bin_t));
+	if(tree->size-1 == 0)
+		printf("boom\n");
 	for(int i=0; i < tree->size-1; i++){
 		sums[i].ast.type = SUM_TYPE;
 		sums[i].a = fromProdTree(tree->trees[i]);
@@ -168,7 +173,7 @@ bool combineTerms(ntree_t* tree){
 				}
 			}
 			if(error==false){
-				printf("Found one\n");
+//				printf("Found one\n");
 				//TODO: extra crap for adding coefficients
 				ast_t *num = number(2);
 				insertProd(a,num);
@@ -178,5 +183,56 @@ bool combineTerms(ntree_t* tree){
 		}
 	}
 	return false;
+}
+
+bool equiv(ast_t* a, ast_t* b){
+	if(b->type != a->type){
+	//	printf("%d %d\n", a->type, b->type);
+		return false;
+	}
+	switch(a->type){
+		case PART_TYPE:
+			{
+				part_t *pa = (part_t*)a;
+				part_t *pb = (part_t*)b;
+	//			printf("%d %d\n", pa->idx, pb->idx);
+				return pa->idx == pb->idx;
+			}
+		default:
+			printf("Fail %d %s\n", a->type, __func__);
+	}
+}
+
+void removeProd(ntree_t* tree, ast_t* prod){
+	int j=0;
+	for(int i=0; i < tree->size-1; i++){
+		if(equiv(tree->asts[i],prod))
+			j++;
+		tree->asts[i] = tree->asts[j];
+		j++;
+	}
+	tree->size--;
+}
+
+
+void factorAndReplace(ntree_t* tree, ast_t* a, ast_t* b,ast_t* rep){
+	for(int i=0; i < tree->size; i++){
+		ntree_t* ptree = tree->trees[i];
+		int afound=-1;
+		int bfound=-1;
+	//	printf("%d %d\n", tree->size, ptree->size);
+		for(int j=0; j < ptree->size; j++){
+			if(equiv(ptree->asts[j],a))
+				afound=j;
+			if(equiv(ptree->asts[j],b))
+				bfound=j;
+		}
+		if(afound==-1 || bfound==-1)
+			continue;
+
+		removeProd(ptree,a);
+		removeProd(ptree,b);
+		insertProd(ptree,rep);
+	}
 }
 
